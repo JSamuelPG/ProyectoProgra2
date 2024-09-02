@@ -21,6 +21,28 @@
                     <input class="form-control" type="text" name="txtDpi"><br>
                     Nombres: <br>
                     <input class="form-control" type="text" name="txtNom"><br>
+                    
+                   
+                    Primer Nombre: <br>
+                    <input class="form-control" type="text" name="txtNom1"><br>
+                    Segundo Nombre: <br>
+                    <input class="form-control" type="text" name="txtNom2"><br>
+                    Primer Apellido: <br>
+                    <input class="form-control" type="text" name="txtAp1"><br>
+                    Segundo Apellido: <br>
+                    <input class="form-control" type="text" name="txtNAp2"><br>
+                    Login: <br>
+                    <input class="form-control" type="text" name="txtLog"><br>
+                    Contraseña: <br>
+                    <input class="form-control" type="text" name="txtCont"><br>
+                    Nit: <br>
+                    <input class="form-control" type="text" name="txtNit"><br>
+                    Puesto: <br>
+                    <input class="form-control" type="text" name="txtPuesto"><br>
+                    Rol: <br>
+                    <input class="form-control" type="text" name="txtRol"><br>
+                    
+                    
                     <input class="btn btn-primary" type="submit" name="accion" value="Agregar">
                     <a href="Controlador?accion=listar">Regresar</a>
                 </form>

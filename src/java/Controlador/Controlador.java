@@ -1,6 +1,7 @@
 
 package Controlador;
 
+import Modelo.Users;
 import Modelo.Persona;
 import ModeloDAO.PersonaDAO;
 import java.io.IOException;
@@ -19,6 +20,7 @@ public class Controlador extends HttpServlet {
     String edit = "vistas/edit.jsp";
     String login = "index.jsp"; // Página de login
     Persona p = new Persona();
+    Users u= new Users();
     PersonaDAO dao = new PersonaDAO();
     int id;
 
@@ -44,7 +46,7 @@ public class Controlador extends HttpServlet {
                 String nom = request.getParameter("txtNom");
                 p.setDpi(dpi);
                 p.setNom(nom);
-                dao.add(p);
+                dao.add2(p);
                 acceso = listar;
                 break;
             case "editar":
@@ -58,13 +60,13 @@ public class Controlador extends HttpServlet {
                 p.setId(id);
                 p.setDpi(dni);
                 p.setNom(nom2);
-                dao.edit(p);
+                dao.edit2(p);
                 acceso = listar;
                 break;
             case "eliminar":
                 id = Integer.parseInt(request.getParameter("id"));
                 p.setId(id);
-                dao.eliminar(id);
+                dao.eliminar2(id);
                 acceso = listar;
                 break;
             case "login":
