@@ -6,6 +6,8 @@ import Modelo.Persona;
 import ModeloDAO.PersonaDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.HashSet;
+import java.util.Set;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -18,11 +20,12 @@ public class Controlador extends HttpServlet {
     String listar = "vistas/listar.jsp";
     String add = "vistas/add.jsp";
     String edit = "vistas/edit.jsp";
-    String login = "index.jsp"; // Página de login
+    String login2 = "index.jsp"; // Página de login
     Persona p = new Persona();
     Users u= new Users();
     PersonaDAO dao = new PersonaDAO();
     int id;
+    int idusua;
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -42,41 +45,98 @@ public class Controlador extends HttpServlet {
                 acceso = add;
                 break;
             case "agregar":
-                String dpi = request.getParameter("txtDpi");
-                String nom = request.getParameter("txtNom");
-                p.setDpi(dpi);
+                
+                String nomb =request.getParameter("txtNom1");
+                String nomb2 =request.getParameter("txtNom2");
+                String ap1 =request.getParameter("txtAp1");
+                String ap2 =request.getParameter("txtAp2");
+                String log =request.getParameter("txtLog");
+                String cont =request.getParameter("txtCont");
+                String nit =request.getParameter("txtNit");
+                String puesto =request.getParameter("txtPuesto");
+                int rol = Integer.parseInt(request.getParameter("txtRol"));
+                
+                u.setPrimerNombre(nomb);
+                u.setSegundoNombre(nomb2);
+                u.setPrimerApellido(ap1);
+                u.setSegundoApellido(ap2);
+                u.setLogin(log);
+                u.setContrasenia(cont);
+                u.setNitpersona(nit);
+                u.setPuesto(puesto);
+                u.setRoles(rol);
+                dao.add(u);
+                acceso=listar;
+                
+                /*String dpi = request.getParameter("txtDpi");
+                String nom = request.getParameter("txtNom");*/
+                
+                /*p.setDpi(dpi);
                 p.setNom(nom);
-                dao.add2(p);
-                acceso = listar;
+                dao.add(p);
+                acceso = listar;*/
                 break;
             case "editar":
-                request.setAttribute("idper", request.getParameter("id"));
+                //idusuario va en el JSP
+                request.setAttribute("idusuario", request.getParameter("idusua"));
+                
+                /*request.setAttribute("idper", request.getParameter("id"));*/
                 acceso = edit;
                 break;
             case "actualizar":
-                id = Integer.parseInt(request.getParameter("txtid"));
+                idusua = Integer.parseInt(request.getParameter("txtidusu"));
+                nomb = request.getParameter("txtNom1");
+                nomb2 = request.getParameter("txtNom2");
+                ap1 = request.getParameter("txtAp1");
+                ap2 = request.getParameter("txtAp2");
+                log = request.getParameter("txtLog");
+                cont = request.getParameter("txtCont");
+                nit = request.getParameter("txtNit");
+                puesto = request.getParameter("txtPuesto");
+                rol = Integer.parseInt(request.getParameter("txtRol"));
+
+                u.setIdusuario(idusua); 
+                u.setPrimerNombre(nomb);
+                u.setSegundoNombre(nomb2);
+                u.setPrimerApellido(ap1);
+                u.setSegundoApellido(ap2);
+                u.setLogin(log);
+                u.setContrasenia(cont);
+                u.setNitpersona(nit);
+                u.setPuesto(puesto);
+                u.setRoles(rol);
+                dao.edit(u); 
+                acceso = listar;
+                break;
+                /*id = Integer.parseInt(request.getParameter("txtid"));
                 String dni = request.getParameter("txtDpi");
-                String nom2 = request.getParameter("txtNom");
+                String nom = request.getParameter("txtNom");
                 p.setId(id);
                 p.setDpi(dni);
                 p.setNom(nom2);
-                dao.edit2(p);
+                dao.edit(p);
                 acceso = listar;
-                break;
+                break;*/
             case "eliminar":
                 id = Integer.parseInt(request.getParameter("id"));
                 p.setId(id);
-                dao.eliminar2(id);
+                dao.eliminar(id);  // Asegúrate de que eliminar2 sea el método adecuado en tu DAO
                 acceso = listar;
                 break;
+                
+                /*id = Integer.parseInt(request.getParameter("id"));
+                p.setId(id);
+                dao.eliminar2(id);
+                acceso = listar;
+                break;*/
             case "login":
-                acceso = login;
+                acceso = login2;
                 break;
             case "authenticate":
-                String username = request.getParameter("username");
-                String password = request.getParameter("password");
+                String login = request.getParameter("login");
+                String contrasenia = request.getParameter("contrasenia");
 
-                boolean isValid = dao.validateUser(username, password); 
+                boolean isValid = dao.validateUser(login, contrasenia); 
                 if (isValid) {
                     acceso = listar; 
                 } else {
@@ -85,7 +145,7 @@ public class Controlador extends HttpServlet {
                 }
                 break;
             default:
-                acceso = login;
+                acceso = login2;
                 break;
         }
 

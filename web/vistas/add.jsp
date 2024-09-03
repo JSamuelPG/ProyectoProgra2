@@ -17,12 +17,7 @@
             <div class="col-lg-6">
                 <h1>Agregar Persona</h1>
                 <form action="Controlador">
-                    DNI:<br>
-                    <input class="form-control" type="text" name="txtDpi"><br>
-                    Nombres: <br>
-                    <input class="form-control" type="text" name="txtNom"><br>
-                    
-                   
+      
                     Primer Nombre: <br>
                     <input class="form-control" type="text" name="txtNom1"><br>
                     Segundo Nombre: <br>
@@ -30,7 +25,7 @@
                     Primer Apellido: <br>
                     <input class="form-control" type="text" name="txtAp1"><br>
                     Segundo Apellido: <br>
-                    <input class="form-control" type="text" name="txtNAp2"><br>
+                    <input class="form-control" type="text" name="txtAp2"><br>
                     Login: <br>
                     <input class="form-control" type="text" name="txtLog"><br>
                     Contraseña: <br>
@@ -40,7 +35,7 @@
                     Puesto: <br>
                     <input class="form-control" type="text" name="txtPuesto"><br>
                     Rol: <br>
-                    <input class="form-control" type="text" name="txtRol"><br>
+                    <input class="form-control" type="number" name="txtRol"><br>
                     
                     
                     <input class="btn btn-primary" type="submit" name="accion" value="Agregar">

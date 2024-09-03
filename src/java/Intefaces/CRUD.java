@@ -15,9 +15,9 @@ public interface CRUD {
 }*/
 
 public interface CRUD{
-    public List listar2();
-    public Users list2(int idusuario);
-    public boolean add2(Users user);
-    public boolean edit2(Users user);
-    public boolean eliminar2(int idusuario);
+    public List listar();
+    public Users list(int idusuario);
+    public boolean add(Users user);
+    public boolean edit(Users user);
+    public boolean eliminar(int idusuario);
 }

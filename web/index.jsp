@@ -47,12 +47,12 @@
         <h2>Login</h2>
         <form action="Controlador" method="get">
             <div class="form-group">
-                <label for="username">Username:</label>
-                <input type="text" id="username" name="username" required>
+                <label for="username">Cuenta:</label>
+                <input type="text" id="login" name="login" required>
             </div>
             <div class="form-group">
-                <label for="password">Password:</label>
-                <input type="password" id="password" name="password" required>
+                <label for="password">Contraseña:</label>
+                <input type="password" id="contrasenia" name="contrasenia" required>
             </div>
             <div class="form-group">
                 <button type="submit" name="accion" value="authenticate">Login</button>
