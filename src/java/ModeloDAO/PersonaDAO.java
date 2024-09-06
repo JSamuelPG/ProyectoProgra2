@@ -2,7 +2,6 @@
 package ModeloDAO;
 
 import Modelo.Users;
-
 import Config.Conexion;
 import Intefaces.CRUD;
 import java.sql.Connection;
@@ -23,20 +22,6 @@ public class PersonaDAO implements CRUD{
 
     public PersonaDAO() {
         conexion = new Conexion();
-    }
-  
-    public boolean validateUser(String login, String contrasenia) {
-        String query = "SELECT * FROM usuarios WHERE login = ? AND contrasenia = ?";
-        try (Connection con = conexion.getConnection();
-             PreparedStatement stmt = con.prepareStatement(query)) {
-            stmt.setString(1, login);
-            stmt.setString(2, contrasenia);
-            ResultSet rs = stmt.executeQuery();
-            return rs.next();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return false;
     }
     
     //MODIFICADO
@@ -93,7 +78,6 @@ public class PersonaDAO implements CRUD{
         }return u;
     }
     //MODIFICADO
-    
     public boolean add(Users user){
         String sql = "insert into usuarios(primer_nombre, segundo_nombre, primer_apellido, segundo_apellido,contrasenia, nit_persona, puesto,roles) values('"+user.getPrimerNombre()+"','"+user.getSegundoNombre()+"','"+user.getPrimerApellido()+"','"+user.getSegundoApellido()+"','"+user.getContrasenia()+"','"+user.getNitpersona()+"','"+user.getPuesto()+"','"+user.getRoles()+"')";
             try{
@@ -105,7 +89,6 @@ public class PersonaDAO implements CRUD{
             return false;
     }
     //MODIFICADO
-    
     public boolean edit(Users user){
         String sql = "update usuarios set primer_nombre = '"+user.getPrimerNombre()+"', segundo_nombre = '"+user.getSegundoNombre()+"', primer_apellido = '"+user.getPrimerApellido()+"', segundo_apellido = '"+user.getSegundoApellido()+"', contrasenia = '"+user.getContrasenia()+"', nit_persona = '"+user.getNitpersona()+"', puesto = '"+user.getPuesto()+"', roles = '"+user.getRoles()+"'where id_usuario="+user.getIdusuario();
         try{

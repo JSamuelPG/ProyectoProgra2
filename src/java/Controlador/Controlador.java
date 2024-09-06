@@ -1,10 +1,14 @@
 
 package Controlador;
 
+import java.sql.Connection;
+import Config.Conexion;
 import Modelo.Users;
 import ModeloDAO.PersonaDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.HashSet;
 import java.util.Set;
 import javax.servlet.RequestDispatcher;
@@ -70,8 +74,6 @@ public class Controlador extends HttpServlet {
             case "editar":
                 //idusuario va en el JSP
                 request.setAttribute("idusuario", request.getParameter("idusua"));
-                
-                /*request.setAttribute("idper", request.getParameter("id"));*/
                 acceso = edit;
                 break;
             case "actualizar":
@@ -80,7 +82,7 @@ public class Controlador extends HttpServlet {
                 nomb2 = request.getParameter("txtNom2");
                 ap1 = request.getParameter("txtAp1");
                 ap2 = request.getParameter("txtAp2");
-                log = request.getParameter("txtLog");
+                /*log = request.getParameter("txtLog");*/
                 cont = request.getParameter("txtCont");
                 nit = request.getParameter("txtNit");
                 puesto = request.getParameter("txtPuesto");
@@ -91,7 +93,7 @@ public class Controlador extends HttpServlet {
                 u.setSegundoNombre(nomb2);
                 u.setPrimerApellido(ap1);
                 u.setSegundoApellido(ap2);
-                u.setLogin(log);
+                /*u.setLogin(log);*/
                 u.setContrasenia(cont);
                 u.setNitpersona(nit);
                 u.setPuesto(puesto);
@@ -114,9 +116,39 @@ public class Controlador extends HttpServlet {
                 String login = request.getParameter("login");
                 String contrasenia = request.getParameter("contrasenia");
 
-                boolean isValid = dao.validateUser(login, contrasenia); 
+                //instancia de conexion
+                Conexion conexion = new Conexion();
+                Connection con = conexion.getConnection();
+
+                boolean isValid = conexion.validateUser(login, contrasenia); 
+
                 if (isValid) {
-                    acceso = listar; 
+                    int idRol = conexion.getUserRole(login, contrasenia);
+                    // Asignar la vista según el idRol
+                    switch (idRol) {
+                        case 1:
+                            acceso = "admin.jsp";
+                            break;
+                        case 2:
+                            acceso = "analista.jsp";
+                            break;
+                        case 3:
+                            acceso = "supervisor.jsp";
+                            break;
+                        case 4:
+                        case 5:
+                        case 6:
+                        case 7:
+                        case 8:
+                            acceso = "supervisor.jsp";
+                            break;
+                        case 9:
+                            acceso = listar;
+                            break;
+                        default:
+                            acceso = "index.jsp";
+                            break;
+                    }
                 } else {
                     request.setAttribute("errorMessage", "usuario o contraseña invalido");
                     acceso = login;

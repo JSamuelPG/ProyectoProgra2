@@ -26,8 +26,8 @@
                     <input class="form-control" type="text" name="txtAp1" value="<%= user.getPrimerApellido()%>"><br>
                     Segundo Apellido:<br>
                     <input class="form-control" type="text" name="txtAp2" value="<%= user.getSegundoApellido()%>"><br>
-                    Login:<br>
-                    <input class="form-control" type="text" name="txtLog" value="<%= user.getLogin()%>"><br>
+                    <!--Login:<br>
+                    <input class="form-control" type="text" name="txtLog" value="<%= user.getLogin()%>"><br>-->
                     Contraseña:<br>
                     <input class="form-control" type="password" name="txtCont" value="<%= user.getContrasenia()%>"><br>
                     NIT Persona:<br>
