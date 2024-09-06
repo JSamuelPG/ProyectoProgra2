@@ -12,12 +12,16 @@
         <div class="container">
             <div class="col-lg-6">
                 <%
-                  PersonaDAO dao=new PersonaDAO();
-                  int idusuario=Integer.parseInt((String)request.getAttribute("idusuario"));
-                  Users user=(Users)dao.list(idusuario);
+                    // Asegúrate de que el idusuario se pase como parámetro de solicitud
+                    String idusuarioStr = request.getParameter("idusuario");
+                    
+                    if (idusuarioStr != null && !idusuarioStr.isEmpty()) {
+                        int idusuario = Integer.parseInt(idusuarioStr);
+                        PersonaDAO dao = new PersonaDAO();
+                        Users user = (Users) dao.list(idusuario);
                 %>
                 <h1>Modificar Usuario</h1>
-                <form action="Controlador">
+                <form action="Controlador" method="post">
                     Primer Nombre:<br>
                     <input class="form-control" type="text" name="primerNombre" value="<%= user.getPrimerNombre() %>"><br>
                     Segundo Nombre:<br>
@@ -37,12 +41,21 @@
                     Rol:<br>
                     <input class="form-control" type="number" name="rol" value="<%= user.getRoles() %>"><br>
 
+                    <!-- Campo oculto para el ID del usuario -->
                     <input type="hidden" name="idusuario" value="<%= user.getIdusuario() %>">
+                    <!-- Botón para enviar el formulario -->
                     <input class="btn btn-primary" type="submit" name="accion" value="Actualizar"> 
-                    <a href="Controlador?accion=listar">Regresar</a>
+                    <!-- Enlace para regresar -->
+                    <a class="btn btn-secondary" href="Controlador?accion=listar">Regresar</a>
                 </form>
+                <%
+                    } else {
+                        out.println("ID de usuario no proporcionado.");
+                    }
+                %>
             </div>
         </div>
     </body>
 </html>
+
 

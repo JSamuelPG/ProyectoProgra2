@@ -67,14 +67,7 @@ public class Controlador extends HttpServlet {
                 u.setRoles(rol);
                 dao.add(u);
                 acceso=listar;
-                
-                /*String dpi = request.getParameter("txtDpi");
-                String nom = request.getParameter("txtNom");*/
-                
-                /*p.setDpi(dpi);
-                p.setNom(nom);
-                dao.add(p);
-                acceso = listar;*/
+
                 break;
             case "editar":
                 //idusuario va en el JSP
@@ -108,27 +101,14 @@ public class Controlador extends HttpServlet {
                 dao.edit(u); 
                 acceso = listar;
                 break;
-                /*id = Integer.parseInt(request.getParameter("txtid"));
-                String dni = request.getParameter("txtDpi");
-                String nom = request.getParameter("txtNom");
-                p.setId(id);
-                p.setDpi(dni);
-                p.setNom(nom2);
-                dao.edit(p);
-                acceso = listar;
-                break;*/
+
             case "eliminar":
                 id = Integer.parseInt(request.getParameter("id"));
                 p.setId(id);
                 dao.eliminar(id);  // Asegúrate de que eliminar2 sea el método adecuado en tu DAO
                 acceso = listar;
                 break;
-                
-                /*id = Integer.parseInt(request.getParameter("id"));
-                p.setId(id);
-                dao.eliminar2(id);
-                acceso = listar;
-                break;*/
+
             case "login":
                 acceso = login2;
                 break;
