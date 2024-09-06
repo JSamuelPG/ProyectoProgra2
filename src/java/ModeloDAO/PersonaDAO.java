@@ -17,7 +17,6 @@ public class PersonaDAO implements CRUD{
     Connection con;
     PreparedStatement ps;
     ResultSet rs;
-    /*Persona p=new Persona();*/
     Users u=new Users();
     
     private Conexion conexion;
@@ -108,7 +107,7 @@ public class PersonaDAO implements CRUD{
     //MODIFICADO
     
     public boolean edit(Users user){
-        String sql = "update usuarios set primer_nombre = '"+user.getPrimerNombre()+"', segundo_nombre = '"+user.getSegundoNombre()+"', primer_apellido = '"+user.getPrimerApellido()+"', segundo_apellido = '"+user.getSegundoApellido()+"', contrasenia = '"+user.getContrasenia()+"', nit_persona = '"+user.getNitpersona()+"', puesto = '"+user.getPuesto()+"', roles = '"+user.getRoles()+"'where id_usuario"+user.getIdusuario();
+        String sql = "update usuarios set primer_nombre = '"+user.getPrimerNombre()+"', segundo_nombre = '"+user.getSegundoNombre()+"', primer_apellido = '"+user.getPrimerApellido()+"', segundo_apellido = '"+user.getSegundoApellido()+"', contrasenia = '"+user.getContrasenia()+"', nit_persona = '"+user.getNitpersona()+"', puesto = '"+user.getPuesto()+"', roles = '"+user.getRoles()+"'where id_usuario="+user.getIdusuario();
         try{
             con=cn.getConnection();
             ps=con.prepareStatement(sql);

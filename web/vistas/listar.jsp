@@ -1,7 +1,6 @@
 
 <%@page import="java.util.Iterator"%>
 <%@page import="Modelo.Users"%>
-<%@page import="Modelo.Persona"%>
 <%@page import="java.util.List"%>
 <%@page import="ModeloDAO.PersonaDAO"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>

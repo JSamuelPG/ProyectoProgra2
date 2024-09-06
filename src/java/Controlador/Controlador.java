@@ -2,7 +2,6 @@
 package Controlador;
 
 import Modelo.Users;
-import Modelo.Persona;
 import ModeloDAO.PersonaDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -21,7 +20,6 @@ public class Controlador extends HttpServlet {
     String add = "vistas/add.jsp";
     String edit = "vistas/edit.jsp";
     String login2 = "index.jsp"; // Página de login
-    Persona p = new Persona();
     Users u= new Users();
     PersonaDAO dao = new PersonaDAO();
     int id;
@@ -103,9 +101,9 @@ public class Controlador extends HttpServlet {
                 break;
 
             case "eliminar":
-                id = Integer.parseInt(request.getParameter("id"));
-                p.setId(id);
-                dao.eliminar(id);  // Asegúrate de que eliminar2 sea el método adecuado en tu DAO
+                id = Integer.parseInt(request.getParameter("id"));//el "id" viene del jsp de listar boton
+                u.setIdusuario(id);
+                dao.eliminar(id); 
                 acceso = listar;
                 break;
 
