@@ -24,6 +24,7 @@ public class Controlador extends HttpServlet {
     String add = "vistas/add.jsp";
     String edit = "vistas/edit.jsp";
     String login2 = "index.jsp"; // Página de login
+    String bandejaAnalista = "vistas/bandejaAnalista.jsp";
     Users u= new Users();
     PersonaDAO dao = new PersonaDAO();
     int id;
@@ -127,10 +128,10 @@ public class Controlador extends HttpServlet {
                     // Asignar la vista según el idRol
                     switch (idRol) {
                         case 1:
-                            acceso = "admin.jsp";
+                            acceso = bandejaAnalista;
                             break;
                         case 2:
-                            acceso = "analista.jsp";
+                            acceso = "bandejaAlmacenamiento.jsp";
                             break;
                         case 3:
                             acceso = "supervisor.jsp";

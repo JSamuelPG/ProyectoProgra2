@@ -44,7 +44,7 @@
 </head>
 <body>
     <div class="container">
-        <h2>Login</h2>
+        <h2>Iniciar Sesion</h2>
         <form action="Controlador" method="get">
             <div class="form-group">
                 <label for="username">Cuenta:</label>
