@@ -24,7 +24,8 @@ public class Controlador extends HttpServlet {
     String add = "vistas/add.jsp";
     String edit = "vistas/edit.jsp";
     String login2 = "index.jsp"; // Página de login
-    String bandejaAnalista = "vistas/bandejaAnalista.jsp";
+    String listarsm = "vistas/listarsm.jsp";
+    String init = "vistas/init.jsp";
     Users u= new Users();
     PersonaDAO dao = new PersonaDAO();
     int id;
@@ -44,6 +45,9 @@ public class Controlador extends HttpServlet {
             case "listar":
                 acceso = listar;
                 break;
+            case "init":
+                acceso=init;
+                break;
             case "add":
                 acceso = add;
                 break;
@@ -57,7 +61,8 @@ public class Controlador extends HttpServlet {
                 String cont =request.getParameter("txtCont");
                 String nit =request.getParameter("txtNit");
                 String puesto =request.getParameter("txtPuesto");
-                int rol = Integer.parseInt(request.getParameter("txtRol"));
+                String rol = request.getParameter("txtRol");
+                String estado = request.getParameter("txtEstado");
                 
                 u.setPrimerNombre(nomb);
                 u.setSegundoNombre(nomb2);
@@ -68,6 +73,7 @@ public class Controlador extends HttpServlet {
                 u.setNitpersona(nit);
                 u.setPuesto(puesto);
                 u.setRoles(rol);
+                u.setEstado(estado);
                 dao.add(u);
                 acceso=listar;
 
@@ -87,7 +93,8 @@ public class Controlador extends HttpServlet {
                 cont = request.getParameter("txtCont");
                 nit = request.getParameter("txtNit");
                 puesto = request.getParameter("txtPuesto");
-                rol = Integer.parseInt(request.getParameter("txtRol"));
+                rol = request.getParameter("txtRol");
+                estado = request.getParameter("txtEstado");
 
                 u.setIdusuario(idusua); 
                 u.setPrimerNombre(nomb);
@@ -99,6 +106,7 @@ public class Controlador extends HttpServlet {
                 u.setNitpersona(nit);
                 u.setPuesto(puesto);
                 u.setRoles(rol);
+                u.setEstado(estado);
                 dao.edit(u); 
                 acceso = listar;
                 break;
@@ -114,50 +122,60 @@ public class Controlador extends HttpServlet {
                 acceso = login2;
                 break;
             case "authenticate":
-                String login = request.getParameter("login");
-                String contrasenia = request.getParameter("contrasenia");
+            String login = request.getParameter("login");
+            String contrasenia = request.getParameter("contrasenia");
 
-                //instancia de conexion
-                Conexion conexion = new Conexion();
-                Connection con = conexion.getConnection();
+            // Instancia de conexión
+            Conexion conexion = new Conexion();
+            Connection con = conexion.getConnection();
 
-                boolean isValid = conexion.validateUser(login, contrasenia); 
+            boolean isValid = conexion.validateUser(login, contrasenia);
 
-                if (isValid) {
-                    int idRol = conexion.getUserRole(login, contrasenia);
-                    // Asignar la vista según el idRol
-                    switch (idRol) {
-                        case 1:
-                            acceso = bandejaAnalista;
-                            break;
-                        case 2:
-                            acceso = "bandejaAlmacenamiento.jsp";
-                            break;
-                        case 3:
-                            acceso = "supervisor.jsp";
-                            break;
-                        case 4:
-                        case 5:
-                        case 6:
-                        case 7:
-                        case 8:
-                            acceso = "supervisor.jsp";
-                            break;
-                        case 9:
-                            acceso = listar;
-                            break;
-                        default:
-                            acceso = "index.jsp";
-                            break;
-                    }
-                } else {
-                    request.setAttribute("errorMessage", "usuario o contraseña invalido");
-                    acceso = login;
+            if (isValid) {
+                String roleName = conexion.getUserRole(login, contrasenia);  // Método para obtener el nombre del rol
+                // Asignar la vista según el roleName
+                switch (roleName) {
+                    case "RegistroMuestras":
+                        acceso = listarsm;
+                        break;
+                    case "AnalistadeLaboratorio":
+                        acceso = "";
+                        break;
+                    case "AlmacenamientodeMuestra":
+                        acceso = "supervisor.jsp";
+                        break;
+                    case "SupervisorLaboratorio":
+                        acceso = "admin.jsp";
+                        break;
+                    case "JefeUnidadLaboratorio":
+                        acceso = "reportes.jsp";
+                        break;
+                    case "LaboratorioExterno":
+                        acceso = "reportes.jsp";
+                        break;
+                    case "Reportes":
+                        acceso = "reportes.jsp";
+                        break;
+                    case "VisualizacionDocumentos":
+                        acceso = "reportes.jsp";
+                        break;
+                    case "Administrador":
+                        acceso = init;
+                        break;
+                    // Agrega más casos según tus roles
+                    default:
+                        acceso = login2;
+                        break;
                 }
-                break;
-            default:
+            } else {
+                request.setAttribute("errorMessage", "usuario o contraseña inválido");
                 acceso = login2;
-                break;
+            }
+            break;
+        default:
+            acceso = login2;
+            break;
+
         }
 
         RequestDispatcher vista = request.getRequestDispatcher(acceso);

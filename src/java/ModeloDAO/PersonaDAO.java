@@ -44,7 +44,8 @@ public class PersonaDAO implements CRUD{
             user.setContrasenia(rs.getString("contrasenia"));
             user.setNitpersona(rs.getString("nit_persona"));
             user.setPuesto(rs.getString("puesto"));
-            user.setRoles(rs.getInt("roles"));
+            user.setRoles(rs.getString("roles"));
+            user.setEstado(rs.getString("estado"));
             list2.add(user);
         }
         
@@ -71,7 +72,8 @@ public class PersonaDAO implements CRUD{
                 u.setContrasenia(rs.getString("contrasenia"));
                 u.setNitpersona(rs.getString("nit_persona"));
                 u.setPuesto(rs.getString("puesto"));
-                u.setRoles(rs.getInt("roles"));
+                u.setRoles(rs.getString("roles"));
+                u.setEstado(rs.getString("estado"));
             }
         }catch(Exception e){
             
@@ -79,7 +81,7 @@ public class PersonaDAO implements CRUD{
     }
     //MODIFICADO
     public boolean add(Users user){
-        String sql = "insert into usuarios(primer_nombre, segundo_nombre, primer_apellido, segundo_apellido,contrasenia, nit_persona, puesto,roles) values('"+user.getPrimerNombre()+"','"+user.getSegundoNombre()+"','"+user.getPrimerApellido()+"','"+user.getSegundoApellido()+"','"+user.getContrasenia()+"','"+user.getNitpersona()+"','"+user.getPuesto()+"','"+user.getRoles()+"')";
+        String sql = "insert into usuarios(primer_nombre, segundo_nombre, primer_apellido, segundo_apellido,contrasenia, nit_persona, puesto,roles,estado) values('"+user.getPrimerNombre()+"','"+user.getSegundoNombre()+"','"+user.getPrimerApellido()+"','"+user.getSegundoApellido()+"','"+user.getContrasenia()+"','"+user.getNitpersona()+"','"+user.getPuesto()+"','"+user.getRoles()+"','"+user.getEstado()+"')";
             try{
                 con=cn.getConnection();
                 ps=con.prepareStatement(sql);
@@ -90,7 +92,7 @@ public class PersonaDAO implements CRUD{
     }
     //MODIFICADO
     public boolean edit(Users user){
-        String sql = "update usuarios set primer_nombre = '"+user.getPrimerNombre()+"', segundo_nombre = '"+user.getSegundoNombre()+"', primer_apellido = '"+user.getPrimerApellido()+"', segundo_apellido = '"+user.getSegundoApellido()+"', contrasenia = '"+user.getContrasenia()+"', nit_persona = '"+user.getNitpersona()+"', puesto = '"+user.getPuesto()+"', roles = '"+user.getRoles()+"'where id_usuario="+user.getIdusuario();
+        String sql = "update usuarios set primer_nombre = '"+user.getPrimerNombre()+"', segundo_nombre = '"+user.getSegundoNombre()+"', primer_apellido = '"+user.getPrimerApellido()+"', segundo_apellido = '"+user.getSegundoApellido()+"', contrasenia = '"+user.getContrasenia()+"', nit_persona = '"+user.getNitpersona()+"', puesto = '"+user.getPuesto()+"', roles = '"+user.getRoles()+"', estado = '"+user.getEstado()+"' where id_usuario="+user.getIdusuario();
         try{
             con=cn.getConnection();
             ps=con.prepareStatement(sql);

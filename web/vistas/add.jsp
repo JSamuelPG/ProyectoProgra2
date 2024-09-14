@@ -43,10 +43,13 @@
     <body>
         <!-- Cinta de opciones -->
         <div class="navbar">
+            <a href="Controlador?accion=init">Inicio</a>
             <a href="Controlador?accion=listar">Lista de Usuarios</a>
             <a class="active" href="#home">Agregar Usuario</a>
+            <a href="#home1">Servicios</a>
+            <a href="#home2">Reportes</a>
             <a href="Controlador?accion=listar">Regresar</a>
-            <a href="Controlador?accion=index">Salir</a>
+            <a href="Controlador?accion=index">Cerrar Sesion</a>
         </div>
 
         <div class="container">
@@ -68,8 +71,24 @@
                     Puesto: <br>
                     <input class="form-control" type="text" name="txtPuesto"><br>
                     Rol: <br>
-                    <input class="form-control" type="number" name="txtRol"><br>
-                    
+                    <select class="form-control" name="txtRol" id="opciones">
+                        <option value="RegistroMuestras">Registro Muestras</option>
+                        <option value="AnalistadeLaboratorio">Analista de Laboratorio</option>
+                        <option value="AlmacenamientodeMuestra">Almacenamiento de Muestra</option>
+                        <option value="SupervisorLaboratorio">Supervisor de Laboratorio</option>
+                        <option value="JefeUnidadLaboratorio">Jefe Unidad Laboratorio</option>
+                        <option value="LaboratorioExterno">Laboratorio Externo</option>
+                        <option value="Reportes">Reportes</option>
+                        <option value="VisualizacionDocumentos">Visualización de Documentos</option>
+                        <option value="Administrador">Administrador</option>
+                    </select>
+                    <br>
+                    Estado: <br>
+                    <select class="form-control" name="txtEstado" id="txtEstado">
+                        <option value="Activo">Activo</option>
+                        <option value="Inactivo">Inactivo</option>
+                    </select>
+                    <br>
                     <input class="btn btn-primary" type="submit" name="accion" value="Agregar">
                     
                 </form>

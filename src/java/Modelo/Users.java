@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package Modelo;
 
 /**
@@ -20,11 +16,12 @@ public class Users {
     String contrasenia;
     String nitpersona;
     String puesto;
-    int roles;
-
+    String roles;
+    String estado;
+    
     public Users(){};
 
-    public Users(int idusuario, String primerNombre, String segundoNombre, String primerApellido, String segundoApellido, String login, String contrasenia, String nitpersona, String puesto, int roles) {
+    public Users(int idusuario, String primerNombre, String segundoNombre, String primerApellido, String segundoApellido, String login, String contrasenia, String nitpersona, String puesto, String roles, String estado) {
         this.idusuario = idusuario;
         this.primerNombre = primerNombre;
         this.segundoNombre = segundoNombre;
@@ -35,6 +32,7 @@ public class Users {
         this.nitpersona = nitpersona;
         this.puesto = puesto;
         this.roles = roles;
+        this.estado = estado;
     }
 
     public int getIdusuario() {
@@ -109,14 +107,21 @@ public class Users {
         this.puesto = puesto;
     }
 
-    public int getRoles() {
+    public String getRoles() {
         return roles;
     }
 
-    public void setRoles(int roles) {
+    public void setRoles(String roles) {
         this.roles = roles;
     }
-    
-    
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
     
 }

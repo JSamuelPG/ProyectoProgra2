@@ -5,13 +5,22 @@
     <style>
         body {
             font-family: Arial, sans-serif;
+            background-image: url('images/th.jpeg'); /* Ruta de la imagen */
+            background-size: 50%; /* Hace que la imagen cubra todo el fondo */
+            background-position: center; /* Centra la imagen */
+            background-repeat: no-repeat; /* Evita que la imagen se repita */
+            height: 100vh; /* Asegura que el fondo cubra toda la altura de la página */
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
         .container {
             width: 300px;
-            margin: 0 auto;
             padding: 20px;
-            border: 1px solid #ddd;
+            background-color: rgba(255, 255, 255, 0.8); /* Fondo blanco semi-transparente */
             border-radius: 5px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
         }
         .form-group {
             margin-bottom: 15px;
@@ -44,7 +53,7 @@
 </head>
 <body>
     <div class="container">
-        <h2>Iniciar Sesion</h2>
+        <h2>Iniciar Sesión</h2>
         <form action="Controlador" method="get">
             <div class="form-group">
                 <label for="username">Cuenta:</label>

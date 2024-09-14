@@ -48,9 +48,12 @@
     <body>
          <!-- Cinta de opciones -->
         <div class="navbar">
+            <a href="Controlador?accion=init">Inicio</a>
             <a class="active" href="#home">Lista de Usuarios</a>
             <a href="Controlador?accion=add">Agregar Usuarios</a>
-            <a href="Controlador?accion=index">Salir</a>
+            <a href="#home1">Servicios</a>
+            <a href="#home2">Reportes</a>
+            <a href="Controlador?accion=index">Cerrar Sesion</a>
         </div>
         <div class="container">
             <h1>Personas</h1>
@@ -69,6 +72,7 @@
                         <th class="text-center">NIT Persona</th>
                         <th class="text-center">Puesto</th>
                         <th class="text-center">Rol</th>
+                        <th class="text-center">Estado</th>
                         <th class="text-center">Acciones</th>
                     </tr>
                 </thead>
@@ -92,6 +96,7 @@
                         <td class="text-center"><%= user.getNitpersona() %></td>
                         <td class="text-center"><%= user.getPuesto() %></td>
                         <td class="text-center"><%= user.getRoles() %></td>
+                        <td class="text-center"><%= user.getEstado()%></td>
                         <td class="text-center">
                             <a class="btn btn-warning" href="Controlador?accion=editar&idusua=<%= user.getIdusuario() %>">Editar</a>
                             <a class="btn btn-danger" href="Controlador?accion=eliminar&id=<%= user.getIdusuario() %>">Remove</a>

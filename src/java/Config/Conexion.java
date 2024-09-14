@@ -36,20 +36,19 @@ public class Conexion {
         return false;  // retorna false si hay algún error o si no encuentra coincidencias
     }
     //metodo para validar roles
-     public int getUserRole(String login, String contrasenia) {
+     public String getUserRole(String login, String contrasenia) {
         String query = "SELECT roles FROM usuarios WHERE login = ? AND contrasenia = ?";
-        try (
-            PreparedStatement stmt = con.prepareStatement(query)) {
+        try (PreparedStatement stmt = con.prepareStatement(query)) {
             stmt.setString(1, login);
             stmt.setString(2, contrasenia);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
-                return rs.getInt("roles");  // obtener el rol del usuario
+                return rs.getString("roles");  // Obtener el rol del usuario
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return -1;  // retorna un valor por defecto si hay algún error o si no encuentra
+        return null;  // Retorna null si hay algún error o si no encuentra coincidencias
     }
-    
+
 }
