@@ -1,7 +1,7 @@
 package ModeloDAO;
 
 import Config.Conexion;
-import Intefaces.CRUDM;
+import Intefaces.CRUDSM;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -9,7 +9,7 @@ import Modelo.SoliMuestra;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SoliMuestraDAO implements CRUDM {
+public class SoliMuestraDAO implements CRUDSM {
     Conexion cn=new Conexion();
     Connection con;
     PreparedStatement ps;
@@ -21,10 +21,10 @@ public class SoliMuestraDAO implements CRUDM {
     public SoliMuestraDAO(){
         conexion = new Conexion();
     }
-    
+    @Override
     public List listarR(){
         ArrayList<SoliMuestra>listR2 = new ArrayList<>();
-        String sql = "select * from registro_SolicitudMuestra";
+        String sql = "select * from registro_solicitudmuestra";
         
         try{
             con=cn.getConnection();
@@ -34,8 +34,8 @@ public class SoliMuestraDAO implements CRUDM {
             while(rs.next()){
                 SoliMuestra sm = new SoliMuestra();
                 sm.setIdSolicitud(rs.getInt("id_Solicitud"));
-                sm.setTipoSolicitud(rs.getString("ripo_Solicitud"));
-                sm.setTipoEntidad(rs.getString("ripo_Entidad"));
+                sm.setTipoSolicitud(rs.getString("tipo_Solicitud"));
+                sm.setTipoEntidad(rs.getString("tipo_Entidad"));
                 sm.setFechaSolicitud(rs.getDate("fecha_Solicitud"));
                 sm.setTipodeDocumento(rs.getString("tipode_Documento"));
                 sm.setNoDedocumento(rs.getString("no_Dedocumento"));
@@ -55,17 +55,17 @@ public class SoliMuestraDAO implements CRUDM {
     }   
         return listR2;
     }
-    
-    public SoliMuestra list(int idSolicitud){
-        String sql =" select * from registro_SolicitudMuestra where id_Solicitud="+idSolicitud;
+    @Override
+    public SoliMuestra listR(int idSolicitud){
+        String sql =" select * from registro_solicitudmuestra where id_Solicitud="+idSolicitud;
         try{
             con=cn.getConnection();
             ps=con.prepareStatement(sql);
             rs=ps.executeQuery();
             while(rs.next()){
                 s.setIdSolicitud(rs.getInt("id_Solicitud"));
-                s.setTipoSolicitud(rs.getString("ripo_Solicitud"));
-                s.setTipoEntidad(rs.getString("ripo_Entidad"));
+                s.setTipoSolicitud(rs.getString("tipo_Solicitud"));
+                s.setTipoEntidad(rs.getString("tipo_Entidad"));
                 s.setFechaSolicitud(rs.getDate("fecha_Solicitud"));
                 s.setTipodeDocumento(rs.getString("tipode_Documento"));
                 s.setNoDedocumento(rs.getString("no_Dedocumento"));
@@ -86,9 +86,9 @@ public class SoliMuestraDAO implements CRUDM {
     }
     
     
-    
-    public boolean add(SoliMuestra smu){
-        String sql = "insert into registro_SolicitudMuestra(tipo_Solicitud, tipo_Entidad, fecha_Solicitud, tipode_Documento,no_Dedocumento,nit_Proveedor, nombre_Proveedor, correo_Proveedor,correo_Solicitante,direccion_Proveedor,telefono_Proveedor,nit_Solicitante,nombre_Solicitante, no_Muestra, descripcion_Producto) values('"+smu.getIdSolicitud()+"','"+smu.getTipoSolicitud()+"','"+smu.getTipodeDocumento()+"','"+smu.getNoDedocumento()+"','"+smu.getNitProveedor()+"','"+smu.getNombreProveedor()+"','"+smu.getCorreoProveedor()+"','"+smu.getCorreoSolicitante()+"','"+smu.getDireccionProveedor()+"','"+smu.getTelefonoProveedor()+"','"+smu.getNitSolicitante()+"','"+smu.getNombreSolicitante()+"','"+smu.getNoMuestra()+"','"+smu.getDescripcionProducto()+"')";
+    @Override
+    public boolean addR(SoliMuestra smu){
+        String sql = "insert into registro_solicitudmuestra(tipo_Solicitud, tipo_Entidad, fecha_Solicitud, tipode_Documento,no_Dedocumento,nit_Proveedor, nombre_Proveedor, correo_Proveedor,correo_Solicitante,direccion_Proveedor,telefono_Proveedor,nit_Solicitante,nombre_Solicitante, no_Muestra, descripcion_Producto) values('"+smu.getIdSolicitud()+"','"+smu.getTipoSolicitud()+"','"+smu.getTipodeDocumento()+"','"+smu.getNoDedocumento()+"','"+smu.getNitProveedor()+"','"+smu.getNombreProveedor()+"','"+smu.getCorreoProveedor()+"','"+smu.getCorreoSolicitante()+"','"+smu.getDireccionProveedor()+"','"+smu.getTelefonoProveedor()+"','"+smu.getNitSolicitante()+"','"+smu.getNombreSolicitante()+"','"+smu.getNoMuestra()+"','"+smu.getDescripcionProducto()+"')";
             try{
                 con=cn.getConnection();
                 ps=con.prepareStatement(sql);
@@ -97,9 +97,9 @@ public class SoliMuestraDAO implements CRUDM {
             }
             return false;
     }
-    
-        public boolean edit(SoliMuestra smu){
-        String sql = "update registro_SolicitudMuestra set tipo_Solicitud = '"+smu.getTipoSolicitud()+"', tipo_Entidad = '"+smu.getTipoEntidad()+"', fecha_Solicitud = '"+smu.getFechaSolicitud()+"', tipode_Documento = '"+smu.getTipodeDocumento()+"',no_Dedocumento = '"+smu.getNoDedocumento()+"',nit_Proveedor = '"+smu.getNitProveedor()+"', nombre_Proveedor = '"+smu.getNombreProveedor()+"', correo_Proveedor = '"+smu.getCorreoProveedor()+"',correo_Solicitante = '"+smu.getCorreoSolicitante()+"',direccion_Proveedor = '"+smu.getDireccionProveedor()+"',telefono_Proveedor = '"+smu.getTelefonoProveedor()+"',nit_Solicitante = '"+smu.getNitSolicitante()+"',nombre_Solicitante = '"+smu.getNombreSolicitante()+"', no_Muestra = '"+smu.getNoMuestra()+"', descripcion_Producto = '"+smu.getDescripcionProducto()+"' where id_Solicitud="+smu.getIdSolicitud();
+    @Override
+        public boolean editR(SoliMuestra smu){
+        String sql = "update registro_solicitudmuestra set tipo_Solicitud = '"+smu.getTipoSolicitud()+"', tipo_Entidad = '"+smu.getTipoEntidad()+"', fecha_Solicitud = '"+smu.getFechaSolicitud()+"', tipode_Documento = '"+smu.getTipodeDocumento()+"',no_Dedocumento = '"+smu.getNoDedocumento()+"',nit_Proveedor = '"+smu.getNitProveedor()+"', nombre_Proveedor = '"+smu.getNombreProveedor()+"', correo_Proveedor = '"+smu.getCorreoProveedor()+"',correo_Solicitante = '"+smu.getCorreoSolicitante()+"',direccion_Proveedor = '"+smu.getDireccionProveedor()+"',telefono_Proveedor = '"+smu.getTelefonoProveedor()+"',nit_Solicitante = '"+smu.getNitSolicitante()+"',nombre_Solicitante = '"+smu.getNombreSolicitante()+"', no_Muestra = '"+smu.getNoMuestra()+"', descripcion_Producto = '"+smu.getDescripcionProducto()+"' where id_Solicitud="+smu.getIdSolicitud();
         try{
             con=cn.getConnection();
             ps=con.prepareStatement(sql);
@@ -109,8 +109,9 @@ public class SoliMuestraDAO implements CRUDM {
         return false;
     }
     //MODIFICADO
-    public boolean eliminar(int idSolicitud){
-        String sql = "delete from usuarios where id_Solicitud="+idSolicitud;
+    @Override
+    public boolean eliminarR(int idSolicitud){
+        String sql = "delete from registro_solicitudmuestra where id_Solicitud="+idSolicitud;
         try{
             con=cn.getConnection();
             ps=con.prepareStatement(sql);

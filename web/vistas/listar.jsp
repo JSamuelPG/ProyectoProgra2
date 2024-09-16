@@ -51,7 +51,7 @@
             <a href="Controlador?accion=init">Inicio</a>
             <a class="active" href="#home">Lista de Usuarios</a>
             <a href="Controlador?accion=add">Agregar Usuarios</a>
-            <a href="#home1">Servicios</a>
+            <a href="Controlador?accion=listarR">Servicios</a>
             <a href="#home2">Reportes</a>
             <a href="Controlador?accion=index">Cerrar Sesion</a>
         </div>

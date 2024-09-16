@@ -80,6 +80,7 @@ public class PersonaDAO implements CRUD{
         }return u;
     }
     //MODIFICADO
+    @Override
     public boolean add(Users user){
         String sql = "insert into usuarios(primer_nombre, segundo_nombre, primer_apellido, segundo_apellido,contrasenia, nit_persona, puesto,roles,estado) values('"+user.getPrimerNombre()+"','"+user.getSegundoNombre()+"','"+user.getPrimerApellido()+"','"+user.getSegundoApellido()+"','"+user.getContrasenia()+"','"+user.getNitpersona()+"','"+user.getPuesto()+"','"+user.getRoles()+"','"+user.getEstado()+"')";
             try{
@@ -91,6 +92,7 @@ public class PersonaDAO implements CRUD{
             return false;
     }
     //MODIFICADO
+    @Override
     public boolean edit(Users user){
         String sql = "update usuarios set primer_nombre = '"+user.getPrimerNombre()+"', segundo_nombre = '"+user.getSegundoNombre()+"', primer_apellido = '"+user.getPrimerApellido()+"', segundo_apellido = '"+user.getSegundoApellido()+"', contrasenia = '"+user.getContrasenia()+"', nit_persona = '"+user.getNitpersona()+"', puesto = '"+user.getPuesto()+"', roles = '"+user.getRoles()+"', estado = '"+user.getEstado()+"' where id_usuario="+user.getIdusuario();
         try{
@@ -113,5 +115,4 @@ public class PersonaDAO implements CRUD{
         }
         return false;
     }
-   
 }

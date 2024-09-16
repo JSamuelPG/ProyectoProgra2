@@ -9,15 +9,49 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link href="css/bootstrap.css" rel="stylesheet" type="text/css"/>
         <title>JSP Page</title>
+        <style>
+            /* Estilos para la cinta de opciones */
+            body {
+                font-family: Arial, sans-serif;
+                margin: 0;
+                padding: 0;
+                background-color: #f4f4f4;
+            }
+            .navbar {
+                overflow: hidden;
+                background: #000000; /* Color negro */
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+                margin-bottom: 20px; /* Espacio debajo de la cinta */
+            }
+            .navbar a {
+                float: left;
+                display: block;
+                color: white;
+                text-align: center;
+                padding: 14px 20px;
+                text-decoration: none;
+                font-size: 18px;
+                position: relative;
+                transition: all 0.3s ease;
+            }
+            .navbar a:hover {
+                background-color: #7f8c8d; /* Color gris al pasar el ratón */
+                color: white;
+            }
+            .navbar a.active {
+                background-color: #3498db; /* Color azul para el Home */
+                color: white;
+            }
+        </style>
     </head>
         
     <body>
         <!-- Cinta de opciones -->
         <div class="navbar">
             <a href="Controlador?accion=init">Inicio</a>
-            <a class="active" href="#home">Lista de Usuarios</a>
+            <a href="Controlador?accion=listar">Lista de Usuarios</a>
             <a href="Controlador?accion=add">Agregar Usuarios</a>
-            <a href="#home1">Servicios</a>
+            <a class="active" href="#home">Lista de Solicitud y Muestra</a>
             <a href="#home2">Reportes</a>
             <a href="Controlador?accion=index">Cerrar Sesion</a>
         </div>
@@ -34,12 +68,13 @@
                         <th class="text-center">Nit Proveedor</th>
                         <th class="text-center">Nombre del Proveedor</th>
                         <th class="text-center">Correo Proveedor</th>
-                        <th class="text-center">COrreo Solicitante</th>
+                        <th class="text-center">Correo Solicitante</th>
                         <th class="text-center">Direccion</th>
                         <th class="text-center">Telefono</th>
                         <th class="text-center">Nit Solicitante</th>
                         <th class="text-center">Nombre Solicitante</th>
                         <th class="text-center">No de Muestra</th>
+                        <th class="text-center">Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
