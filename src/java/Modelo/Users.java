@@ -16,12 +16,13 @@ public class Users {
     String contrasenia;
     String nitpersona;
     String puesto;
-    String roles;
+        String nombreRol;
+    int idRol;
     String estado;
     
     public Users(){};
 
-    public Users(int idusuario, String primerNombre, String segundoNombre, String primerApellido, String segundoApellido, String login, String contrasenia, String nitpersona, String puesto, String roles, String estado) {
+    public Users(int idusuario, String primerNombre, String segundoNombre, String primerApellido, String segundoApellido, String login, String contrasenia, String nitpersona, String puesto, String nombreRol, int idRol, String estado) {
         this.idusuario = idusuario;
         this.primerNombre = primerNombre;
         this.segundoNombre = segundoNombre;
@@ -31,10 +32,13 @@ public class Users {
         this.contrasenia = contrasenia;
         this.nitpersona = nitpersona;
         this.puesto = puesto;
-        this.roles = roles;
+                this.nombreRol = nombreRol;
+        this.idRol = idRol;
         this.estado = estado;
     }
 
+    
+    
     public int getIdusuario() {
         return idusuario;
     }
@@ -106,13 +110,21 @@ public class Users {
     public void setPuesto(String puesto) {
         this.puesto = puesto;
     }
-
-    public String getRoles() {
-        return roles;
+    
+        public String getNombreRol() {
+        return nombreRol;
     }
 
-    public void setRoles(String roles) {
-        this.roles = roles;
+    public void setNombreRol(String nombreRol) {
+        this.nombreRol = nombreRol;
+    }
+
+    public int getIdRol() {
+        return idRol;
+    }
+
+    public void setIdRol(int idRol) {
+        this.idRol = idRol;
     }
 
     public String getEstado() {

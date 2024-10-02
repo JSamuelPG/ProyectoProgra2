@@ -1,6 +1,7 @@
 
 package Controlador;
 
+import Modelo.Roles;
 import java.sql.Connection;
 import Config.Conexion;
 import Modelo.SoliMuestra;
@@ -13,6 +14,7 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -28,17 +30,16 @@ public class Controlador extends HttpServlet {
     String edit = "vistas/edit.jsp";
     String login2 = "index.jsp";
     String init = "vistas/init.jsp";
-    String listarR = "vistas/listarR.jsp";
-    String addR = "vistas/addR.jsp";
-    String editR = "vistas/editR.jsp";
+    String listarr = "vistas/listarR.jsp";
+    String addr = "vistas/addR.jsp";
+    String editr = "vistas/editR.jsp";
     
     SoliMuestra sm = new SoliMuestra();
     Users u= new Users();
     PersonaDAO dao = new PersonaDAO();
     SoliMuestraDAO sdao = new SoliMuestraDAO();
-    
+     
     int idsolicitud;
-    
     int id;
 
     @Override
@@ -50,6 +51,10 @@ public class Controlador extends HttpServlet {
         if (action == null) {
             action = "";
         }
+        
+        // Obtener la lista de roles (solo una vez para reutilizarla)
+        List<Roles> listaRoles = dao.listaRoles();
+        request.setAttribute("listaRoles", listaRoles);
 
         switch (action.toLowerCase()) {
             case "listar":
@@ -59,6 +64,7 @@ public class Controlador extends HttpServlet {
                 acceso=init;
                 break;
             case "add":
+                request.setAttribute("listaRoles", listaRoles);
                 acceso = add;
                 break;
             case "agregar":
@@ -71,7 +77,7 @@ public class Controlador extends HttpServlet {
                 String cont =request.getParameter("txtCont");
                 String nit =request.getParameter("txtNit");
                 String puesto =request.getParameter("txtPuesto");
-                String rol = request.getParameter("txtRol");
+                int idrol = Integer.parseInt(request.getParameter("txtRol"));
                 String estado = request.getParameter("txtEstado");
                 
                 u.setPrimerNombre(nomb);
@@ -82,7 +88,7 @@ public class Controlador extends HttpServlet {
                 u.setContrasenia(cont);
                 u.setNitpersona(nit);
                 u.setPuesto(puesto);
-                u.setRoles(rol);
+                u.setIdRol(idrol);
                 u.setEstado(estado);
                 dao.add(u);
                 acceso=listar;
@@ -103,7 +109,7 @@ public class Controlador extends HttpServlet {
                 cont = request.getParameter("txtCont");
                 nit = request.getParameter("txtNit");
                 puesto = request.getParameter("txtPuesto");
-                rol = request.getParameter("txtRol");
+                idrol = Integer.parseInt(request.getParameter("txtRol"));
                 estado = request.getParameter("txtEstado");
 
                 u.setIdusuario(id); 
@@ -115,7 +121,7 @@ public class Controlador extends HttpServlet {
                 u.setContrasenia(cont);
                 u.setNitpersona(nit);
                 u.setPuesto(puesto);
-                u.setRoles(rol);
+                u.setIdRol(idrol);
                 u.setEstado(estado);
                 dao.edit(u); 
                 acceso = listar;
@@ -127,18 +133,20 @@ public class Controlador extends HttpServlet {
                 dao.eliminar(id); 
                 acceso = listar;
                 break;
+                
+                
                 //PARA REGISTRO DE SOLICITUDES Y MUESTRA///////////////////////////////////
-            case "listarR":
-                acceso = listarR;
+            case "listarr":
+                acceso = listarr;
                 break;
-            case "addR":
-                acceso = addR;
+            case "addr":
+                acceso = addr;
                 break;
-            case "agregarR":
+            case "agregarr":
                 
                 String tipoSolicitud =request.getParameter("txtSoli");
                 String tipoEntidad =request.getParameter("txtEnti");
-                Date fechaSolicitud = Date.valueOf(request.getParameter("txtFecha")); //Y-M-D
+                Date fechaSolicitud = Date.valueOf(request.getParameter("txtFecha")); //año-Mes-Dia
                 String tipoDocumento =request.getParameter("txtDoc");
                 String noDocumento =request.getParameter("txtNodoc");
                 String nitProveedor =request.getParameter("txtNitProv");
@@ -169,15 +177,15 @@ public class Controlador extends HttpServlet {
                 sm.setDescripcionProducto(descripProducto);
                 
                 sdao.addR(sm);
-                acceso=listarR;
+                acceso=listarr;
 
                 break;
-            case "editarR":
+            case "editarr":
                 //idusuario va en el JSP
                 request.setAttribute("idsolicitud", request.getParameter("idsoli"));
-                acceso = editR;
+                acceso = editr;
                 break;
-            case "actualizarR":
+            case "actualizarr":
                 idsolicitud = Integer.parseInt(request.getParameter("txtIdSol"));
                 tipoSolicitud = request.getParameter("txtSoli");
                 tipoEntidad = request.getParameter("txtEnti");
@@ -212,14 +220,14 @@ public class Controlador extends HttpServlet {
                 sm.setNoMuestra(noMuestra);
                 sm.setDescripcionProducto(descripProducto);
                 sdao.editR(sm); 
-                acceso = listarR;
+                acceso = listarr;
                 break;
 
-            case "eliminarR":
+            case "eliminarr":
                 idsolicitud = Integer.parseInt(request.getParameter("idsolicitud"));//el "id" viene del jsp de listar boton
                 sm.setIdSolicitud(idsolicitud);
                 sdao.eliminarR(idsolicitud); 
-                acceso = listarR;
+                acceso = listarr;
                 break;
             
                 
@@ -236,33 +244,33 @@ public class Controlador extends HttpServlet {
                 boolean isValid = conexion.validateUser(login, contrasenia);
 
                 if (isValid) {
-                    String roleName = conexion.getUserRole(login, contrasenia);  // Método para obtener el nombre del rol
-                    switch (roleName) {
-                        case "RegistroMuestras":
-                            acceso = listarR;
+                    int idRol = conexion.getUserRole(login, contrasenia);  // Método para obtener el nombre del rol
+                    switch (idRol) {
+                        case 1:
+                            acceso = listarr;
                             break;
-                        case "AnalistadeLaboratorio":
+                        case 2:
                             acceso = "";
                             break;
-                        case "AlmacenamientodeMuestra":
+                        case 3:
                             acceso = "supervisor.jsp";
                             break;
-                        case "SupervisorLaboratorio":
+                        case 4:
                             acceso = "admin.jsp";
                             break;
-                        case "JefeUnidadLaboratorio":
+                        case 5:
                             acceso = "reportes.jsp";
                             break;
-                        case "LaboratorioExterno":
+                        case 6:
                             acceso = "reportes.jsp";
                             break;
-                        case "Reportes":
+                        case 7:
                             acceso = "reportes.jsp";
                             break;
-                        case "VisualizacionDocumentos":
+                        case 8:
                             acceso = "reportes.jsp";
                             break;
-                        case "Administrador":
+                        case 9:
                             acceso = init;
                             break;
                         default:

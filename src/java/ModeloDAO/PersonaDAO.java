@@ -1,6 +1,6 @@
-
 package ModeloDAO;
 
+import Modelo.Roles;
 import Modelo.Users;
 import Config.Conexion;
 import Intefaces.CRUD;
@@ -28,7 +28,7 @@ public class PersonaDAO implements CRUD{
     @Override
     public List listar(){
     ArrayList<Users>list2=new ArrayList<>();
-    String sql = "select * from usuarios";
+    String sql = "select * from usuarios u join roles r on u.id_rol = r.id_rol";
     try{
         con=cn.getConnection();
         ps = con.prepareStatement(sql);
@@ -44,7 +44,8 @@ public class PersonaDAO implements CRUD{
             user.setContrasenia(rs.getString("contrasenia"));
             user.setNitpersona(rs.getString("nit_persona"));
             user.setPuesto(rs.getString("puesto"));
-            user.setRoles(rs.getString("roles"));
+            user.setIdRol(rs.getInt("id_rol"));
+            user.setNombreRol(rs.getString("nombre_rol"));
             user.setEstado(rs.getString("estado"));
             list2.add(user);
         }
@@ -72,7 +73,7 @@ public class PersonaDAO implements CRUD{
                 u.setContrasenia(rs.getString("contrasenia"));
                 u.setNitpersona(rs.getString("nit_persona"));
                 u.setPuesto(rs.getString("puesto"));
-                u.setRoles(rs.getString("roles"));
+                u.setIdRol(rs.getInt("id_rol"));
                 u.setEstado(rs.getString("estado"));
             }
         }catch(Exception e){
@@ -82,7 +83,7 @@ public class PersonaDAO implements CRUD{
     //MODIFICADO
     @Override
     public boolean add(Users user){
-        String sql = "insert into usuarios(primer_nombre, segundo_nombre, primer_apellido, segundo_apellido,contrasenia, nit_persona, puesto,roles,estado) values('"+user.getPrimerNombre()+"','"+user.getSegundoNombre()+"','"+user.getPrimerApellido()+"','"+user.getSegundoApellido()+"','"+user.getContrasenia()+"','"+user.getNitpersona()+"','"+user.getPuesto()+"','"+user.getRoles()+"','"+user.getEstado()+"')";
+        String sql = "insert into usuarios(primer_nombre, segundo_nombre, primer_apellido, segundo_apellido,contrasenia, nit_persona, puesto,id_roles,estado) values('"+user.getPrimerNombre()+"','"+user.getSegundoNombre()+"','"+user.getPrimerApellido()+"','"+user.getSegundoApellido()+"','"+user.getContrasenia()+"','"+user.getNitpersona()+"','"+user.getPuesto()+"','"+user.getIdRol()+"','"+user.getEstado()+"')";
             try{
                 con=cn.getConnection();
                 ps=con.prepareStatement(sql);
@@ -94,7 +95,7 @@ public class PersonaDAO implements CRUD{
     //MODIFICADO
     @Override
     public boolean edit(Users user){
-        String sql = "update usuarios set primer_nombre = '"+user.getPrimerNombre()+"', segundo_nombre = '"+user.getSegundoNombre()+"', primer_apellido = '"+user.getPrimerApellido()+"', segundo_apellido = '"+user.getSegundoApellido()+"', contrasenia = '"+user.getContrasenia()+"', nit_persona = '"+user.getNitpersona()+"', puesto = '"+user.getPuesto()+"', roles = '"+user.getRoles()+"', estado = '"+user.getEstado()+"' where id_usuario="+user.getIdusuario();
+        String sql = "update usuarios set primer_nombre = '"+user.getPrimerNombre()+"', segundo_nombre = '"+user.getSegundoNombre()+"', primer_apellido = '"+user.getPrimerApellido()+"', segundo_apellido = '"+user.getSegundoApellido()+"', contrasenia = '"+user.getContrasenia()+"', nit_persona = '"+user.getNitpersona()+"', puesto = '"+user.getPuesto()+"', id_rol = '"+user.getIdRol()+"', estado = '"+user.getEstado()+"' where id_usuario="+user.getIdusuario();
         try{
             con=cn.getConnection();
             ps=con.prepareStatement(sql);
@@ -115,4 +116,25 @@ public class PersonaDAO implements CRUD{
         }
         return false;
     }
+    
+        public List<Roles> listaRoles() {
+            List<Roles> lista = new ArrayList<>();
+            String sql = "SELECT id_rol, nombre_rol FROM roles";  // Consulta para obtener todos los roles
+            try {
+                con = cn.getConnection();
+                ps = con.prepareStatement(sql);
+                rs = ps.executeQuery();
+                while (rs.next()) {
+                    Roles rol = new Roles();
+                    rol.setIdRol(rs.getInt("id_rol"));  // Asignar el id del rol
+                    rol.setNombreRol(rs.getString("nombre_rol"));  // Asignar el nombre del rol
+                    lista.add(rol);  // Añadir el rol a la lista
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            return lista;  // Devolver la lista de roles
+        }
+
+    
 }

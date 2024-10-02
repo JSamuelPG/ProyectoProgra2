@@ -6,7 +6,7 @@ import java.sql.*;
 public class Conexion {
     private Connection con;
 
-    // constructor para inicializar la conexión a la base de datos
+    // constructor para iniciar la conexión a la BaseDatos
     public Conexion() {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
@@ -21,7 +21,7 @@ public class Conexion {
         return con;
     }
 
-    // Método para validar usuario
+    // metodo para validar usuario
     public boolean validateUser(String login, String contrasenia) {
         String query = "SELECT * FROM usuarios WHERE login = ? AND contrasenia = ?";
         try (PreparedStatement stmt = con.prepareStatement(query)) {
@@ -36,19 +36,19 @@ public class Conexion {
         return false;  // retorna false si hay algún error o si no encuentra coincidencias
     }
     //metodo para validar roles
-     public String getUserRole(String login, String contrasenia) {
-        String query = "SELECT roles FROM usuarios WHERE login = ? AND contrasenia = ?";
+     public int getUserRole(String login, String contrasenia) {
+        String query = "SELECT id_rol FROM usuarios WHERE login = ? AND contrasenia = ?";
         try (PreparedStatement stmt = con.prepareStatement(query)) {
             stmt.setString(1, login);
             stmt.setString(2, contrasenia);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
-                return rs.getString("roles");  // Obtener el rol del usuario
+                return rs.getInt("id_rol");  // Obtener el rol del usuario
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return null;  // Retorna null si hay algún error o si no encuentra coincidencias
+        return -1;  // Retorna nulo si hay algún error o si no encuentra coincidencias
     }
 
 }

@@ -11,93 +11,98 @@
     <link href="css/bootstrap.css" rel="stylesheet" type="text/css"/>
     <title>JSP Page</title>
     <style>
-body {
-    font-family: Arial, sans-serif;
-    background: url('images/th (1).jpeg') center no-repeat;
-    background-size: 40%;
-    height: 100vh;
-    margin: 0;
-    padding: 0;
-    background-color: #f4f4f4;
-}
+        body {
+            font-family: Arial, sans-serif;
+            background: url('images/th (1).jpeg') center no-repeat;
+            background-size: 40%;
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
 
-.navbar {
-    overflow: hidden;
-    background: #000000;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-    margin-bottom: 40px;
-    position: relative;
-}
+        /* Estilos para el contenedor del menú (sin barra negra) */
+        .navbar {
+            padding: 10px;
+            position: relative;
+            z-index: 10;
+        }
 
-.navbar a, .dropdown button {
-    float: left;
-    display: block;
-    color: white;
-    text-align: center;
-    padding: 14px 20px;
-    text-decoration: none;
-    font-size: 18px;
-    background: #000000;
-    border: none;
-    transition: background-color 0.3s;
-}
+        /* Estilos para el botón Menú y Cerrar Sesión */
+        .navbar a, .dropbtn {
+            color: white;
+            text-align: center;
+            padding: 14px 20px;
+            text-decoration: none;
+            font-size: 18px;
+            background: #000000;
+            border: none;
+            transition: background-color 0.3s;
+            cursor: pointer;
+            display: inline-block;
+        }
 
-.navbar a:hover, .dropdown button:hover {
-    background-color: #e38d13;
-}
+        /* Hover en los botones de menú y cerrar sesión */
+        .navbar a:hover, .dropbtn:hover {
+            background-color: #e38d13;
+        }
 
-.navbar a.active {
-    background-color: #3498db;
-}
+        /* Estilos para el dropdown */
+        .dropdown {
+            display: inline-block;
+            position: relative;
+        }
 
-.dropdown {
-    position: relative;
-}
+        /* Contenedor del dropdown (escondido por defecto) */
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #000;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+            z-index: 999;
+            top: 50px; /* Asegura que el menú se despliegue fuera del botón */
+            left: 0;
+        }
 
-.dropdown button {
-    cursor: pointer;
-}
+        /* Estilos para los enlaces dentro del dropdown */
+        .dropdown-content a {
+            color: white;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            text-align: left;
+        }
 
-.dropdown-content {
-    display: none;
-    position: absolute;
-    background-color: #000;
-    min-width: 160px;
-    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
-    z-index: 1;
-    top: 100%;
-    left: 0;
-    margin-top: 10px;
-}
+        /* Hover en los enlaces del dropdown */
+        .dropdown-content a:hover {
+            background-color: #555;
+        }
 
-.dropdown-content a {
-    color: white;
-    padding: 12px 16px;
-    text-decoration: none;
-    display: block;
-    text-align: left;
-}
-
-.dropdown-content a:hover {
-    background-color: #555;
-}
-
-.dropdown:hover .dropdown-content {
-    display: block;
-}
+        /* Mostrar el dropdown al pasar el ratón */
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
 
     </style>
 </head>
 <body>
 
-    <!-- Cinta de opciones -->
+    <!-- Solo se muestra el botón Menú y Cerrar Sesión -->
     <div class="navbar">
-        <a class="active" href="#home">Inicio</a>
-        <a href="Controlador?accion=listar">Lista de Usuarios</a>
-        <a href="Controlador?accion=add">Agregar Usuario</a>
-        <a href="Controlador?accion=listarR">Lista de Solicitud y Muestra</a>
-        <a href="#home2">Reportes</a>
-        <a href="Controlador?accion=index">Cerrar Sesion</a>
+        <!-- Botón Menú que despliega las demás opciones -->
+        <div class="dropdown">
+            <button class="dropbtn">Menú</button>
+            <div class="dropdown-content">
+                <a href="Controlador?accion=listar">Lista de Usuarios</a>
+                <a href="Controlador?accion=add">Agregar Usuario</a>
+                <a href="Controlador?accion=listarr">Lista de Solicitud y Muestra</a>
+                <a href="#home2">Reportes</a>
+            </div>
+        </div>
+
+        <!-- Opción de Cerrar Sesión que siempre estará visible -->
+        <a href="Controlador?accion=index">Cerrar Sesión</a>
     </div>
 
     <!-- Contenido principal -->
