@@ -54,7 +54,8 @@
 <body>
     <div class="container">
         <h2>Iniciar Sesión</h2>
-        <form action="Controlador" method="get">
+        <form action="Controlador" method="get"> 
+            <input type="hidden" name="menu" value="inicio"> 
             <div class="form-group">
                 <label for="username">Cuenta:</label>
                 <input type="text" id="login" name="login" required>

@@ -134,7 +134,5 @@ public class PersonaDAO implements CRUD{
                 e.printStackTrace();
             }
             return lista;  // Devolver la lista de roles
-        }
-
-    
+        }  
 }

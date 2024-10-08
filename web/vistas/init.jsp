@@ -21,14 +21,12 @@
             background-color: #f4f4f4;
         }
 
-        /* Estilos para el contenedor del menú (sin barra negra) */
         .navbar {
             padding: 10px;
             position: relative;
             z-index: 10;
         }
 
-        /* Estilos para el botón Menú y Cerrar Sesión */
         .navbar a, .dropbtn {
             color: white;
             text-align: center;
@@ -42,18 +40,15 @@
             display: inline-block;
         }
 
-        /* Hover en los botones de menú y cerrar sesión */
         .navbar a:hover, .dropbtn:hover {
             background-color: #e38d13;
         }
 
-        /* Estilos para el dropdown */
         .dropdown {
             display: inline-block;
             position: relative;
         }
 
-        /* Contenedor del dropdown (escondido por defecto) */
         .dropdown-content {
             display: none;
             position: absolute;
@@ -61,11 +56,10 @@
             min-width: 160px;
             box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
             z-index: 999;
-            top: 50px; /* Asegura que el menú se despliegue fuera del botón */
+            top: 50px; 
             left: 0;
         }
 
-        /* Estilos para los enlaces dentro del dropdown */
         .dropdown-content a {
             color: white;
             padding: 12px 16px;
@@ -74,38 +68,32 @@
             text-align: left;
         }
 
-        /* Hover en los enlaces del dropdown */
         .dropdown-content a:hover {
             background-color: #555;
         }
 
-        /* Mostrar el dropdown al pasar el ratón */
         .dropdown:hover .dropdown-content {
             display: block;
         }
-
     </style>
 </head>
 <body>
 
-    <!-- Solo se muestra el botón Menú y Cerrar Sesión -->
     <div class="navbar">
-        <!-- Botón Menú que despliega las demás opciones -->
         <div class="dropdown">
             <button class="dropbtn">Menú</button>
             <div class="dropdown-content">
                 <a href="Controlador?accion=listar">Lista de Usuarios</a>
                 <a href="Controlador?accion=add">Agregar Usuario</a>
                 <a href="Controlador?accion=listarr">Lista de Solicitud y Muestra</a>
-                <a href="#home2">Reportes</a>
+                <a href="Controlador?menu=listaent&accion=entidades">Entidades</a>
+
+                <a href="Controlador?accion=reportes">Reportes</a>
             </div>
         </div>
-
-        <!-- Opción de Cerrar Sesión que siempre estará visible -->
         <a href="Controlador?accion=index">Cerrar Sesión</a>
     </div>
 
-    <!-- Contenido principal -->
     <div class="container">
         <h2>BIENVENIDO!</h2>
     </div>

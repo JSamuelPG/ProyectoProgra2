@@ -2,12 +2,14 @@
 package Controlador;
 
 import Modelo.Roles;
+import Modelo.Entidad;
 import java.sql.Connection;
 import Config.Conexion;
 import Modelo.SoliMuestra;
 import Modelo.Users;
 import ModeloDAO.PersonaDAO;
 import ModeloDAO.SoliMuestraDAO;
+import ModeloDAO.EntidadDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Date;
@@ -16,6 +18,7 @@ import java.sql.ResultSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -33,12 +36,14 @@ public class Controlador extends HttpServlet {
     String listarr = "vistas/listarR.jsp";
     String addr = "vistas/addR.jsp";
     String editr = "vistas/editR.jsp";
+    String entid = "vistas/entidades.jsp";
+    String addenti = "vistas/addEntidad.jsp";
     
     SoliMuestra sm = new SoliMuestra();
     Users u= new Users();
     PersonaDAO dao = new PersonaDAO();
     SoliMuestraDAO sdao = new SoliMuestraDAO();
-     
+    EntidadDAO edao = new EntidadDAO();
     int idsolicitud;
     int id;
 
@@ -46,17 +51,159 @@ public class Controlador extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String acceso = "";
-        String action = request.getParameter("accion");
-
-        if (action == null) {
-            action = "";
+        String accion = request.getParameter("accion");
+      
+        if (accion == null) {
+            accion = "";
         }
+            
+        
+       String menu = request.getParameter("menu"); 
+        //////ACA METER CADA METODO 
+        if(menu != null && menu.equals("inicio")){
+            
+            switch(accion){
+                case "authenticate":
+                    String login = request.getParameter("login");
+                    String contrasenia = request.getParameter("contrasenia");
+
+                    Conexion conexion = new Conexion();
+                    Connection con = conexion.getConnection();
+
+                    boolean isValid = conexion.validateUser(login, contrasenia);
+
+                    if (isValid) {
+                        int idRol = conexion.getUserRole(login, contrasenia);  // Método para obtener el nombre del rol
+                        switch (idRol) {
+                            case 1:
+                                acceso = listarr;
+                                break;
+                            case 2:
+                                acceso = "";
+                                break;
+                            case 3:
+                                acceso = "supervisor.jsp";
+                                break;
+                            case 4:
+                                acceso = "admin.jsp";
+                                break;
+                            case 5:
+                                acceso = "reportes.jsp";
+                                break;
+                            case 6:
+                                acceso = "reportes.jsp";
+                                break;
+                            case 7:
+                                acceso = "reportes.jsp";
+                                break;
+                            case 8:
+                                acceso = "reportes.jsp";
+                                break;
+                            case 9:
+                                acceso = init;
+                                break;
+                        }
+                    } else {
+                        request.setAttribute("errorMessage", "usuario o contraseña inválido");
+                        acceso = login2;
+                    }
+                break; 
+                }   
+        }
+        
+        
+    
+
+          if (menu != null && menu.equals("listaent")) {
+            switch (accion) {
+                
+                case "entidades":
+                    acceso = entid;
+                    break;
+                case "obtenerpornit":
+                    String nitEntidad = request.getParameter("nitEntidad").trim();
+                    Entidad entidad = edao.obtenerPorNit(nitEntidad); // Llama al método obtenerPorNit
+
+                    request.setAttribute("entidadPorNit", entidad);
+
+                    // Mensaje si no se encontraron resultados
+                    if (entidad == null) {
+                        request.setAttribute("mensaje", "No se encontró entidad con NIT " + nitEntidad);
+                    }
+
+                    // Redirige a la página de resultados de búsqueda
+                    RequestDispatcher dispatcher = request.getRequestDispatcher(addenti);
+                    dispatcher.forward(request, response);
+                    return; 
+                case "agregarEnt":
+                    acceso = addenti;
+                    break;
+                    
+                case "agregarEntidad":
+                    String nite = request.getParameter("nit");
+
+                    // Verificar si ya existe una entidad con el NIT dado
+                    Entidad entidadExistente = edao.obtenPorNit(nite);
+
+                    if (entidadExistente != null) {
+                        // Si la entidad ya existe, mostrar un mensaje de error
+                        request.setAttribute("mensaje", "La entidad con el NIT " + nite + " ya está registrada.");
+                    } else {
+                        // Crear una nueva entidad directamente, ya que se verificó que no existe
+                        Entidad nuevaEntidad = new Entidad();
+                        nuevaEntidad.setEntidadNit(nite);
+                        nuevaEntidad.setEntidadTipo(request.getParameter("tipoEntidad"));
+                        nuevaEntidad.setEntidadNombre(request.getParameter("nombreEntidad"));
+
+                        // Insertar la nueva entidad
+                        boolean entidadInsertada = edao.addEntidad(nuevaEntidad);
+
+                        // Mensaje según el resultado de la inserción
+                        String mensaje = entidadInsertada ? "Entidad agregada exitosamente." : "Error al agregar la entidad.";
+                        request.setAttribute("mensaje", mensaje);
+                    }
+
+                    // Redirigir a la vista correspondiente
+                    request.getRequestDispatcher(addenti).forward(request, response);
+                    break;
+
+
+                case "obtenerportipo":
+                    String tipoEntidad = request.getParameter("tipoEntidad");
+                    List<Entidad> listaEntidades = edao.obtenerPorTipo(tipoEntidad); 
+                    request.setAttribute("listaEntidadesPorTipo", listaEntidades);
+
+                    // Manejo de mensaje si la lista está vacía
+                    if (listaEntidades == null || listaEntidades.isEmpty()) { // Añade verificación de null
+                        request.setAttribute("mensaje", "No se encontraron entidades de tipo " + tipoEntidad);
+                    } else {
+                        request.setAttribute("mensaje", "Resultados encontrados para el tipo " + tipoEntidad); // Mensaje de éxito
+                    }
+                    request.getRequestDispatcher(entid).forward(request,response);
+                    break; 
+
+
+            }
+           /* request.getRequestDispatcher(entid).forward(request,response);*/
+        }
+        
+        
+       
+        
+        
+        
+        
+        
+        
+        
+        
+        
         
         // Obtener la lista de roles (solo una vez para reutilizarla)
         List<Roles> listaRoles = dao.listaRoles();
         request.setAttribute("listaRoles", listaRoles);
 
-        switch (action.toLowerCase()) {
+        switch (accion.toLowerCase()) {
             case "listar":
                 acceso = listar;
                 break;
@@ -133,7 +280,7 @@ public class Controlador extends HttpServlet {
                 dao.eliminar(id); 
                 acceso = listar;
                 break;
-                
+            
                 
                 //PARA REGISTRO DE SOLICITUDES Y MUESTRA///////////////////////////////////
             case "listarr":
@@ -230,62 +377,8 @@ public class Controlador extends HttpServlet {
                 acceso = listarr;
                 break;
             
-                
-            case "login":
-                acceso = login2;
-                break;
-            case "authenticate":
-                String login = request.getParameter("login");
-                String contrasenia = request.getParameter("contrasenia");
 
-                Conexion conexion = new Conexion();
-                Connection con = conexion.getConnection();
-
-                boolean isValid = conexion.validateUser(login, contrasenia);
-
-                if (isValid) {
-                    int idRol = conexion.getUserRole(login, contrasenia);  // Método para obtener el nombre del rol
-                    switch (idRol) {
-                        case 1:
-                            acceso = listarr;
-                            break;
-                        case 2:
-                            acceso = "";
-                            break;
-                        case 3:
-                            acceso = "supervisor.jsp";
-                            break;
-                        case 4:
-                            acceso = "admin.jsp";
-                            break;
-                        case 5:
-                            acceso = "reportes.jsp";
-                            break;
-                        case 6:
-                            acceso = "reportes.jsp";
-                            break;
-                        case 7:
-                            acceso = "reportes.jsp";
-                            break;
-                        case 8:
-                            acceso = "reportes.jsp";
-                            break;
-                        case 9:
-                            acceso = init;
-                            break;
-                        default:
-                            acceso = login2;
-                            break;
-                    }
-                } else {
-                    request.setAttribute("errorMessage", "usuario o contraseña inválido");
-                    acceso = login2;
-                }
-            break;   
-        default:
-            acceso = login2;
-            break;
-
+ 
         }
 
         RequestDispatcher vista = request.getRequestDispatcher(acceso);
@@ -297,7 +390,7 @@ public class Controlador extends HttpServlet {
             throws ServletException, IOException {
         doGet(request, response);
     }
-
+    
     @Override
     public String getServletInfo() {
         return "Short description";

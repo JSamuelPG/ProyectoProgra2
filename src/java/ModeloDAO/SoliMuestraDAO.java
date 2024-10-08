@@ -21,6 +21,33 @@ public class SoliMuestraDAO implements CRUDSM {
     public SoliMuestraDAO(){
         conexion = new Conexion();
     }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     @Override
     public List listarR(){
         ArrayList<SoliMuestra>listR2 = new ArrayList<>();
@@ -85,7 +112,6 @@ public class SoliMuestraDAO implements CRUDSM {
         }return s;
     }
     
-    
     @Override
     public boolean addR(SoliMuestra smu){
         String sql = "insert into registro_solicitudmuestra(tipo_Solicitud, tipo_Entidad, fecha_Solicitud, tipode_Documento,no_Dedocumento,nit_Proveedor, nombre_Proveedor, correo_Proveedor,correo_Solicitante,direccion_Proveedor,telefono_Proveedor,nit_Solicitante,nombre_Solicitante, no_Muestra, descripcion_Producto) values('"+smu.getIdSolicitud()+"','"+smu.getTipoSolicitud()+"','"+smu.getTipodeDocumento()+"','"+smu.getNoDedocumento()+"','"+smu.getNitProveedor()+"','"+smu.getNombreProveedor()+"','"+smu.getCorreoProveedor()+"','"+smu.getCorreoSolicitante()+"','"+smu.getDireccionProveedor()+"','"+smu.getTelefonoProveedor()+"','"+smu.getNitSolicitante()+"','"+smu.getNombreSolicitante()+"','"+smu.getNoMuestra()+"','"+smu.getDescripcionProducto()+"')";
@@ -119,5 +145,5 @@ public class SoliMuestraDAO implements CRUDSM {
         }catch(Exception e){
         }
         return false;
-    }    
+    }
 }
