@@ -93,7 +93,7 @@
                 <a href="Controlador?accion=listar">Lista de Usuarios</a>
                 <a href="Controlador?accion=add">Agregar Usuarios</a>
                 <a class="active" href="#home">Lista de Solicitud Y Muestra</a>
-                <a href="Controlador?accion=addR">Agregar Solicitud</a>
+                <a href="Controlador?menu=solicit&accion=addr">Nueva Solicitud y Muestra</a>
             </div>
         </div>
 

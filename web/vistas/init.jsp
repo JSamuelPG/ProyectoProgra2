@@ -83,11 +83,10 @@
         <div class="dropdown">
             <button class="dropbtn">Menú</button>
             <div class="dropdown-content">
-                <a href="Controlador?accion=listar">Lista de Usuarios</a>
-                <a href="Controlador?accion=add">Agregar Usuario</a>
-                <a href="Controlador?accion=listarr">Lista de Solicitud y Muestra</a>
+                <a href="Controlador?menu=usuarios&accion=listar">Lista de Usuarios</a>
+                <a href="Controlador?menu=usuarios&accion=add">Agregar Usuario</a>
+                <a href="Controlador?menu=solicit&accion=listarr">Lista de Solicitud y Muestra</a>
                 <a href="Controlador?menu=listaent&accion=entidades">Entidades</a>
-
                 <a href="Controlador?accion=reportes">Reportes</a>
             </div>
         </div>

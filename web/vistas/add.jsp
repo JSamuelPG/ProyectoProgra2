@@ -96,7 +96,6 @@
             </div>
         </div>
 
-        <!-- Opción de Cerrar Sesión que siempre estará visible -->
         <a href="Controlador?accion=index">Cerrar Sesión</a>
     </div>
 
@@ -138,7 +137,10 @@
                     <option value="Inactivo">Inactivo</option>
                 </select>
                 <br>
-                <input class="btn btn-primary" type="submit" name="accion" value="Agregar">
+                
+                
+                <input type="hidden" name="menu" value="usuarios">
+                <input class="btn btn-primary" type="submit" name="accion" value="agregar">
             </form>
         </div>
     </div>

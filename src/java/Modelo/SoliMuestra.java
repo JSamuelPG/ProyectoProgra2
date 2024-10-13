@@ -21,10 +21,13 @@ public class SoliMuestra {
     String nombreSolicitante; 
     String noMuestra;
     String descripcionProducto;
+    int idUsuario;
+    String regUsuario;
+    String estado;
 
     public SoliMuestra(){}
-    
-    public SoliMuestra(int idSolicitud, String tipoSolicitud, String tipoEntidad, Date fechaSolicitud, String tipodeDocumento, String noDedocumento, String nitProveedor, String nombreProveedor, String correoProveedor, String correoSolicitante, String direccionProveedor, String telefonoProveedor, String nitSolicitante, String nombreSolicitante, String noMuestra, String descripcionProducto) {
+
+    public SoliMuestra(int idSolicitud, String tipoSolicitud, String tipoEntidad, Date fechaSolicitud, String tipodeDocumento, String noDedocumento, String nitProveedor, String nombreProveedor, String correoProveedor, String correoSolicitante, String direccionProveedor, String telefonoProveedor, String nitSolicitante, String nombreSolicitante, String noMuestra, String descripcionProducto, int idUsuario, String regUsuario, String estado) {
         this.idSolicitud = idSolicitud;
         this.tipoSolicitud = tipoSolicitud;
         this.tipoEntidad = tipoEntidad;
@@ -41,6 +44,9 @@ public class SoliMuestra {
         this.nombreSolicitante = nombreSolicitante;
         this.noMuestra = noMuestra;
         this.descripcionProducto = descripcionProducto;
+        this.idUsuario = idUsuario;
+        this.regUsuario = regUsuario;
+        this.estado = estado;
     }
 
     public int getIdSolicitud() {
@@ -171,7 +177,29 @@ public class SoliMuestra {
         this.descripcionProducto = descripcionProducto;
     }
 
-    
-    
+    public int getIdUsuario() {
+        return idUsuario;
+    }
+
+    public void setIdUsuario(int idUsuario) {
+        this.idUsuario = idUsuario;
+    }
+
+    public String getRegUsuario() {
+        return regUsuario;
+    }
+
+    public void setRegUsuario(String regUsuario) {
+        this.regUsuario = regUsuario;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
     
 }

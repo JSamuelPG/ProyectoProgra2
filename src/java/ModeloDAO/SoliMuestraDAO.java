@@ -8,6 +8,9 @@ import java.sql.ResultSet;
 import Modelo.SoliMuestra;
 import java.util.ArrayList;
 import java.util.List;
+import Modelo.Solicitantes;
+import Modelo.Users;
+import java.sql.*;
 
 public class SoliMuestraDAO implements CRUDSM {
     Conexion cn=new Conexion();
@@ -22,36 +25,122 @@ public class SoliMuestraDAO implements CRUDSM {
         conexion = new Conexion();
     }
     
+    public Solicitantes obtenerSolicitante(String nitSolicitante) {
+        Solicitantes soli = null;
+        String sql = "SELECT * FROM solicitantes WHERE s_Nit = ?";
+        Conexion cn = new Conexion();
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            con = cn.getConnection(); // Obtener la conexión
+            ps = con.prepareStatement(sql);
+            ps.setString(1, nitSolicitante);
+            System.out.println("NIT buscado: " + nitSolicitante);
+
+            rs = ps.executeQuery(); // Ejecutar la consulta
+
+            if (rs.next()) {
+                soli = new Solicitantes();
+                soli.setSolId(rs.getInt("s_Id"));
+                soli.setSolNit(rs.getString("s_Nit"));
+                soli.setSolNombre(rs.getString("s_Nombre"));
+                soli.setSolCorreo(rs.getString("s_Correo"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace(); 
+        }  finally {
+            // Cerrar el ResultSet, PreparedStatement y Connection
+            try {
+                if (rs != null) rs.close();
+                if (ps != null) ps.close();
+                if (con != null) con.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return soli;
+    }  
     
+   
+    public List<Users> obtenAnalista() {
+        List<Users> listaUsuarios = new ArrayList<>();
+        String sql = "SELECT * FROM usuarios WHERE id_rol = 2"; // id_rol 2 para Analista
+        Conexion cn = new Conexion();
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            con = cn.getConnection();
+            ps = con.prepareStatement(sql);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                Users usuario = new Users();
+                usuario.setIdusuario(rs.getInt("id_usuario"));
+                usuario.setPrimerNombre(rs.getString("primer_nombre"));
+                listaUsuarios.add(usuario);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            // Cerrar el ResultSet, PreparedStatement y Connection
+            try {
+                if (rs != null) rs.close();
+                if (ps != null) ps.close();
+                if (con != null) con.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return listaUsuarios;
+    }
+
+
+    public boolean existeNoMuestra(String noMuestra) {
+    boolean existe = false;
+    String query = "SELECT COUNT(*) FROM reg_solmuestra WHERE no_Muestra = ?";
+    Conexion cn = new Conexion(); // Instancia de la clase Conexion
+    Connection con = null; // Variable para la conexión
+    PreparedStatement ps = null; // Variable para el PreparedStatement
+    ResultSet rs = null; // Variable para el ResultSet
     
+    try {
+        con = cn.getConnection(); // Obtiene la conexión
+        ps = con.prepareStatement(query); // Prepara la consulta SQL
+        ps.setString(1, noMuestra); // Establece el parámetro en la consulta
+        rs = ps.executeQuery(); // Ejecuta la consulta
+        
+        if (rs.next() && rs.getInt(1) > 0) {
+            existe = true; // El número de muestra ya está registrado
+        }
+    } catch (SQLException e) {
+        e.printStackTrace(); // Maneja las excepciones
+    } finally {
+        // Cierra los recursos en el bloque finally para evitar fugas de recursos
+        try {
+            if (rs != null) rs.close();
+            if (ps != null) ps.close();
+            if (con != null) con.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    return existe; // Retorna el resultado de la verificación
+}
+
+
+
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+
     @Override
     public List listarR(){
         ArrayList<SoliMuestra>listR2 = new ArrayList<>();
-        String sql = "select * from registro_solicitudmuestra";
+        String sql = "select * from reg_solmuestra";
+        Conexion cn = new Conexion();
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
         
         try{
             con=cn.getConnection();
@@ -75,16 +164,32 @@ public class SoliMuestraDAO implements CRUDSM {
                 sm.setNitSolicitante(rs.getString("nit_Solicitante"));
                 sm.setNombreSolicitante(rs.getString("nombre_Solicitante"));
                 sm.setNoMuestra(rs.getString("no_Muestra"));
-                sm.setDescripcionProducto(rs.getString("descripcion_Producto"));
+                sm.setDescripcionProducto(rs.getString("descrip_Producto"));
+                sm.setIdUsuario(rs.getInt("id_Usuario"));
+                sm.setRegUsuario(rs.getString("Reg_Usuario"));
+                
                 listR2.add(sm);
             }
         }catch(Exception e){
-    }   
+    }   finally {
+        // Cerrar el ResultSet, PreparedStatement y Connection
+        try {
+            if (rs != null) rs.close();
+            if (ps != null) ps.close();
+            if (con != null) con.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
         return listR2;
     }
     @Override
     public SoliMuestra listR(int idSolicitud){
-        String sql =" select * from registro_solicitudmuestra where id_Solicitud="+idSolicitud;
+        String sql =" select * from reg_solmuestra where id_Solicitud="+idSolicitud;
+        Conexion cn = new Conexion();
+        Connection con = null;
+    PreparedStatement ps = null;
+    ResultSet rs = null;
         try{
             con=cn.getConnection();
             ps=con.prepareStatement(sql);
@@ -105,45 +210,95 @@ public class SoliMuestraDAO implements CRUDSM {
                 s.setNitSolicitante(rs.getString("nit_Solicitante"));
                 s.setNombreSolicitante(rs.getString("nombre_Solicitante"));
                 s.setNoMuestra(rs.getString("no_Muestra"));
-                s.setDescripcionProducto(rs.getString("descripcion_Producto"));
+                s.setDescripcionProducto(rs.getString("descrip_Producto"));
+                s.setIdUsuario(rs.getInt("id_Usuario"));
+                s.setRegUsuario(rs.getString("Reg_Usuario"));
             }
         }catch(Exception e){
             
-        }return s;
+        }finally {
+        // Cerrar el ResultSet, PreparedStatement y Connection
+        try {
+            if (rs != null) rs.close();
+            if (ps != null) ps.close();
+            if (con != null) con.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }return s;
     }
     
     @Override
     public boolean addR(SoliMuestra smu){
-        String sql = "insert into registro_solicitudmuestra(tipo_Solicitud, tipo_Entidad, fecha_Solicitud, tipode_Documento,no_Dedocumento,nit_Proveedor, nombre_Proveedor, correo_Proveedor,correo_Solicitante,direccion_Proveedor,telefono_Proveedor,nit_Solicitante,nombre_Solicitante, no_Muestra, descripcion_Producto) values('"+smu.getIdSolicitud()+"','"+smu.getTipoSolicitud()+"','"+smu.getTipodeDocumento()+"','"+smu.getNoDedocumento()+"','"+smu.getNitProveedor()+"','"+smu.getNombreProveedor()+"','"+smu.getCorreoProveedor()+"','"+smu.getCorreoSolicitante()+"','"+smu.getDireccionProveedor()+"','"+smu.getTelefonoProveedor()+"','"+smu.getNitSolicitante()+"','"+smu.getNombreSolicitante()+"','"+smu.getNoMuestra()+"','"+smu.getDescripcionProducto()+"')";
-            try{
+        String sql = "insert into reg_solmuestra(tipo_Solicitud, tipo_Entidad, fecha_Solicitud, tipode_Documento, no_Dedocumento, nit_Proveedor, nombre_Proveedor, correo_Proveedor, correo_Solicitante, direccion_Proveedor, telefono_Proveedor, nit_Solicitante, nombre_Solicitante, no_Muestra, descrip_Producto, id_Usuario, Reg_Usuario, estado) values('"+smu.getTipoSolicitud()+"','"+smu.getTipoEntidad()+"','"+smu.getFechaSolicitud()+"','"+smu.getTipodeDocumento()+"','"+smu.getNoDedocumento()+"','"+smu.getNitProveedor()+"','"+smu.getNombreProveedor()+"','"+smu.getCorreoProveedor()+"','"+smu.getCorreoSolicitante()+"','"+smu.getDireccionProveedor()+"','"+smu.getTelefonoProveedor()+"','"+smu.getNitSolicitante()+"','"+smu.getNombreSolicitante()+"','"+smu.getNoMuestra()+"','"+smu.getDescripcionProducto()+"','"+smu.getIdUsuario()+"','"+smu.getRegUsuario()+"','"+smu.getEstado()+"')";
+        Conexion cn = new Conexion();
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;    
+        try{
                 con=cn.getConnection();
                 ps=con.prepareStatement(sql);
                 ps.executeUpdate();
             }catch(Exception e){
-            }
-            return false;
+            }finally {
+        // Cerrar el ResultSet, PreparedStatement y Connection
+        try {
+            if (rs != null) rs.close();
+            if (ps != null) ps.close();
+            if (con != null) con.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
+            return false;
+    }   
     @Override
         public boolean editR(SoliMuestra smu){
-        String sql = "update registro_solicitudmuestra set tipo_Solicitud = '"+smu.getTipoSolicitud()+"', tipo_Entidad = '"+smu.getTipoEntidad()+"', fecha_Solicitud = '"+smu.getFechaSolicitud()+"', tipode_Documento = '"+smu.getTipodeDocumento()+"',no_Dedocumento = '"+smu.getNoDedocumento()+"',nit_Proveedor = '"+smu.getNitProveedor()+"', nombre_Proveedor = '"+smu.getNombreProveedor()+"', correo_Proveedor = '"+smu.getCorreoProveedor()+"',correo_Solicitante = '"+smu.getCorreoSolicitante()+"',direccion_Proveedor = '"+smu.getDireccionProveedor()+"',telefono_Proveedor = '"+smu.getTelefonoProveedor()+"',nit_Solicitante = '"+smu.getNitSolicitante()+"',nombre_Solicitante = '"+smu.getNombreSolicitante()+"', no_Muestra = '"+smu.getNoMuestra()+"', descripcion_Producto = '"+smu.getDescripcionProducto()+"' where id_Solicitud="+smu.getIdSolicitud();
+        String sql = "update reg_solmuestra set tipo_Solicitud = '"+smu.getTipoSolicitud()+"', tipo_Entidad = '"+smu.getTipoEntidad()+"', fecha_Solicitud = '"+smu.getFechaSolicitud()+"', tipode_Documento = '"+smu.getTipodeDocumento()+"',no_Dedocumento = '"+smu.getNoDedocumento()+"',nit_Proveedor = '"+smu.getNitProveedor()+"', nombre_Proveedor = '"+smu.getNombreProveedor()+"', correo_Proveedor = '"+smu.getCorreoProveedor()+"',correo_Solicitante = '"+smu.getCorreoSolicitante()+"',direccion_Proveedor = '"+smu.getDireccionProveedor()+"',telefono_Proveedor = '"+smu.getTelefonoProveedor()+"',nit_Solicitante = '"+smu.getNitSolicitante()+"',nombre_Solicitante = '"+smu.getNombreSolicitante()+"', no_Muestra = '"+smu.getNoMuestra()+"', descrip_Producto = '"+smu.getDescripcionProducto()+"',id_Usuario = '"+smu.getIdUsuario()+"',Reg_Usuario = '"+smu.getRegUsuario()+"' where id_Solicitud="+smu.getIdSolicitud();
+        Conexion cn = new Conexion();
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
         try{
             con=cn.getConnection();
             ps=con.prepareStatement(sql);
             ps.executeUpdate();
         }catch(Exception e){ 
+        }finally {
+        // Cerrar el ResultSet, PreparedStatement y Connection
+        try {
+            if (rs != null) rs.close();
+            if (ps != null) ps.close();
+            if (con != null) con.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
+    }
         return false;
     }
     //MODIFICADO
     @Override
     public boolean eliminarR(int idSolicitud){
-        String sql = "delete from registro_solicitudmuestra where id_Solicitud="+idSolicitud;
+        String sql = "delete from reg_solmuestra where id_Solicitud="+idSolicitud;
+        Conexion cn = new Conexion();
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
         try{
             con=cn.getConnection();
             ps=con.prepareStatement(sql);
             ps.executeUpdate();
         }catch(Exception e){
+        }finally {
+        // Cerrar el ResultSet, PreparedStatement y Connection
+        try {
+            if (rs != null) rs.close();
+            if (ps != null) ps.close();
+            if (con != null) con.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
+    }
         return false;
     }
 }

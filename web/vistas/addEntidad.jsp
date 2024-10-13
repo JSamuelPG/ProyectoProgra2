@@ -139,8 +139,8 @@
                         <th>ID</th>
                         <th>NIT</th>
                         <th>Nombre</th>
-                        <th>Tipo</th>
-                       <!-- <th>Acción</th>-->
+                        <!--<th>Tipo</th>-->
+                        <th>Acción</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -149,12 +149,17 @@
                         <td><%= entidadPorNit.getEntidadNit() %></td>
                         <td><%= entidadPorNit.getEntidadNombre() %></td>
                         <!--<td><%= entidadPorNit.getEntidadTipo() %></td>-->
+
+                        
                         <td>
                             <!-- Botón para agregar entidad -->
                             <form action="Controlador" method="get">
                                 <input type="hidden" name="menu" value="listaent">
                                 <input type="hidden" name="nit" value="<%= entidadPorNit.getEntidadNit() %>">
-                                <input type="hidden" name="nombreEntidad" value="<%= entidadPorNit.getEntidadNombre() %>">
+                                <input type="hidden" name="nombreEntidad" value="<%= entidadPorNit.getEntidadNombre() %>">                                
+                                <input type="hidden" name="correoEntidad" value="<%= entidadPorNit.getEntidadCorreo() %>">
+                                <input type="hidden" name="direccionEntidad" value="<%= entidadPorNit.getEntidadDireccion() %>">
+                                <input type="hidden" name="telefonoEntidad" value="<%= entidadPorNit.getEntidadTelefono() %>">
                                 
                                 <label for="tipoEntidad">Tipo de Entidad:</label>
                                 <select name="tipoEntidad" id="tipoEntidad" required>
