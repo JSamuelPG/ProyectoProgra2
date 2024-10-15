@@ -62,8 +62,8 @@
             <form action="Controlador">
                 Tipo de Solicitud:<br>
                 <select class="form-control" name="textSoli" id="txtSoli">
-                    <option value="MuestraparaAnalisis">Muestra para análisis</option>
-                    <option value="SolicitudsinMuestra">Solicitud sin muestra</option>
+                    <option value="MuestraParaAnalisis">Muestra para análisis</option>
+                    <option value="SolicitudSinMuestra">Solicitud sin muestra</option>
                     <option value="ConNumerodeMuestra">Con número de muestra</option>
                 </select><br>
 

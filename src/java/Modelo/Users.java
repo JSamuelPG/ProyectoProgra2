@@ -16,13 +16,15 @@ public class Users {
     String contrasenia;
     String nitpersona;
     String puesto;
-        String nombreRol;
+    String nombreRol;
     int idRol;
     String estado;
+    String correo;
+    String motivo;
     
     public Users(){};
 
-    public Users(int idusuario, String primerNombre, String segundoNombre, String primerApellido, String segundoApellido, String login, String contrasenia, String nitpersona, String puesto, String nombreRol, int idRol, String estado) {
+    public Users(int idusuario, String primerNombre, String segundoNombre, String primerApellido, String segundoApellido, String login, String contrasenia, String nitpersona, String puesto, String nombreRol, int idRol, String estado, String correo, String motivo) {
         this.idusuario = idusuario;
         this.primerNombre = primerNombre;
         this.segundoNombre = segundoNombre;
@@ -32,13 +34,13 @@ public class Users {
         this.contrasenia = contrasenia;
         this.nitpersona = nitpersona;
         this.puesto = puesto;
-                this.nombreRol = nombreRol;
+        this.nombreRol = nombreRol;
         this.idRol = idRol;
         this.estado = estado;
+        this.correo = correo;
+        this.motivo = motivo;
     }
 
-    
-    
     public int getIdusuario() {
         return idusuario;
     }
@@ -110,8 +112,8 @@ public class Users {
     public void setPuesto(String puesto) {
         this.puesto = puesto;
     }
-    
-        public String getNombreRol() {
+
+    public String getNombreRol() {
         return nombreRol;
     }
 
@@ -133,6 +135,22 @@ public class Users {
 
     public void setEstado(String estado) {
         this.estado = estado;
+    }
+
+    public String getCorreo() {
+        return correo;
+    }
+
+    public void setCorreo(String correo) {
+        this.correo = correo;
+    }
+
+    public String getMotivo() {
+        return motivo;
+    }
+
+    public void setMotivo(String motivo) {
+        this.motivo = motivo;
     }
 
     

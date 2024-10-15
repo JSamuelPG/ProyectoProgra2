@@ -65,7 +65,7 @@ public class SoliMuestraDAO implements CRUDSM {
    
     public List<Users> obtenAnalista() {
         List<Users> listaUsuarios = new ArrayList<>();
-        String sql = "SELECT * FROM usuarios WHERE id_rol = 2"; // id_rol 2 para Analista
+        String sql = "SELECT * FROM usuarios WHERE id_rol = 2 AND estado = 'Activo'"; // id_rol 2 para Analista
         Conexion cn = new Conexion();
         Connection con = null;
         PreparedStatement ps = null;
@@ -129,9 +129,6 @@ public class SoliMuestraDAO implements CRUDSM {
     return existe; // Retorna el resultado de la verificación
 }
 
-
-
-    
 
     @Override
     public List listarR(){
@@ -301,4 +298,7 @@ public class SoliMuestraDAO implements CRUDSM {
     }
         return false;
     }
+    
+    
+    
 }

@@ -24,6 +24,59 @@ public class PersonaDAO implements CRUD {
     public PersonaDAO() {
         conexion = new Conexion();
     }
+    
+public Users obtenUsuarioPorNit(String nitPersona) {
+    Users usuario = null;
+    // Consulta para buscar por nit_persona
+    String sql = "SELECT * FROM usuarios_total WHERE nit_persona = ?";
+    Conexion cn = new Conexion(); // Asegúrate de tener esta clase configurada correctamente
+    Connection con = null;
+    PreparedStatement ps = null;
+    ResultSet rs = null;
+
+    try {
+        con = cn.getConnection(); // Obtener la conexión
+        ps = con.prepareStatement(sql);
+        ps.setString(1, nitPersona); // Establecer el nit_persona en la consulta
+        rs = ps.executeQuery(); // Ejecutar la consulta
+
+        // Procesar el resultado
+        if (rs.next()) {
+            usuario = new Users();
+            usuario.setIdusuario(rs.getInt("id_usuario"));
+            usuario.setPrimerNombre(rs.getString("primer_nombre"));
+            usuario.setSegundoNombre(rs.getString("segundo_nombre"));
+            usuario.setPrimerApellido(rs.getString("primer_apellido"));
+            usuario.setSegundoApellido(rs.getString("segundo_apellido"));
+            usuario.setLogin(rs.getString("login"));
+            usuario.setContrasenia(rs.getString("contrasenia"));
+            usuario.setNitpersona(rs.getString("nit_persona"));
+            usuario.setPuesto(rs.getString("puesto"));
+            usuario.setIdRol(rs.getInt("id_rol"));
+            usuario.setEstado(rs.getString("estado"));
+            usuario.setCorreo(rs.getString("correo"));
+        }
+    } catch (SQLException e) {
+        e.printStackTrace(); // Imprimir el stack trace para depurar
+    } finally {
+        // Cerrar ResultSet, PreparedStatement y Connection
+        try {
+            if (rs != null) rs.close();
+            if (ps != null) ps.close();
+            if (con != null) con.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    } 
+    return usuario; // Retornar el usuario encontrado o null si no se encontró
+}
+
+
+
+
+    
+    
+    
 
     //MODIFICADO
     @Override
@@ -125,50 +178,52 @@ public class PersonaDAO implements CRUD {
 
     //MODIFICADO
     @Override
-    public boolean add(Users user) {
-        String sql = "INSERT INTO usuarios(primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, contrasenia, nit_persona, puesto, id_rol, estado) "
-                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        Conexion cn = new Conexion();
-        Connection con = null;
-        PreparedStatement ps = null;
+public boolean add(Users user) {
+    String sql = "INSERT INTO usuarios(primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, login, contrasenia, nit_persona, puesto, id_rol, estado, correo, motivo) "
+               + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    Conexion cn = new Conexion();
+    Connection con = null;
+    PreparedStatement ps = null;
 
+    try {
+        con = cn.getConnection(); // Obtener conexión
+        ps = con.prepareStatement(sql);
+
+        // Asignar valores a los parámetros
+        ps.setString(1, user.getPrimerNombre());
+        ps.setString(2, user.getSegundoNombre());
+        ps.setString(3, user.getPrimerApellido());
+        ps.setString(4, user.getSegundoApellido());
+        ps.setString(5, user.getLogin()); // Usar el login ya generado
+        ps.setString(6, user.getContrasenia());
+        ps.setString(7, user.getNitpersona());
+        ps.setString(8, user.getPuesto());
+        ps.setInt(9, user.getIdRol());
+        ps.setString(10, user.getEstado());
+        ps.setString(11, user.getCorreo());
+        ps.setString(12, user.getMotivo());
+
+        int rowsAffected = ps.executeUpdate(); // Ejecutar inserción
+
+        return rowsAffected > 0; // Retornar true si se inserta al menos una fila
+    } catch (SQLException e) {
+        e.printStackTrace();
+    } finally {
+        // Cerrar PreparedStatement y Connection
         try {
-            con = cn.getConnection(); // Obtener conexión
-            ps = con.prepareStatement(sql);
-
-            // Asignar valores a los parámetros
-            ps.setString(1, user.getPrimerNombre());
-            ps.setString(2, user.getSegundoNombre());
-            ps.setString(3, user.getPrimerApellido());
-            ps.setString(4, user.getSegundoApellido());
-            ps.setString(5, user.getContrasenia());
-            ps.setString(6, user.getNitpersona());
-            ps.setString(7, user.getPuesto());
-            ps.setInt(8, user.getIdRol());
-            ps.setString(9, user.getEstado());
-
-            int rowsAffected = ps.executeUpdate(); // Ejecutar inserción
-
-            if (rowsAffected > 0) {
-                return true; // Retornar true si se inserta al menos una fila
+            if (ps != null) {
+                ps.close();
+            }
+            if (con != null) {
+                con.close();
             }
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            // Cerrar PreparedStatement y Connection
-            try {
-                if (ps != null) {
-                    ps.close();
-                }
-                if (con != null) {
-                    con.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
-        return false; // Si falla, retorna false
     }
+    return false; // Si falla, retorna false
+}
+
 
     //MODIFICADO
     @Override

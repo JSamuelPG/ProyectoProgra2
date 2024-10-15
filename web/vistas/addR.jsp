@@ -14,92 +14,121 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link href="css/bootstrap.css" rel="stylesheet" type="text/css"/>
         <title>JSP Page</title>
-        <style>
-            body {
-                font-family: Arial, sans-serif;
-                margin: 0;
-                padding: 0;
-                background-color: #f4f4f4;
-            }
-            .navbar {
-                padding: 10px;
-                position: relative;
-                z-index: 10;
-            }
-            .navbar a, .dropbtn {
-                color: white;
-                text-align: center;
-                padding: 14px 20px;
-                text-decoration: none;
-                font-size: 18px;
-                background: #000000;
-                border: none;
-                transition: background-color 0.3s;
-                cursor: pointer;
-                display: inline-block;
-            }
-            .navbar a:hover, .dropbtn:hover {
-                background-color: #e38d13;
-            }
-            .dropdown {
-                display: inline-block;
-                position: relative;
-            }
-            .dropdown-content {
-                display: none;
-                position: absolute;
-                background-color: #000;
-                min-width: 160px;
-                box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
-                z-index: 999;
-                top: 50px;
-                left: 0;
-            }
-            .dropdown-content a {
-                color: white;
-                padding: 12px 16px;
-                text-decoration: none;
-                display: block;
-                text-align: left;
-            }
-            .dropdown-content a:hover {
-                background-color: #555;
-            }
-            .dropdown:hover .dropdown-content {
-                display: block;
-            }
+<style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+.navbar {
+    padding: 10px;
+    position: relative;
+    z-index: 10;
+}
 
-        </style>
+.navbar a, .dropbtn {
+    color: white;
+    text-align: center;
+    padding: 14px 20px;
+    text-decoration: none;
+    font-size: 18px;
+    background-color: #e38d13;
+    border: none;
+    cursor: pointer;
+    display: inline-block;
+    transition: background-color 0.3s;
+}
+
+.navbar a:hover, .dropbtn:hover {
+    background-color: #ffb74d;
+}
+
+.dropdown {
+    display: inline-block;
+    position: relative;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #e38d13;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+    z-index: 999;
+}
+
+.dropdown-content a {
+    color: white;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    text-align: left;
+}
+
+.dropdown-content a:hover {
+    background-color: #ffb74d;
+}
+
+/* Mostrar dropdown solo al pasar el mouse sobre el elemento correspondiente */
+.dropdown:hover > .dropdown-content {
+    display: block;
+}
+
+/* Estilo para el submenú dentro de "Servicios" */
+.dropdown-content .dropdown {
+    position: relative;
+}
+
+.dropdown-content .dropdown-content {
+    display: none; /* Ocultar el submenú inicialmente */
+    top: 0;
+    left: 100%; /* Muestra el submenú a la derecha */
+    margin-left: 1px;
+}
+
+.dropdown-content .dropdown:hover .dropdown-content {
+    display: block; /* Mostrar el submenú al pasar el mouse */
+}
+
+    </style>
 
     </head>
     <body>
-
-        <div class="navbar">
+<div class="navbar">
+    <div class="dropdown">
+        <button class="dropbtn">Menú</button>
+        <div class="dropdown-content">
+            <a href="Controlador?menu=usuarios&accion=listar">Lista de Usuarios</a>
             <div class="dropdown">
-                <button class="dropbtn">Menú</button>
+                <a href="#" class="dropbtn">Servicios</a>
                 <div class="dropdown-content">
-                    <a href="Controlador?accion=init">Inicio</a>
-                    <a href="Controlador?accion=listar">Lista de Usuarios</a>
-                    <a href="Controlador?accion=listarr">Lista de Solicitud y Muestra</a>
-                    <a class="active" href="#home">Agregar Solicitud</a>
-                    <a href="#home2">Reportes</a>
-                    <a href="Controlador?accion=listarr">Regresar</a>
+                    <div class="dropdown">
+                        <a href="#" class="dropbtn">SCM</a>
+                        <div class="dropdown-content">
+                            <a href="Controlador?menu=listaent&accion=entidades">Mantenimiento de Catálogo</a>
+                            <a href="Controlador?menu=solicit&accion=listarr">Bandeja de Laboratorio</a>
+                        </div>
+                    </div>
                 </div>
             </div>
-
-            <a href="Controlador?accion=index">Cerrar Sesión</a>
+            <a href="Controlador?accion=reportes">Reportes</a>
         </div>
+    </div>
+    <a href="Controlador?accion=index">Cerrar Sesión</a>
+</div>
 
         <div class="container">
             <h2>Agregar Solicitud</h2>
+            <a class="btn btn-primary" href="Controlador?menu=solicit&accion=listarr">Regresar</a>
             <form action="Controlador" method="get">
                 <div class="row">
                     <!-- Primera columna -->
                     <div class="col-lg-5">
                         Tipo de Solicitud: <br>
                         <select class="form-control" name="txtSoli" id="txtSoli" onchange="toggleFields()" >
-                            <option value="MuestraparaAnalisis" <%= "MuestraparaAnalisis".equals(request.getParameter("txtSoli")) ? "selected" : ""%>>Muestra para análisis</option>
-                            <option value="SolicitudsinMuestra" <%= "SolicitudsinMuestra".equals(request.getParameter("txtSoli")) ? "selected" : ""%>>Solicitud sin muestra</option>
+                            <option value="MuestraParaAnalisis" <%= "MuestraparaAnalisis".equals(request.getParameter("txtSoli")) ? "selected" : ""%>>Muestra para análisis</option>
+                            <option value="SolicitudSinMuestra" <%= "SolicitudsinMuestra".equals(request.getParameter("txtSoli")) ? "selected" : ""%>>Solicitud sin muestra</option>
                             <option value="ConNumerodeMuestra" <%= "ConNumerodeMuestra".equals(request.getParameter("txtSoli")) ? "selected" : ""%>>Con número de muestra</option>
                         </select>
                         <br>
@@ -209,9 +238,7 @@
                             <div style="color: red;">${error}</div> <!-- Mostrar el mensaje de error en rojo -->
                         </c:if>
                         
-                        
-                        
-                        
+                        <!--Asignar el estado de la solicitud-->
                         <input class="form-control" type="hidden" name="estado" id="estado" value="AsignadaAnalistaLaboratorio" readonly />
 
                         <!-- Descripción de Producto -->
@@ -238,17 +265,12 @@
                                     }
                                 }
                             %>
-                            
-                          
-
-
-                            
-                            
+  
                         </select>
                         <br>
-
                         <input type="hidden" name="menu" value="solicit">
-                        <input type="submit" name="accion" value="agregarr" class="btn btn-primary">
+                        <input type="submit" name="accion" value="Agregar" class="btn btn-primary">
+                        <button type="submit" name="accion" value="generarpdf" class="btn btn-secondary">Generar PDF</button>
                     </div>
                 </div>
             </form>             
@@ -264,29 +286,25 @@
         const descripcionField = document.getElementById('txtDescProd');
 
         // Habilita o inhabilita la escritura en los campos según el tipo de solicitud
-        if (tipoSolicitud === "MuestraparaAnalisis") {
-            noMuestraField.readOnly = true; // Inhabilitar campo
-            descripcionField.readOnly = false; // Habilitar campo
-        } else if (tipoSolicitud === "SolicitudsinMuestra") {
-            noMuestraField.readOnly = true; // Inhabilitar campo
-            descripcionField.readOnly = true; // Inhabilitar campo
+        if (tipoSolicitud === "MuestraParaAnalisis") {
+            noMuestraField.readOnly = true; // Inhabilitar campo No de Muestra
+            noMuestraField.value = "";
+            descripcionField.readOnly = false; // Habilitar campo Descripción de Producto
+        } else if (tipoSolicitud === "SolicitudSinMuestra") {
+            noMuestraField.readOnly = true; // Inhabilitar campo No de Muestra
+            descripcionField.readOnly = false; // Inhabilitar campo Descripción de Producto
             noMuestraField.value = ""; // Limpiar el campo si está inhabilitado
             descripcionField.value = ""; // Limpiar el campo si está inhabilitado
         } else if (tipoSolicitud === "ConNumerodeMuestra") {
-            noMuestraField.readOnly = false; // Habilitar campo
-            descripcionField.readOnly = false; // Habilitar campo
-        } else {
-            // Opcional: manejar cualquier otro caso
-            noMuestraField.readOnly = false; // Habilitar por defecto
-            descripcionField.readOnly = true; // Inhabilitar por defecto
+            noMuestraField.readOnly = false; // Habilitar campo No de Muestra
+            descripcionField.readOnly = false; // Habilitar campo Descripción de Producto
         }
     }
 
-    // Llama a la función al cargar la página para ajustar el estado inicial
-    window.onload = function() {
-        toggleFields();
-    };
+    // Ejecutar la función para configurar los campos al cargar la página
+    window.onload = toggleFields;
 </script>
+
 
 
                         

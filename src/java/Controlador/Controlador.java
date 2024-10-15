@@ -1,23 +1,21 @@
 package Controlador;
 
-import Modelo.Roles;
-import Modelo.Entidad;
-import Modelo.SoliMuestra;
-import Modelo.Users;
-import Modelo.Solicitantes;
-import ModeloDAO.PersonaDAO;
-import ModeloDAO.SoliMuestraDAO;
-import ModeloDAO.EntidadDAO;
-import java.sql.Connection;
+
+import com.itextpdf.text.Document;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfWriter;
+import java.util.Calendar;
+
 import Config.Conexion;
+import Modelo.*;
+import ModeloDAO.*;
+import com.itextpdf.text.FontFactory;
+import com.itextpdf.text.pdf.PdfPTable;
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.sql.Connection;
 import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.util.HashSet;
+import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -25,24 +23,27 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+
 public class Controlador extends HttpServlet {
 
+    String login2 = "index.jsp";
+    String init = "vistas/init.jsp";
     String listar = "vistas/listar.jsp";
     String add = "vistas/add.jsp";
     String edit = "vistas/edit.jsp";
-    String login2 = "index.jsp";
-    String init = "vistas/init.jsp";
     String listarr = "vistas/listarR.jsp";
     String addr = "vistas/addR.jsp";
     String editr = "vistas/editR.jsp";
     String entid = "vistas/entidades.jsp";
     String addenti = "vistas/addEntidad.jsp";
-
+    String listReasignar = "vistas/reasignarSol.jsp";
+    
     SoliMuestra sm = new SoliMuestra();
     Users u = new Users();
     PersonaDAO dao = new PersonaDAO();
     SoliMuestraDAO sdao = new SoliMuestraDAO();
     EntidadDAO edao = new EntidadDAO();
+    ReasignarDAO rdao = new ReasignarDAO();
     int idsolicitud;
     int id;
 
@@ -55,12 +56,6 @@ public class Controlador extends HttpServlet {
         if (accion == null) {
             accion = "";
         }
-
-        
-        
-        
-        
-        
         String menu = request.getParameter("menu");
         //////ACA METER CADA METODO 
         if (menu != null && menu.equals("inicio")) {
@@ -177,6 +172,11 @@ public class Controlador extends HttpServlet {
                     // Redirigir a la vista correspondiente
                     request.getRequestDispatcher(addenti).forward(request, response);
                     break;
+                case "eliminarEntidad":
+                    int idEntidad = Integer.parseInt(request.getParameter("idEntidad"));
+                    edao.elimEnti(idEntidad);
+                    acceso = entid;
+                    break;
 
                 case "obtenerportipo":
                     String tipoEntidad = request.getParameter("tipoEntidad");
@@ -195,6 +195,15 @@ public class Controlador extends HttpServlet {
             /* request.getRequestDispatcher(entid).forward(request,response);*/
         }
 
+        // Configura los parámetros para el correo una única vez
+        String host = "smtp.gmail.com"; 
+        String puerto = "587"; 
+        String usuarioCorreo = "patzanj45@gmail.com"; // Cambia esto por tu correo
+        String contrasenaCorreo = "bpox ahkr ooyg qlvw"; // Cambia esto por tu contraseña de aplicación o credenciales seguras
+
+        // Crea una instancia de la clase Correo solo una vez
+        Correo correo = new Correo(host, puerto, usuarioCorreo, contrasenaCorreo);
+        
         if (menu != null && menu.equals("solicit")) {
             switch (accion) {
                 case "obtenSolici":
@@ -257,9 +266,9 @@ public class Controlador extends HttpServlet {
                     request.setAttribute("listaUsuarios", listaUsuarios1);
                     acceso = addr;
                     break;
-               case "agregarr":
+               case "Agregar":
                     // Obtener los parámetros del request
-                    String tipoSolicitud = request.getParameter("txtSoli");
+                    String tipoSolicitud2 = request.getParameter("txtSoli");
                     String tipoEntidad = request.getParameter("txtEnti");
                     Date fechaSolicitud = Date.valueOf(request.getParameter("txtFecha")); // año-Mes-Dia
                     String tipoDocumento = request.getParameter("txtDoc");
@@ -289,11 +298,12 @@ public class Controlador extends HttpServlet {
                         List<Users> listaUsuarios3 = sdao.obtenAnalista();
                         request.setAttribute("listaUsuarios", listaUsuarios3);
                         // Si ya existe, enviar un mensaje de error o redirigir
-                        request.setAttribute("error", "El número de muestra ya está registrado. Por favor, ingresa uno diferente.");
+                        request.setAttribute("error", "Por favor verifique, el número de muestra de ya se encuentra "
+                                + "registrado en otra solicitud, número de solicitud: ‘número de solicitud”.");
                         acceso = addr; // Redirigir a una página de error
                     } else {
                         // Si el número de muestra no existe, continuar con la creación de la solicitud
-                        sm.setTipoSolicitud(tipoSolicitud);
+                        sm.setTipoSolicitud(tipoSolicitud2);
                         sm.setTipoEntidad(tipoEntidad);
                         sm.setFechaSolicitud(fechaSolicitud);
                         sm.setTipodeDocumento(tipoDocumento);
@@ -314,6 +324,23 @@ public class Controlador extends HttpServlet {
 
                         // Agregar la solicitud a la base de datos
                         sdao.addR(sm);
+
+                try {
+                    int anio = LocalDate.now().getYear();
+                    // Enviar el correo de confirmación
+                    correo.enviarCorreo(
+                        correoSolicitante, 
+                        fechaSolicitud.toString(), 
+                        tipoSolicitud2, 
+                        "AR-" + noMuestra+ "-"+ anio,
+                        noDocumento, // Aquí está el expediente
+                        tipoDocumento
+                    );
+                    request.setAttribute("mensaje", "Solicitud creada y correo enviado exitosamente.");
+                } catch (Exception e) {
+                    request.setAttribute("errorCorreo", "Error al enviar el correo: " + e.getMessage());
+                }
+                        
                         acceso = listarr; // Redirigir a la lista de solicitudes
                     }
 
@@ -326,7 +353,7 @@ public class Controlador extends HttpServlet {
                     break;
                 case "actualizarr":
                     idsolicitud = Integer.parseInt(request.getParameter("txtIdSol"));
-                    tipoSolicitud = request.getParameter("txtSoli");
+                    tipoSolicitud2 = request.getParameter("txtSoli");
                     tipoEntidad = request.getParameter("txtEnti");
                     fechaSolicitud = Date.valueOf(request.getParameter("txtFecha"));
                     tipoDocumento = request.getParameter("txtDodc");
@@ -337,18 +364,17 @@ public class Controlador extends HttpServlet {
                     correoSolicitante = request.getParameter("txtCorSol");
                     direccionProveedor = request.getParameter("txtDiProv");
                     telefonoProveedor = request.getParameter("txtTelProv");
-                    nitSolicitante = request.getParameter("txtNitSol");
+                    nitSolicitante = request.getParameter("nitSolicitante");
                     nombreSolicitante = request.getParameter("txtNomSol");
                     noMuestra = request.getParameter("txtNoMuestra");
                     descripProducto = request.getParameter("txtDescProd");
-                    idUsuario = Integer.parseInt(request.getParameter(""));
-                    regUsuario = request.getParameter("analista");
+                    idUsuario = Integer.parseInt(request.getParameter("analista"));
+                    regUsuario = request.getParameter("usuarioLogueadoNombre");
                     estado = request.getParameter("estado");
-                    
-                    
 
+                    // Setear los valores en el objeto de solicitud
                     sm.setIdSolicitud(idsolicitud);
-                    sm.setTipoSolicitud(tipoSolicitud);
+                    sm.setTipoSolicitud(tipoSolicitud2);
                     sm.setTipoEntidad(tipoEntidad);
                     sm.setFechaSolicitud(fechaSolicitud);
                     sm.setTipodeDocumento(tipoDocumento);
@@ -366,9 +392,12 @@ public class Controlador extends HttpServlet {
                     sm.setIdUsuario(idUsuario);
                     sm.setRegUsuario(regUsuario);
                     sm.setEstado(estado);
+
+                    // Llamar a la función para editar la solicitud en la base de datos
                     sdao.editR(sm);
-                    acceso = listarr;
+                    acceso = listarr; // Redirigir a la lista de solicitudes
                     break;
+                
 
                 case "eliminarr":
                     idsolicitud = Integer.parseInt(request.getParameter("idsolicitud"));//el "id" viene del jsp de listar boton
@@ -376,9 +405,81 @@ public class Controlador extends HttpServlet {
                     sdao.eliminarR(idsolicitud);
                     acceso = listarr;
                     break;
-
             }
 
+        }
+        
+
+        if ("generarpdf".equals(accion)) {  // Asegúrate de que la acción en el formulario sea "generarpdf"
+            // Configurar el tipo de respuesta
+            response.setContentType("application/pdf");
+            response.setHeader("Content-Disposition", "attachment; filename=etiqueta.pdf");
+
+            try {
+                // Crear el PDF
+                Document document = new Document();
+                // Obtener el output stream de la respuesta
+                PdfWriter.getInstance(document, response.getOutputStream());
+
+                document.open();
+
+                // Nombre del laboratorio
+                document.add(new Paragraph("LABORATORIO DE INSPECCIÓN DE CALIDAD ALIMENTOS 'ESTA RIQUITO'."));
+                document.add(new Paragraph("Título: Número de Muestra"));
+                
+                // Obtener datos
+                String numeroMuestra5 = request.getParameter("txtNoMuestra"); // Obteniendo el número de muestra
+                String year = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
+                String nombreContribuyente = request.getParameter("txtNomSol"); // Nombre del contribuyente
+                String nombreProveedor = request.getParameter("txtNomProv"); // Nombre del proveedor
+                String nitProveedor = request.getParameter("nitEntidad"); // NIT del proveedor
+                String numeroExpediente = request.getParameter("txtNodoc"); // Número de expediente
+                String nombreAnalista = request.getParameter("analista"); // Nombre del analista
+                
+                // Añadir Número de Muestra
+                document.add(new Paragraph("Número de Muestra: AR-" + numeroMuestra5 + "-" + year));
+                
+                // Nombre del Contribuyente
+                document.add(new Paragraph("Nombre del Contribuyente: " + nombreContribuyente));
+                document.add(new Paragraph(" ", FontFactory.getFont(FontFactory.HELVETICA, 10))); // Espacio de 10 unidades
+                // Tabla para los detalles a la derecha
+                PdfPTable table = new PdfPTable(2); // 2 columnas
+
+                // Columna izquierda
+                table.addCell("LABORATORIO DE INSPECCIÓN DE CALIDAD ALIMENTOS 'ESTA RIQUITO'.");
+                table.addCell("Número de Muestra: AR-" + numeroMuestra5 + "-" + year);
+
+                // Columna derecha
+                table.addCell("Nombre del Proveedor: " + nombreProveedor);
+                table.addCell("NIT del Proveedor: " + nitProveedor);
+                table.addCell("Número de Expediente: " + numeroExpediente);
+                table.addCell("Nombre del Analista: " + nombreAnalista);
+
+                document.add(table);
+
+                // Cerrar el documento
+                document.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+                response.getWriter().println("Error al generar el PDF: " + e.getMessage());
+            }
+        } else {
+        }
+    
+
+        
+        if(menu != null && menu.equals("reasignar")){
+            switch(accion){
+                case "listReasignar":
+                    acceso = listReasignar;
+                    break;
+                case "1":
+                    break;
+                case "2":
+                    break;
+                    
+            }
+            
         }
 
         if (menu != null && menu.equals("usuarios")) {
@@ -389,9 +490,27 @@ public class Controlador extends HttpServlet {
                 case "init":
                     acceso = init;
                     break;
+                case "obtenUsuario":
+                    List<Roles> listaRoles1 = dao.listaRoles();
+                    request.setAttribute("listaRoles", listaRoles1);
+                    
+                   String nitPersona = request.getParameter("nitPersona").trim(); // Obtener el NIT del request
+                   Users usuario = dao.obtenUsuarioPorNit(nitPersona); // Llama al método para obtener el usuario
+
+                   // Establecer el usuario en el request
+                   request.setAttribute("usuarioPorNit", usuario);
+
+                   // Mensaje si no se encontraron resultados
+                   if (usuario == null) {
+                       request.setAttribute("mensaje", "No se encontró el usuario con NIT " + nitPersona);
+                   }
+
+                   // Redirige a la página de resultados de búsqueda
+                   acceso = add; // Asegúrate de que la ruta sea correcta
+                   break;
+
                 case "add":
                     List<Roles> listaRoles = dao.listaRoles();
-                    request.setAttribute("listaRoles", listaRoles);
                     request.setAttribute("listaRoles", listaRoles);
                     acceso = add;
                     break;
@@ -407,6 +526,7 @@ public class Controlador extends HttpServlet {
                     String puesto = request.getParameter("txtPuesto");
                     int idrol = Integer.parseInt(request.getParameter("txtRol"));
                     String estado = request.getParameter("txtEstado");
+                    String correo2 = request.getParameter("txtCorreo");
 
                     u.setPrimerNombre(nomb);
                     u.setSegundoNombre(nomb2);
@@ -418,6 +538,7 @@ public class Controlador extends HttpServlet {
                     u.setPuesto(puesto);
                     u.setIdRol(idrol);
                     u.setEstado(estado);
+                    u.setCorreo(correo2);
                     dao.add(u);
                     acceso = listar;
 
@@ -463,6 +584,10 @@ public class Controlador extends HttpServlet {
                     break;
             }
         }
+        
+        
+     
+        
 
         RequestDispatcher vista = request.getRequestDispatcher(acceso);
         vista.forward(request, response);

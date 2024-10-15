@@ -16,94 +16,107 @@
             padding: 0;
             background-color: #f4f4f4;
         }
+.navbar {
+    padding: 10px;
+    position: relative;
+    z-index: 10;
+}
 
-        /* Estilos para el contenedor del menú */
-        .navbar {
-            padding: 10px;
-            position: relative;
-            z-index: 10;
-        }
+.navbar a, .dropbtn {
+    color: white;
+    text-align: center;
+    padding: 14px 20px;
+    text-decoration: none;
+    font-size: 18px;
+    background-color: #e38d13;
+    border: none;
+    cursor: pointer;
+    display: inline-block;
+    transition: background-color 0.3s;
+}
 
-        /* Estilos para el botón Menú y Cerrar Sesión */
-        .navbar a, .dropbtn {
-            color: white;
-            text-align: center;
-            padding: 14px 20px;
-            text-decoration: none;
-            font-size: 18px;
-            background: #000000;
-            border: none;
-            transition: background-color 0.3s;
-            cursor: pointer;
-            display: inline-block;
-        }
+.navbar a:hover, .dropbtn:hover {
+    background-color: #ffb74d;
+}
 
-        /* Hover en los botones de menú y cerrar sesión */
-        .navbar a:hover, .dropbtn:hover {
-            background-color: #e38d13;
-        }
+.dropdown {
+    display: inline-block;
+    position: relative;
+}
 
-        /* Estilos para el dropdown */
-        .dropdown {
-            display: inline-block;
-            position: relative;
-        }
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #e38d13;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+    z-index: 999;
+}
 
-        /* Contenedor del dropdown (escondido por defecto) */
-        .dropdown-content {
-            display: none;
-            position: absolute;
-            background-color: #000;
-            min-width: 160px;
-            box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
-            z-index: 999;
-            top: 50px; /* Asegura que el menú se despliegue fuera del botón */
-            left: 0;
-        }
+.dropdown-content a {
+    color: white;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    text-align: left;
+}
 
-        /* Estilos para los enlaces dentro del dropdown */
-        .dropdown-content a {
-            color: white;
-            padding: 12px 16px;
-            text-decoration: none;
-            display: block;
-            text-align: left;
-        }
+.dropdown-content a:hover {
+    background-color: #ffb74d;
+}
 
-        /* Hover en los enlaces del dropdown */
-        .dropdown-content a:hover {
-            background-color: #555;
-        }
+/* Mostrar dropdown solo al pasar el mouse sobre el elemento correspondiente */
+.dropdown:hover > .dropdown-content {
+    display: block;
+}
 
-        /* Mostrar el dropdown al pasar el ratón */
-        .dropdown:hover .dropdown-content {
-            display: block;
-        }
+/* Estilo para el submenú dentro de "Servicios" */
+.dropdown-content .dropdown {
+    position: relative;
+}
+
+.dropdown-content .dropdown-content {
+    display: none; /* Ocultar el submenú inicialmente */
+    top: 0;
+    left: 100%; /* Muestra el submenú a la derecha */
+    margin-left: 1px;
+}
+
+.dropdown-content .dropdown:hover .dropdown-content {
+    display: block; /* Mostrar el submenú al pasar el mouse */
+}
+
     </style>
 </head>
 <body>
-
-    <!-- Solo se muestra el botón Menú y Cerrar Sesión -->
-    <div class="navbar">
-        <!-- Botón Menú que despliega las demás opciones -->
-        <div class="dropdown">
-            <button class="dropbtn">Menú</button>
-            <div class="dropdown-content">
-                <a href="Controlador?accion=init">Inicio</a>
-                <a href="Controlador?accion=listar">Lista de Usuarios</a>
-                <a href="Controlador?accion=add">Agregar Usuarios</a>
-                <a class="active" href="#home">Lista de Solicitud Y Muestra</a>
-                <a href="Controlador?menu=solicit&accion=addr">Nueva Solicitud y Muestra</a>
+<div class="navbar">
+    <div class="dropdown">
+        <button class="dropbtn">Menú</button>
+        <div class="dropdown-content">
+            <a href="Controlador?menu=usuarios&accion=listar">Lista de Usuarios</a>
+            <div class="dropdown">
+                <a href="#" class="dropbtn">Servicios</a>
+                <div class="dropdown-content">
+                    <div class="dropdown">
+                        <a href="#" class="dropbtn">SCM</a>
+                        <div class="dropdown-content">
+                            <a href="Controlador?menu=listaent&accion=entidades">Mantenimiento de Catálogo</a>
+                            <a href="Controlador?menu=solicit&accion=listarr">Bandeja de Laboratorio</a>
+                        </div>
+                    </div>
+                </div>
             </div>
+            <a href="Controlador?accion=reportes">Reportes</a>
         </div>
-
-        <!-- Opción de Cerrar Sesión que siempre estará visible -->
-        <a href="Controlador?accion=index">Cerrar Sesión</a>
     </div>
+    <a href="Controlador?accion=index">Cerrar Sesión</a>
+</div>
+
 
     <div class="container">
         <h1>Registro de Solicitudes y Muestras</h1>
         <br>
+        <a class="btn btn-primary" href="Controlador?menu=solicit&accion=addr">Nueva Solicitud de Muestra</a>
         <br>
         <table class="table table-bordered">
             <thead>
@@ -146,8 +159,11 @@
                     <td class="text-center"><%= sm.getNombreSolicitante() %></td>
                     <td class="text-center"><%= sm.getNoMuestra() %></td>
                     <td class="text-center">
-                        <a class="btn btn-warning" href="Controlador?accion=editarR&idsoli=<%= sm.getIdSolicitud()%>">Editar</a>
-                        <a class="btn btn-danger" href="Controlador?accion=eliminarR&idsolicitud=<%= sm.getIdSolicitud() %>">Eliminar</a>
+                        <input type="hidden" name="menu" value="solicit">
+                        <a class="btn btn-warning" href="Controlador?menu=solicit&accion=visualizar&idSolicitud=<%= sm.getIdSolicitud() %>">Visualizar</a>
+                        <a class="btn btn-danger" href="Controlador?menu=solicit&accion=eliminarr&idsolicitud=<%= sm.getIdSolicitud() %>">Eliminar</a>
+
+                        
                     </td>
                 </tr>
                 <% } %>

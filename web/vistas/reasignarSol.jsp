@@ -1,15 +1,14 @@
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@page import="ModeloDAO.PersonaDAO"%>
 <%@page import="java.util.Iterator"%>
-<%@page import="Modelo.Users"%>
-<%@page import="Modelo.Roles"%>
+<%@page import="Modelo.SoliMuestra"%>
 <%@page import="java.util.List"%>
+<%@page import="ModeloDAO.SoliMuestraDAO"%>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <link href="css/bootstrap.css" rel="stylesheet" type="text/css"/>
-    <title>Lista de Usuarios</title>
+    <title>Lista de Solicitudes y Muestras</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -88,9 +87,8 @@
 }
 
     </style>
-
-    </head>
-    <body>
+</head>
+<body>
 <div class="navbar">
     <div class="dropdown">
         <button class="dropbtn">Menú</button>
@@ -114,55 +112,57 @@
     <a href="Controlador?accion=index">Cerrar Sesión</a>
 </div>
 
-    <!-- Contenido principal -->
+
     <div class="container">
-        <h1>Lista de Usuarios</h1>
-        <a class="btn btn-primary" href="Controlador?menu=usuarios&accion=add">Agregar</a>
+        <h1>Reasignación de Solicitudes</h1>
         <br>
+        <a class="btn btn-primary" href="Controlador?menu=solicit&accion=addr">Nueva Solicitud de Muestra</a>
         <br>
         <table class="table table-bordered">
             <thead>
                 <tr>
-                    <th class="text-center">ID Usuario</th>
-                    <th class="text-center">Primer Nombre</th>
-                    <th class="text-center">Segundo Nombre</th>
-                    <th class="text-center">Primer Apellido</th>
-                    <th class="text-center">Segundo Apellido</th>
-                    <th class="text-center">Login</th>
-                    <th class="text-center">Contraseña</th>
-                    <th class="text-center">NIT</th>
-                    <th class="text-center">Puesto</th>
-                    <!--<th class="text-center">Rol</th>-->
-                        <th class="text-center">Rol</th>
-                    <th class="text-center">Estado</th>
+                    <th class="text-center">Fecha Solicitado</th>
+                    <th class="text-center">Tipo de Documento</th>
+                    <th class="text-center">No de documento</th>
+                    <th class="text-center">Nit Proveedor</th>
+                    <th class="text-center">Nombre del Proveedor</th>
+                    <th class="text-center">Correo Proveedor</th>
+                    <th class="text-center">Correo Solicitante</th>
+                    <th class="text-center">Direccion</th>
+                    <th class="text-center">Telefono</th>
+                    <th class="text-center">Nit Solicitante</th>
+                    <th class="text-center">Nombre Solicitante</th>
+                    <th class="text-center">No de Muestra</th>
                     <th class="text-center">Acciones</th>
                 </tr>
             </thead>
             <tbody>
                 <%
-                    PersonaDAO dao = new PersonaDAO();
-                    List<Users> list = dao.listar();
-                    Iterator<Users> iter = list.iterator();
-                    Users user = null;
+                    SoliMuestraDAO dao = new SoliMuestraDAO();
+                    List<SoliMuestra> list = dao.listarR();
+                    Iterator<SoliMuestra> iter = list.iterator();
+                    SoliMuestra sm = null;
                     while (iter.hasNext()) {
-                        user = iter.next();
+                        sm = iter.next();
                 %>
                 <tr>
-                    <td class="text-center"><%= user.getIdusuario() %></td>
-                    <td class="text-center"><%= user.getPrimerNombre() %></td>
-                    <td class="text-center"><%= user.getSegundoNombre() %></td>
-                    <td class="text-center"><%= user.getPrimerApellido() %></td>
-                    <td class="text-center"><%= user.getSegundoApellido() %></td>
-                    <td class="text-center"><%= user.getLogin() %></td>
-                    <td class="text-center"><%= user.getContrasenia() %></td>
-                    <td class="text-center"><%= user.getNitpersona() %></td>
-                    <td class="text-center"><%= user.getPuesto() %></td>
-                    <!--<td class="text-center"><%= user.getIdRol()%></td>-->
-                        <td class="text-center"><%= user.getNombreRol()%></td>
-                    <td class="text-center"><%= user.getEstado() %></td>
+                    <td class="text-center"><%= sm.getFechaSolicitud()%></td>
+                    <td class="text-center"><%= sm.getTipodeDocumento()%></td>
+                    <td class="text-center"><%= sm.getNoDedocumento()%></td>
+                    <td class="text-center"><%= sm.getNitProveedor()%></td>
+                    <td class="text-center"><%= sm.getNombreProveedor()%></td>
+                    <td class="text-center"><%= sm.getCorreoProveedor() %></td>
+                    <td class="text-center"><%= sm.getCorreoSolicitante() %></td>
+                    <td class="text-center"><%= sm.getDireccionProveedor() %></td>
+                    <td class="text-center"><%= sm.getTelefonoProveedor() %></td>
+                    <td class="text-center"><%= sm.getNitSolicitante() %></td>
+                    <td class="text-center"><%= sm.getNombreSolicitante() %></td>
+                    <td class="text-center"><%= sm.getNoMuestra() %></td>
                     <td class="text-center">
-                        <a class="btn btn-warning" href="Controlador?accion=editar&idusua=<%= user.getIdusuario() %>">Editar</a>
-                        <a class="btn btn-danger" href="Controlador?accion=eliminar&id=<%= user.getIdusuario() %>">Eliminar</a>
+                        <input type="hidden" name="menu" value="solicit">
+                        <a class="btn btn-warning" href="Controlador?menu=solicit&accion=visualizar&idSolicitud=<%= sm.getIdSolicitud() %>">Visualizar</a>
+                        <a class="btn btn-danger" href="Controlador?menu=solicit&accion=eliminarr&idsolicitud=<%= sm.getIdSolicitud() %>">Eliminar</a>
+  
                     </td>
                 </tr>
                 <% } %>

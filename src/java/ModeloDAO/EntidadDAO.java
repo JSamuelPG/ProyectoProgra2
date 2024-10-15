@@ -174,6 +174,34 @@ public class EntidadDAO {
             }
         }
 
-        return inserted; // Retorna verdadero si se insertó
+        return inserted; // Retorna verdadero si se inserto
     }
+    
+    public boolean elimEnti(int idEntidad) {
+        String sql = "delete from entidades_registrado where er_Id=" + idEntidad;
+        Conexion cn = new Conexion();
+        Connection con = null;
+        PreparedStatement ps = null;
+        try {
+            con = cn.getConnection();
+            ps = con.prepareStatement(sql);
+            int rowsAffected = ps.executeUpdate();
+            if (rowsAffected > 0) {
+                return true;  // devuelve verdadero en eliminar la entidad o fila 
+            }
+        } catch (Exception e) {
+            e.printStackTrace();  // maneja la excepción si es necesario
+        } finally {
+            try {
+                if (ps != null) ps.close();
+                if (con != null) con.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return false;  // Retorna false si no se eliminó ninguna fila
+    }
+
+    
+    
 }
