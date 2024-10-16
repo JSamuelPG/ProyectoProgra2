@@ -514,8 +514,8 @@ public class Controlador extends HttpServlet {
                     request.setAttribute("listaRoles", listaRoles);
                     acceso = add;
                     break;
+                    
                 case "agregar":
-
                     String nomb = request.getParameter("txtNom1");
                     String nomb2 = request.getParameter("txtNom2");
                     String ap1 = request.getParameter("txtAp1");
@@ -540,8 +540,8 @@ public class Controlador extends HttpServlet {
                     u.setEstado(estado);
                     u.setCorreo(correo2);
                     dao.add(u);
+                    request.setAttribute("mensaje", "Usuario agregado exitosamente");
                     acceso = listar;
-
                     break;
                 case "editar":
                     //idusuario va en el JSP

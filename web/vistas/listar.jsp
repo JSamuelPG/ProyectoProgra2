@@ -124,16 +124,14 @@
             <thead>
                 <tr>
                     <th class="text-center">ID Usuario</th>
-                    <th class="text-center">Primer Nombre</th>
-                    <th class="text-center">Segundo Nombre</th>
-                    <th class="text-center">Primer Apellido</th>
-                    <th class="text-center">Segundo Apellido</th>
+                    <th class="text-center">Nombre Completo</th>
                     <th class="text-center">Login</th>
                     <th class="text-center">Contraseña</th>
                     <th class="text-center">NIT</th>
                     <th class="text-center">Puesto</th>
                     <!--<th class="text-center">Rol</th>-->
-                        <th class="text-center">Rol</th>
+                    <th class="text-center">Rol</th>
+                    <th class="text-center">Correo</th>    
                     <th class="text-center">Estado</th>
                     <th class="text-center">Acciones</th>
                 </tr>
@@ -149,16 +147,14 @@
                 %>
                 <tr>
                     <td class="text-center"><%= user.getIdusuario() %></td>
-                    <td class="text-center"><%= user.getPrimerNombre() %></td>
-                    <td class="text-center"><%= user.getSegundoNombre() %></td>
-                    <td class="text-center"><%= user.getPrimerApellido() %></td>
-                    <td class="text-center"><%= user.getSegundoApellido() %></td>
+                    <td class="text-center"><%= user.getPrimerNombre() %> <%= user.getSegundoNombre() %> <%= user.getPrimerApellido() %> <%= user.getSegundoApellido() %></td>
                     <td class="text-center"><%= user.getLogin() %></td>
                     <td class="text-center"><%= user.getContrasenia() %></td>
                     <td class="text-center"><%= user.getNitpersona() %></td>
                     <td class="text-center"><%= user.getPuesto() %></td>
                     <!--<td class="text-center"><%= user.getIdRol()%></td>-->
                         <td class="text-center"><%= user.getNombreRol()%></td>
+                        <td class="text-center"><%= user.getCorreo()%></td>
                     <td class="text-center"><%= user.getEstado() %></td>
                     <td class="text-center">
                         <a class="btn btn-warning" href="Controlador?accion=editar&idusua=<%= user.getIdusuario() %>">Editar</a>

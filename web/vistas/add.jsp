@@ -47,7 +47,7 @@
             min-width: 160px;
             box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
             z-index: 999;
-            top: 50px;
+            top: 50px; /* Ajuste para la posición */
             left: 0;
         }
         .dropdown-content a {
@@ -103,7 +103,6 @@
     <a href="Controlador?accion=index">Cerrar Sesión</a>
 </div>
 
-
 <div class="container">
     <h2>Buscar Usuario por NIT</h2>
     <form action="Controlador?menu=usuarios&accion=obtenUsuario" method="post">
@@ -114,7 +113,12 @@
         <button type="submit" class="btn btn-primary">Buscar</button>
     </form>
 
-    <c:if test="${not empty usuarioPorNit}">
+    <% 
+        Users usuarioPorNit = (Users) request.getAttribute("usuarioPorNit");
+        String mensaje = (String) request.getAttribute("mensaje");
+        
+        if (usuarioPorNit != null) { 
+    %>
         <h3>Resultados de la Búsqueda</h3>
         <table>
             <tr>
@@ -124,65 +128,60 @@
                 <th>Contraseña</th>
                 <th>NIT</th>
                 <th>Puesto</th>
-                <th>Estado</th>
-                <th>Correo</th>
                 <th>Rol</th>
-                <th>Acción</th>
             </tr>
             <tr>
-                <td>${usuarioPorNit.idusuario}</td>
-                <td>${usuarioPorNit.primerNombre} ${usuarioPorNit.segundoNombre} ${usuarioPorNit.primerApellido} ${usuarioPorNit.segundoApellido}</td>
-                <td>${usuarioPorNit.login}</td>
-                <td>${usuarioPorNit.contrasenia}</td>
-                <td>${usuarioPorNit.nitpersona}</td>
-                <td>${usuarioPorNit.puesto}</td>
+                <td><%= usuarioPorNit.getIdusuario() %></td>
+                <td><%= usuarioPorNit.getPrimerNombre() + " " + usuarioPorNit.getSegundoNombre() + " " + usuarioPorNit.getPrimerApellido() + " " + usuarioPorNit.getSegundoApellido() %></td>
+                <td><%= usuarioPorNit.getLogin() %></td>
+                <td><%= usuarioPorNit.getContrasenia() %></td>
+                <td><%= usuarioPorNit.getNitpersona() %></td>
+                <td><%= usuarioPorNit.getPuesto() %></td>
+
                 <td>
-                    <select name="txtEstado" required>
-                        <option value="Activo" ${usuarioPorNit.estado == 'Activo' ? 'selected' : ''}>Activo</option>
-                        <option value="Inactivo" ${usuarioPorNit.estado == 'Inactivo' ? 'selected' : ''}>Inactivo</option>
-                    </select>
-                </td>
-                <td>${usuarioPorNit.correo}</td>
-                <td>
-                    <form action="Controlador" method="post">
+                    <form action="Controlador" method="get">
                         <input type="hidden" name="menu" value="usuarios">
-                        <input type="hidden" name="idUsuario" value="${usuarioPorNit.idusuario}">
-                        <input type="hidden" name="txtNom1" value="${usuarioPorNit.primerNombre}">                                 
-                        <input type="hidden" name="txtNom2" value="${usuarioPorNit.segundoNombre}">
-                        <input type="hidden" name="txtAp1" value="${usuarioPorNit.primerApellido}">
-                        <input type="hidden" name="txtAp2" value="${usuarioPorNit.segundoApellido}">
-                        <input type="hidden" name="txtLog" value="${usuarioPorNit.login}">
-                        <input type="hidden" name="txtCont" value="${usuarioPorNit.contrasenia}">
-                        <input type="hidden" name="txtNit" value="${usuarioPorNit.nitpersona}">
-                        <input type="hidden" name="txtPuesto" value="${usuarioPorNit.puesto}">
-                        <input type="hidden" name="txtCorreo" value="${usuarioPorNit.correo}">
-                        
+                        <input type="hidden" name="accion" value="agregar">
+                        <input type="hidden" name="idUsuario" value="<%= usuarioPorNit.getIdusuario() %>">
+                        <input type="hidden" name="txtNom1" value="<%= usuarioPorNit.getPrimerNombre() %>">
+                        <input type="hidden" name="txtNom2" value="<%= usuarioPorNit.getSegundoNombre() %>">
+                        <input type="hidden" name="txtAp1" value="<%= usuarioPorNit.getPrimerApellido() %>">
+                        <input type="hidden" name="txtAp2" value="<%= usuarioPorNit.getSegundoApellido() %>">
+                        <input type="hidden" name="txtLog" value="<%= usuarioPorNit.getLogin() %>">
+                        <input type="hidden" name="txtCont" value="<%= usuarioPorNit.getContrasenia() %>">
+                        <input type="hidden" name="txtNit" value="<%= usuarioPorNit.getNitpersona() %>">
+                        <input type="hidden" name="txtPuesto" value="<%= usuarioPorNit.getPuesto() %>">
+                        <input type="hidden" name="txtEstado" value="<%= usuarioPorNit.getEstado() %>">
+                        correo:
+                        <input type="email" name="txtCorreo" value="<%= usuarioPorNit.getCorreo() %>" class="form-control" required>
+                        Rol:
                         <select class="form-control" name="txtRol" id="opciones">
-                            <%
+                            <% 
                                 PersonaDAO dao = new PersonaDAO(); 
                                 List<Roles> listaRoles = dao.listaRoles();
                                 for (Roles rol : listaRoles) {
                             %>
                                 <option value="<%= rol.getIdRol() %>"><%= rol.getNombreRol() %></option>
-                            <%
-                                }
+                            <% 
+                                } 
                             %>
                         </select>
-                        <input type="hidden" name="txtEstado" value="${usuarioPorNit.estado}"> <!-- Agregamos el estado -->
-                        <td>
-                            <button type="submit" name="accion" value="agregar" class="btn btn-success">Agregar Usuario</button>
-                        </td>
+                        <button type="submit" class="btn btn-success">Agregar Usuario</button>
                     </form>
                 </td>
             </tr>
         </table>
-    </c:if>
+    <% 
+        } 
 
-    <c:if test="${not empty mensaje}">
+        if (mensaje != null && !mensaje.isEmpty()) {
+    %>
         <div class="alert alert-warning" role="alert">
-            ${mensaje}
+            <%= mensaje %>
         </div>
-    </c:if>
+    <% 
+        } 
+    %>
 </div>
 
 <script src="js/bootstrap.bundle.min.js"></script>

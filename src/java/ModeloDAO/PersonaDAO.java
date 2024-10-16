@@ -71,13 +71,6 @@ public Users obtenUsuarioPorNit(String nitPersona) {
     return usuario; // Retornar el usuario encontrado o null si no se encontró
 }
 
-
-
-
-    
-    
-    
-
     //MODIFICADO
     @Override
     public List listar() {
@@ -105,6 +98,7 @@ public Users obtenUsuarioPorNit(String nitPersona) {
                 user.setPuesto(rs.getString("puesto"));
                 user.setIdRol(rs.getInt("id_rol"));
                 user.setNombreRol(rs.getString("nombre_rol"));
+                user.setCorreo(rs.getString("correo"));
                 user.setEstado(rs.getString("estado"));
                 list2.add(user);
             }
@@ -153,6 +147,7 @@ public Users obtenUsuarioPorNit(String nitPersona) {
                 u.setNitpersona(rs.getString("nit_persona"));
                 u.setPuesto(rs.getString("puesto"));
                 u.setIdRol(rs.getInt("id_rol"));
+                u.setCorreo(rs.getString("correo"));
                 u.setEstado(rs.getString("estado"));
             }
         } catch (Exception e) {
@@ -176,17 +171,12 @@ public Users obtenUsuarioPorNit(String nitPersona) {
         return u;
     }
 
-    //MODIFICADO
-    @Override
-public boolean add(Users user) {
-    String sql = "INSERT INTO usuarios(primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, login, contrasenia, nit_persona, puesto, id_rol, estado, correo, motivo) "
-               + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-    Conexion cn = new Conexion();
-    Connection con = null;
+public boolean add(Users user) { 
+    String sql = "INSERT INTO usuarios(primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, login, contrasenia, nit_persona, puesto, id_rol, estado, correo, motivo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     PreparedStatement ps = null;
 
     try {
-        con = cn.getConnection(); // Obtener conexión
+        con = conexion.getConnection();
         ps = con.prepareStatement(sql);
 
         // Asignar valores a los parámetros
@@ -194,7 +184,7 @@ public boolean add(Users user) {
         ps.setString(2, user.getSegundoNombre());
         ps.setString(3, user.getPrimerApellido());
         ps.setString(4, user.getSegundoApellido());
-        ps.setString(5, user.getLogin()); // Usar el login ya generado
+        ps.setString(5, user.getLogin());
         ps.setString(6, user.getContrasenia());
         ps.setString(7, user.getNitpersona());
         ps.setString(8, user.getPuesto());
@@ -203,25 +193,21 @@ public boolean add(Users user) {
         ps.setString(11, user.getCorreo());
         ps.setString(12, user.getMotivo());
 
-        int rowsAffected = ps.executeUpdate(); // Ejecutar inserción
+        int rowsAffected = ps.executeUpdate();
+        return rowsAffected > 0;
 
-        return rowsAffected > 0; // Retornar true si se inserta al menos una fila
     } catch (SQLException e) {
         e.printStackTrace();
+        return false;
     } finally {
         // Cerrar PreparedStatement y Connection
         try {
-            if (ps != null) {
-                ps.close();
-            }
-            if (con != null) {
-                con.close();
-            }
+            if (ps != null) ps.close();
+            if (con != null) con.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
-    return false; // Si falla, retorna false
 }
 
 
