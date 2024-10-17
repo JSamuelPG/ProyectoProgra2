@@ -93,15 +93,17 @@
     <div class="dropdown">
         <button class="dropbtn">Menú</button>
         <div class="dropdown-content">
-            <a href="Controlador?menu=usuarios&accion=listar">Lista de Usuarios</a>
+            <a href="Controlador?menu=inicio&accion=init">Inicio</a>
             <div class="dropdown">
                 <a href="#" class="dropbtn">Servicios</a>
                 <div class="dropdown-content">
                     <div class="dropdown">
                         <a href="#" class="dropbtn">SCM</a>
                         <div class="dropdown-content">
+                            <a href="Controlador?menu=usuarios&accion=listar">Mantenimiento de Usuarios</a>
                             <a href="Controlador?menu=listaent&accion=entidades">Mantenimiento de Catálogo</a>
                             <a href="Controlador?menu=solicit&accion=listarr">Bandeja de Laboratorio</a>
+                            <a href="Controlador?menu=reasignar&accion=listReasignar">Reasignacion de Solicitudes</a>
                         </div>
                     </div>
                 </div>

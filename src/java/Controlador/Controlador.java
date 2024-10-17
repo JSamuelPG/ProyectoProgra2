@@ -114,6 +114,9 @@ public class Controlador extends HttpServlet {
                         acceso = login2;
                     }
                     break;
+                case "init":
+                    acceso = init;
+                    break;
             }
         }
 
@@ -146,7 +149,7 @@ public class Controlador extends HttpServlet {
                     String nite = request.getParameter("nit");
 
                     // Verificar si ya existe una entidad con el NIT que ingrese
-                    Entidad entidadExistente = edao.obtenPorNit(nite);
+                    Entidad entidadExistente = edao.existeNit(nite);
 
                     if (entidadExistente != null) {
                         // Si la entidad ya existe, mostrar un mensaje de error
@@ -224,7 +227,7 @@ public class Controlador extends HttpServlet {
                     request.setAttribute("txtFecha", request.getParameter("txtFecha"));
 
                     if (soli == null) {
-                        request.setAttribute("mensaje", "No se encontró este NIT " + nitSoli);
+                        request.setAttribute("mensajeSolicitante", "No se encontró este NIT " + nitSoli);
                     }
 
                     RequestDispatcher dispatcher = request.getRequestDispatcher(addr);
@@ -251,7 +254,7 @@ public class Controlador extends HttpServlet {
                     request.setAttribute("txtDescProd", request.getParameter("txtDescProd"));
 
                     if (entidad == null) {
-                        request.setAttribute("mensaje2", "No se encontró este NIT " + nitEntidad);
+                        request.setAttribute("mensajeProveedor", "No se encontró este NIT " + nitEntidad);
                     }
 
                     RequestDispatcher dispatcher2 = request.getRequestDispatcher(addr);
@@ -266,7 +269,7 @@ public class Controlador extends HttpServlet {
                     request.setAttribute("listaUsuarios", listaUsuarios1);
                     acceso = addr;
                     break;
-               case "Agregar":
+                case "Agregar":
                     // Obtener los parámetros del request
                     String tipoSolicitud2 = request.getParameter("txtSoli");
                     String tipoEntidad = request.getParameter("txtEnti");
@@ -287,64 +290,85 @@ public class Controlador extends HttpServlet {
 
                     // Obtener el nombre del usuario desde la sesión
                     HttpSession session = request.getSession();
-                    String regUsuario = (String) session.getAttribute("usuarioLogueadoNombre"); // Aquí se obtiene el nombre del usuario
+                    String regUsuario = (String) session.getAttribute("usuarioLogueadoNombre"); // Obtener el nombre del usuario logueado
                     String estado = request.getParameter("estado");
 
-                    // Crear una instancia de Conexion para la validación
-                    Conexion conexion = new Conexion();
+                    // Validación de campos requeridos
+                    if (nitProveedor == null || nitProveedor.trim().isEmpty() ||
+                        nitSolicitante == null || nitSolicitante.trim().isEmpty() ||
+                        noDocumento == null || noDocumento.trim().isEmpty() ||
+                        noMuestra == null || noMuestra.trim().isEmpty() ||
+                        correoSolicitante == null || correoSolicitante.trim().isEmpty() ||
+                        descripProducto == null || descripProducto.trim().isEmpty()) {
 
-                    // Validar si el número de muestra ya está registrado
-                    if (sdao.existeNoMuestra(noMuestra)) {
-                        List<Users> listaUsuarios3 = sdao.obtenAnalista();
-                        request.setAttribute("listaUsuarios", listaUsuarios3);
-                        // Si ya existe, enviar un mensaje de error o redirigir
-                        request.setAttribute("error", "Por favor verifique, el número de muestra de ya se encuentra "
-                                + "registrado en otra solicitud, número de solicitud: ‘número de solicitud”.");
-                        acceso = addr; // Redirigir a una página de error
+                        request.setAttribute("error", "Por favor complete todos los campos requeridos.");
+                        acceso = addr; 
                     } else {
-                        // Si el número de muestra no existe, continuar con la creación de la solicitud
-                        sm.setTipoSolicitud(tipoSolicitud2);
-                        sm.setTipoEntidad(tipoEntidad);
-                        sm.setFechaSolicitud(fechaSolicitud);
-                        sm.setTipodeDocumento(tipoDocumento);
-                        sm.setNoDedocumento(noDocumento);
-                        sm.setNitProveedor(nitProveedor);
-                        sm.setNombreProveedor(nombreProveedor);
-                        sm.setCorreoProveedor(correoProveedor);
-                        sm.setCorreoSolicitante(correoSolicitante);
-                        sm.setDireccionProveedor(direccionProveedor);
-                        sm.setTelefonoProveedor(telefonoProveedor);
-                        sm.setNitSolicitante(nitSolicitante);
-                        sm.setNombreSolicitante(nombreSolicitante);
-                        sm.setNoMuestra(noMuestra);
-                        sm.setDescripcionProducto(descripProducto);
-                        sm.setIdUsuario(idUsuario);
-                        sm.setRegUsuario(regUsuario);
-                        sm.setEstado(estado);
 
-                        // Agregar la solicitud a la base de datos
-                        sdao.addR(sm);
+                        // Crear una instancia de Conexion para la validación
+                        Conexion conexion = new Conexion();
 
-                try {
-                    int anio = LocalDate.now().getYear();
-                    // Enviar el correo de confirmación
-                    correo.enviarCorreo(
-                        correoSolicitante, 
-                        fechaSolicitud.toString(), 
-                        tipoSolicitud2, 
-                        "AR-" + noMuestra+ "-"+ anio,
-                        noDocumento, // Aquí está el expediente
-                        tipoDocumento
-                    );
-                    request.setAttribute("mensaje", "Solicitud creada y correo enviado exitosamente.");
-                } catch (Exception e) {
-                    request.setAttribute("errorCorreo", "Error al enviar el correo: " + e.getMessage());
-                }
-                        
-                        acceso = listarr; // Redirigir a la lista de solicitudes
+                        // Validar si el número de muestra ya está registrado
+                        if (sdao.existeNoMuestra(noMuestra)) {
+                            List<Users> listaUsuarios3 = sdao.obtenAnalista();
+                            request.setAttribute("listaUsuarios", listaUsuarios3);
+                            request.setAttribute("error", "El número de muestra ya se encuentra registrado en otra solicitud.");
+                            acceso = addr; // Quedar en la misma página
+                        } else {
+                            String correoAnalista = sdao.obtenCorreoAnalista(idUsuario);
+
+                            // Configurar los atributos de la solicitud
+                            sm.setTipoSolicitud(tipoSolicitud2);
+                            sm.setTipoEntidad(tipoEntidad);
+                            sm.setFechaSolicitud(fechaSolicitud);
+                            sm.setTipodeDocumento(tipoDocumento);
+                            sm.setNoDedocumento(noDocumento);
+                            sm.setNitProveedor(nitProveedor);
+                            sm.setNombreProveedor(nombreProveedor);
+                            sm.setCorreoProveedor(correoProveedor);
+                            sm.setCorreoSolicitante(correoSolicitante);
+                            sm.setDireccionProveedor(direccionProveedor);
+                            sm.setTelefonoProveedor(telefonoProveedor);
+                            sm.setNitSolicitante(nitSolicitante);
+                            sm.setNombreSolicitante(nombreSolicitante);
+                            sm.setNoMuestra(noMuestra);
+                            sm.setDescripcionProducto(descripProducto);
+                            sm.setIdUsuario(idUsuario);
+                            sm.setRegUsuario(regUsuario);
+                            sm.setEstado(estado);
+
+                            // agregar la solicitud a la base de datos
+                            sdao.addR(sm);
+
+                            try {
+                                int anio = LocalDate.now().getYear();
+                                // enviar el correos
+                                correo.enviarCorreo(
+                                    correoSolicitante, 
+                                    fechaSolicitud.toString(), 
+                                    tipoSolicitud2, 
+                                    "AR-" + noMuestra+ "-"+ anio,
+                                    noDocumento, 
+                                    tipoDocumento
+                                );
+                                correo.enviarCorreo(
+                                    correoAnalista,
+                                    fechaSolicitud.toString(),
+                                    tipoSolicitud2,
+                                    "AR-" + noMuestra + "-" + anio,
+                                    noDocumento,
+                                    tipoDocumento
+                                );
+                                request.setAttribute("mensaje", "Solicitud creada y correo enviado exitosamente.");
+                            } catch (Exception e) {
+                                request.setAttribute("errorCorreo", "Error al enviar el correo: " + e.getMessage());
+                            }
+
+                            acceso = listarr; // Redirigir a la lista de solicitudes
+                        }
                     }
-
                     break;
+
 
                 case "editarr":
                     //idusuario va en el JSP
@@ -369,8 +393,8 @@ public class Controlador extends HttpServlet {
                     noMuestra = request.getParameter("txtNoMuestra");
                     descripProducto = request.getParameter("txtDescProd");
                     idUsuario = Integer.parseInt(request.getParameter("analista"));
-                    regUsuario = request.getParameter("usuarioLogueadoNombre");
-                    estado = request.getParameter("estado");
+                    //regUsuario = request.getParameter("usuarioLogueadoNombre");
+                    //estado = request.getParameter("estado");
 
                     // Setear los valores en el objeto de solicitud
                     sm.setIdSolicitud(idsolicitud);
@@ -390,8 +414,8 @@ public class Controlador extends HttpServlet {
                     sm.setNoMuestra(noMuestra);
                     sm.setDescripcionProducto(descripProducto);
                     sm.setIdUsuario(idUsuario);
-                    sm.setRegUsuario(regUsuario);
-                    sm.setEstado(estado);
+                    //sm.setRegUsuario(regUsuario);
+                    //sm.setEstado(estado);
 
                     // Llamar a la función para editar la solicitud en la base de datos
                     sdao.editR(sm);
@@ -539,9 +563,17 @@ public class Controlador extends HttpServlet {
                     u.setIdRol(idrol);
                     u.setEstado(estado);
                     u.setCorreo(correo2);
-                    dao.add(u);
-                    request.setAttribute("mensaje", "Usuario agregado exitosamente");
-                    acceso = listar;
+                    
+                    // Verificar si el NIT ya existe
+                    if (dao.existeNitu(nit)) { // Verifica si existe el NIT
+                        request.setAttribute("mensaje", "El NIT ya está registrado.");
+                        acceso = add; // Redirige a una página de error o muestra un mensaje
+                    } else {
+                        // Agregar el usuario ya que el NIT no existe
+                        dao.add(u);
+                        request.setAttribute("mensaje", "Usuario agregado exitosamente");
+                        acceso = add; // Redirigir a la lista de usuarios
+                    }
                     break;
                 case "editar":
                     //idusuario va en el JSP

@@ -29,12 +29,13 @@ public Users obtenUsuarioPorNit(String nitPersona) {
     Users usuario = null;
     // Consulta para buscar por nit_persona
     String sql = "SELECT * FROM usuarios_total WHERE nit_persona = ?";
-    Conexion cn = new Conexion(); // Asegúrate de tener esta clase configurada correctamente
+    
     Connection con = null;
     PreparedStatement ps = null;
     ResultSet rs = null;
 
     try {
+        Conexion cn = new Conexion(); 
         con = cn.getConnection(); // Obtener la conexión
         ps = con.prepareStatement(sql);
         ps.setString(1, nitPersona); // Establecer el nit_persona en la consulta
@@ -71,17 +72,50 @@ public Users obtenUsuarioPorNit(String nitPersona) {
     return usuario; // Retornar el usuario encontrado o null si no se encontró
 }
 
+public boolean existeNitu(String nit) {
+    String sql = "SELECT COUNT(*) FROM usuarios WHERE nit_persona = ?";
+    Connection con = null;
+    PreparedStatement ps = null;
+    ResultSet rs = null;
+
+    try {
+        Conexion cn = new Conexion();
+        con = cn.getConnection();
+        
+        ps = con.prepareStatement(sql);
+        ps.setString(1, nit); // Establecer el NIT en la consulta
+        rs = ps.executeQuery(); // Ejecutar la consulta
+
+        // Procesar el resultado
+        if (rs.next()) {
+            return rs.getInt(1) > 0; // Retorna true si hay al menos un registro
+        }
+    } catch (SQLException e) {
+        e.printStackTrace(); // Manejo de excepciones
+    } finally {
+        // Cerrar ResultSet, PreparedStatement y Connection
+        try {
+            if (rs != null) rs.close();
+            if (ps != null) ps.close();
+            if (con != null) con.close();
+        } catch (SQLException e) {
+            e.printStackTrace(); // Manejo de excepciones al cerrar recursos
+        }
+    }
+    return false; // Retorna false si hubo un error o no se encontró el NIT
+}
+
+
     //MODIFICADO
     @Override
     public List listar() {
         ArrayList<Users> list2 = new ArrayList<>();
         String sql = "select * from usuarios u join roles r on u.id_rol = r.id_rol";
-        Conexion cn = new Conexion();
         Connection con = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
 
-        try {
+        try {Conexion cn = new Conexion();
             con = cn.getConnection();
             ps = con.prepareStatement(sql);
             rs = ps.executeQuery();
@@ -128,11 +162,12 @@ public Users obtenUsuarioPorNit(String nitPersona) {
     @Override
     public Users list(int idusuario) {
         String sql = " select * from usuarios where id_usuario=" + idusuario;
-        Conexion cn = new Conexion();
+        
         Connection con = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
+            Conexion cn = new Conexion();
             con = cn.getConnection();
             ps = con.prepareStatement(sql);
             rs = ps.executeQuery();
@@ -173,10 +208,12 @@ public Users obtenUsuarioPorNit(String nitPersona) {
 
 public boolean add(Users user) { 
     String sql = "INSERT INTO usuarios(primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, login, contrasenia, nit_persona, puesto, id_rol, estado, correo, motivo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    Connection con = null;
     PreparedStatement ps = null;
 
     try {
-        con = conexion.getConnection();
+        Conexion conexion = new Conexion();
+        con = conexion.getConnection(); 
         ps = con.prepareStatement(sql);
 
         // Asignar valores a los parámetros
@@ -215,11 +252,10 @@ public boolean add(Users user) {
     @Override
     public boolean edit(Users user) {
         String sql = "update usuarios set primer_nombre = '" + user.getPrimerNombre() + "', segundo_nombre = '" + user.getSegundoNombre() + "', primer_apellido = '" + user.getPrimerApellido() + "', segundo_apellido = '" + user.getSegundoApellido() + "', contrasenia = '" + user.getContrasenia() + "', nit_persona = '" + user.getNitpersona() + "', puesto = '" + user.getPuesto() + "', id_rol = '" + user.getIdRol() + "', estado = '" + user.getEstado() + "' where id_usuario=" + user.getIdusuario();
-        Conexion cn = new Conexion();
         Connection con = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        try {
+        try {Conexion cn = new Conexion();
             con = cn.getConnection();
             ps = con.prepareStatement(sql);
             ps.executeUpdate();
@@ -248,11 +284,11 @@ public boolean add(Users user) {
     @Override
     public boolean eliminar(int idusuario) {
         String sql = "delete from usuarios where id_usuario=" + idusuario;
-        Conexion cn = new Conexion();
         Connection con = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
+            Conexion cn = new Conexion();
             con = cn.getConnection();
             ps = con.prepareStatement(sql);
             ps.executeUpdate();
@@ -280,11 +316,11 @@ public boolean add(Users user) {
     public List<Roles> listaRoles() {
         List<Roles> lista = new ArrayList<>();
         String sql = "SELECT id_rol, nombre_rol FROM roles";
-        Conexion cn = new Conexion();
         Connection con = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
+            Conexion cn = new Conexion();
             con = cn.getConnection();
             ps = con.prepareStatement(sql);
             rs = ps.executeQuery();

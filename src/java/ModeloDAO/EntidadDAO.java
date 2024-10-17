@@ -25,12 +25,12 @@ public class EntidadDAO {
     public List<Entidad> obtenerPorTipo(String tipoEntidad) {
         List<Entidad> lista = new ArrayList<>();
         String sql = "SELECT * FROM entidades_registrado WHERE er_Tipo = ?";
-        Conexion cn = new Conexion();
         Connection con = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
 
         try {
+            Conexion cn = new Conexion();
             con = cn.getConnection(); // Obtener la conexión
             ps = con.prepareStatement(sql);
             ps.setString(1, tipoEntidad);
@@ -60,17 +60,16 @@ public class EntidadDAO {
         }
         return lista;
     }
-
-    public Entidad obtenPorNit(String nitEntidad) {
+    
+//VERIFICAR SI YA EXISTE LA ENTIDAD EN LOS REGISTRADOS
+    public Entidad existeNit(String nitEntidad) {
         Entidad entidad = null;
         String sql = "SELECT * FROM entidades_registrado WHERE er_Nit = ?";
-        
-        Conexion cn = new Conexion();
         Connection con = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
 
-        try {
+        try {Conexion cn = new Conexion();
             con = cn.getConnection(); // Obtener la conexión
             ps = con.prepareStatement(sql);
             ps.setString(1, nitEntidad);
@@ -103,13 +102,12 @@ public class EntidadDAO {
     public Entidad obtenerPorNit(String nitEntidad) {
         Entidad entidad = null;
         String sql = "SELECT * FROM entidades_total WHERE e_Nit = ?";
-        
-        Conexion cn = new Conexion();
         Connection con = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
 
         try {
+            Conexion cn = new Conexion();
             con = cn.getConnection(); // Obtener la conexión
             ps = con.prepareStatement(sql);
             ps.setString(1, nitEntidad);
@@ -145,12 +143,11 @@ public class EntidadDAO {
     public boolean addEntidad(Entidad enti) {
         String sql = "INSERT INTO entidades_registrado (er_Nit, er_Nombre, er_Tipo, er_Correo, er_Direccion, er_Telefono) VALUES (?, ?, ?, ?, ?, ?)";
         boolean inserted = false; // Variable para verificar si se insertó
-        
-        Conexion cn = new Conexion();
         Connection con = null;
         PreparedStatement ps = null;
 
         try {
+            Conexion cn = new Conexion();
             con = cn.getConnection();
             ps = con.prepareStatement(sql);
             ps.setString(1, enti.getEntidadNit());
@@ -179,10 +176,10 @@ public class EntidadDAO {
     
     public boolean elimEnti(int idEntidad) {
         String sql = "delete from entidades_registrado where er_Id=" + idEntidad;
-        Conexion cn = new Conexion();
         Connection con = null;
         PreparedStatement ps = null;
         try {
+            Conexion cn = new Conexion();
             con = cn.getConnection();
             ps = con.prepareStatement(sql);
             int rowsAffected = ps.executeUpdate();

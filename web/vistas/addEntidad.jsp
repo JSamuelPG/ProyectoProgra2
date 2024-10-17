@@ -99,15 +99,17 @@
     <div class="dropdown">
         <button class="dropbtn">Menú</button>
         <div class="dropdown-content">
-            <a href="Controlador?menu=usuarios&accion=listar">Lista de Usuarios</a>
+            <a href="Controlador?menu=inicio&accion=init">Inicio</a>
             <div class="dropdown">
                 <a href="#" class="dropbtn">Servicios</a>
                 <div class="dropdown-content">
                     <div class="dropdown">
                         <a href="#" class="dropbtn">SCM</a>
                         <div class="dropdown-content">
+                            <a href="Controlador?menu=usuarios&accion=listar">Mantenimiento de Usuarios</a>
                             <a href="Controlador?menu=listaent&accion=entidades">Mantenimiento de Catálogo</a>
                             <a href="Controlador?menu=solicit&accion=listarr">Bandeja de Laboratorio</a>
+                            <a href="Controlador?menu=reasignar&accion=listReasignar">Reasignacion de Solicitudes</a>
                         </div>
                     </div>
                 </div>
@@ -126,7 +128,7 @@
         <label for="nitEntidad">NIT:</label>
         <input type="text" name="nitEntidad" id="nitEntidad" required>
         <button type="submit" name="accion" value="obtenerpornit" class="btn btn-info">Buscar</button>
-        <a class="btn btn-primary" href="Controlador?menu=listaent&accion=entidades">Regresar</a>
+        <a class="btn btn-secondary" href="Controlador?menu=listaent&accion=entidades">Regresar</a>
     </form>
 
     <!-- Mostrar resultados de búsqueda -->

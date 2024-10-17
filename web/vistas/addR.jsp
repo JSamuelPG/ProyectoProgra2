@@ -99,15 +99,17 @@
     <div class="dropdown">
         <button class="dropbtn">Menú</button>
         <div class="dropdown-content">
-            <a href="Controlador?menu=usuarios&accion=listar">Lista de Usuarios</a>
+            <a href="Controlador?menu=inicio&accion=init">Inicio</a>
             <div class="dropdown">
                 <a href="#" class="dropbtn">Servicios</a>
                 <div class="dropdown-content">
                     <div class="dropdown">
                         <a href="#" class="dropbtn">SCM</a>
                         <div class="dropdown-content">
+                            <a href="Controlador?menu=usuarios&accion=listar">Mantenimiento de Usuarios</a>
                             <a href="Controlador?menu=listaent&accion=entidades">Mantenimiento de Catálogo</a>
                             <a href="Controlador?menu=solicit&accion=listarr">Bandeja de Laboratorio</a>
+                            <a href="Controlador?menu=reasignar&accion=listReasignar">Reasignacion de Solicitudes</a>
                         </div>
                     </div>
                 </div>
@@ -120,17 +122,11 @@
 
         <div class="container">
             <h2>Agregar Solicitud</h2>
-            <a class="btn btn-primary" href="Controlador?menu=solicit&accion=listarr">Regresar</a>
+            <a class="btn btn-secondary" href="Controlador?menu=solicit&accion=listarr">Regresar</a>
             <form action="Controlador" method="get">
                 <div class="row">
                     <!-- Primera columna -->
                     <div class="col-lg-5">
-                        Tipo de Solicitud: <br>
-                        <select class="form-control" name="txtSoli" id="txtSoli" onchange="toggleFields()" >
-                            <option value="MuestraParaAnalisis" <%= "MuestraparaAnalisis".equals(request.getParameter("txtSoli")) ? "selected" : ""%>>Muestra para análisis</option>
-                            <option value="SolicitudSinMuestra" <%= "SolicitudsinMuestra".equals(request.getParameter("txtSoli")) ? "selected" : ""%>>Solicitud sin muestra</option>
-                            <option value="ConNumerodeMuestra" <%= "ConNumerodeMuestra".equals(request.getParameter("txtSoli")) ? "selected" : ""%>>Con número de muestra</option>
-                        </select>
                         <br>
                         Tipo de Documento:<br>
                         <select class="form-control" name="txtDoc" id="txtDoc">
@@ -148,14 +144,14 @@
 
                         <%
                             Entidad entidadPorNit = (Entidad) request.getAttribute("entidadPorNit");
-                            String mensaje = (String) request.getAttribute("mensaje");
+                            String mensajeProv = (String) request.getAttribute("mensajeProveedor");
                             if (entidadPorNit != null) {
                         %>
 
                         <%
-                        } else if (mensaje != null) {
+                        } else if (mensajeProv != null) {
                         %>
-                        <p><%= mensaje%></p>
+                        <p style="color: red;"> <%= mensajeProv %></p>
                         <%
                             }
                         %>
@@ -183,6 +179,12 @@
                         <input class="form-control" type="text" name="txtTelProv" id="txtTelProv" 
                                value="${not empty entidadPorNit ? entidadPorNit.entidadTelefono : param.txtTelProv != null ? param.txtTelProv : ''}" readonly/><br>
 
+                        Tipo de Solicitud: <br>
+                        <select class="form-control" name="txtSoli" id="txtSoli" onchange="toggleFields()" >
+                            <option value="MuestraParaAnalisis" <%= "MuestraparaAnalisis".equals(request.getParameter("txtSoli")) ? "selected" : ""%>>Muestra para análisis</option>
+                            <option value="SolicitudSinMuestra" <%= "SolicitudsinMuestra".equals(request.getParameter("txtSoli")) ? "selected" : ""%>>Solicitud sin muestra</option>
+                            <option value="ConNumerodeMuestra" <%= "ConNumerodeMuestra".equals(request.getParameter("txtSoli")) ? "selected" : ""%>>Con número de muestra</option>
+                        </select>
                     </div>
 
                     <!-- Segunda columna -->
@@ -210,13 +212,14 @@
 
                         <%
                             Solicitantes obtenSol = (Solicitantes) request.getAttribute("obtenSol");
+                            String mensajeSolicitante = (String) request.getAttribute("mensajeSolicitante");
                             if (obtenSol != null) {
                         %>
 
                         <%
-                        } else if (mensaje != null) {
+                        } else if (mensajeSolicitante != null) {
                         %>
-                        <p><%= mensaje%></p>
+                         <p style="color: red;"><%= mensajeSolicitante %></p>
                         <%
                             }
                         %>
@@ -254,12 +257,11 @@
                         <!-- Campo para seleccionar al analista (usuario con rol 2) -->
                         <label for="analista">Seleccionar Analista:</label><br>
                         <select class="form-control" name="analista" id="analista">
-                            <option value="">-- Seleccione un analista --</option>
                             <% if (listaUsuarios != null) {
                                     for (Users usuario : listaUsuarios) {
                             %>
                             <option value="<%= usuario.getIdusuario()%>">
-                                <%= usuario.getPrimerNombre() %> 
+                                <%= usuario.getPrimerNombre() %> - <%= usuario.getCorreo() %> 
                             </option>
                             <%
                                     }
@@ -275,9 +277,8 @@
                 </div>
             </form>             
         </div>
-            
-                                  
-<script>
+                                      
+<!-- <script>
     function toggleFields() {
         const tipoSolicitud = document.getElementById('txtSoli').value;
 
@@ -287,26 +288,68 @@
 
         // Habilita o inhabilita la escritura en los campos según el tipo de solicitud
         if (tipoSolicitud === "MuestraParaAnalisis") {
-            noMuestraField.readOnly = true; // Inhabilitar campo No de Muestra
+            noMuestraField.readOnly = true; 
             noMuestraField.value = "";
-            descripcionField.readOnly = false; // Habilitar campo Descripción de Producto
+            descripcionField.readOnly = false; 
         } else if (tipoSolicitud === "SolicitudSinMuestra") {
-            noMuestraField.readOnly = true; // Inhabilitar campo No de Muestra
-            descripcionField.readOnly = false; // Inhabilitar campo Descripción de Producto
-            noMuestraField.value = ""; // Limpiar el campo si está inhabilitado
-            descripcionField.value = ""; // Limpiar el campo si está inhabilitado
+            noMuestraField.readOnly = true; 
+            descripcionField.readOnly = false; 
+            noMuestraField.value = ""; 
+            descripcionField.value = ""; 
         } else if (tipoSolicitud === "ConNumerodeMuestra") {
-            noMuestraField.readOnly = false; // Habilitar campo No de Muestra
-            descripcionField.readOnly = false; // Habilitar campo Descripción de Producto
+            noMuestraField.readOnly = false; 
+            descripcionField.readOnly = false; 
         }
     }
 
     // Ejecutar la función para configurar los campos al cargar la página
     window.onload = toggleFields;
+</script> -->     
+
+
+<script>
+    // Función para alternar campos según el tipo de solicitud
+    function toggleFields() {
+        const tipoSolicitud = document.getElementById('txtSoli').value;
+        const noMuestraField = document.getElementById('txtNoMuestra');
+        const descripcionField = document.getElementById('txtDescProd');
+
+        // Lógica para habilitar/deshabilitar campos según el tipo de solicitud
+        const isAnalysis = tipoSolicitud === "MuestraParaAnalisis";
+        const isWithoutSample = tipoSolicitud === "SolicitudSinMuestra";
+        const isWithSampleNumber = tipoSolicitud === "ConNumerodeMuestra";
+
+        noMuestraField.readOnly = isAnalysis || isWithoutSample;
+        noMuestraField.value = isAnalysis || isWithoutSample ? "" : noMuestraField.value;
+    }
+
+    // Función para habilitar/deshabilitar el selector de analista
+    function validarCampos() {
+        const fields = ['nitEntidad', 'nitSolicitante', 'txtNodoc', 'txtDescProd'];
+        const allFilled = fields.every(id => document.getElementById(id).value.trim() !== '');
+        const analistaSelect = document.getElementById('analista');
+
+        analistaSelect.disabled = !allFilled;
+        if (!allFilled) analistaSelect.selectedIndex = 0;
+    }
+
+    // Función para validar el formulario antes de enviarlo
+    function validarFormulario() {
+        if (document.getElementById('analista').disabled) {
+            alert('Debes llenar todos los campos obligatorios antes de seleccionar un analista.');
+            return false;
+        }
+        return true;
+    }
+
+    // Ejecutar las funciones de inicialización al cargar la página
+    window.onload = function() {
+        toggleFields();
+        validarCampos();
+    };
 </script>
 
 
-
-                        
+    
     </body>
 </html>

@@ -60,9 +60,24 @@
         .dropdown-content a:hover {
             background-color: #ffb74d;
         }
+        /* Mostrar el contenido del menú al pasar el mouse por el dropdown */
         .dropdown:hover > .dropdown-content {
             display: block;
         }
+        /* Estilo para el submenú dentro de "Servicios" */
+        .dropdown-content .dropdown {
+            position: relative;
+        }
+        .dropdown-content .dropdown-content {
+            display: none; /* Ocultar el submenú inicialmente */
+            top: 0;
+            left: 100%; /* Muestra el submenú a la derecha */
+            margin-left: 1px;
+        }
+        .dropdown-content .dropdown:hover .dropdown-content {
+            display: block; /* Mostrar el submenú al pasar el mouse sobre "SCM" */
+        }
+        /* Estilos para la tabla */
         table {
             width: 100%;
             border-collapse: collapse;
@@ -84,15 +99,17 @@
     <div class="dropdown">
         <button class="dropbtn">Menú</button>
         <div class="dropdown-content">
-            <a href="Controlador?menu=usuarios&accion=listar">Lista de Usuarios</a>
+            <a href="Controlador?menu=inicio&accion=init">Inicio</a>
             <div class="dropdown">
                 <a href="#" class="dropbtn">Servicios</a>
                 <div class="dropdown-content">
                     <div class="dropdown">
                         <a href="#" class="dropbtn">SCM</a>
                         <div class="dropdown-content">
+                            <a href="Controlador?menu=usuarios&accion=listar">Mantenimiento de Usuarios</a>
                             <a href="Controlador?menu=listaent&accion=entidades">Mantenimiento de Catálogo</a>
                             <a href="Controlador?menu=solicit&accion=listarr">Bandeja de Laboratorio</a>
+                            <a href="Controlador?menu=reasignar&accion=listReasignar">Reasignacion de Solicitudes</a>
                         </div>
                     </div>
                 </div>
@@ -111,6 +128,7 @@
             <input type="text" class="form-control" id="nitPersona" name="nitPersona" required>
         </div>
         <button type="submit" class="btn btn-primary">Buscar</button>
+        <a class="btn btn-secondary" href="Controlador?menu=usuarios&accion=listar">Regresar</a>
     </form>
 
     <% 
@@ -128,7 +146,7 @@
                 <th>Contraseña</th>
                 <th>NIT</th>
                 <th>Puesto</th>
-                <th>Rol</th>
+                <th>Acciones</th>
             </tr>
             <tr>
                 <td><%= usuarioPorNit.getIdusuario() %></td>
@@ -153,7 +171,7 @@
                         <input type="hidden" name="txtPuesto" value="<%= usuarioPorNit.getPuesto() %>">
                         <input type="hidden" name="txtEstado" value="<%= usuarioPorNit.getEstado() %>">
                         correo:
-                        <input type="email" name="txtCorreo" value="<%= usuarioPorNit.getCorreo() %>" class="form-control" required>
+                        <input type="email" name="txtCorreo" value="<%= usuarioPorNit.getCorreo() != null ? usuarioPorNit.getCorreo() : "" %>" class="form-control" required>
                         Rol:
                         <select class="form-control" name="txtRol" id="opciones">
                             <% 
