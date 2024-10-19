@@ -7,10 +7,10 @@ package Modelo;
  */
 public class Solicitantes {
     
-    int solId;
-    String solNit;
-    String solNombre;
-    String solCorreo;
+    public int solId;
+    public String solNit;
+    public String solNombre;
+    public String solCorreo;
     
     public Solicitantes(){}
 

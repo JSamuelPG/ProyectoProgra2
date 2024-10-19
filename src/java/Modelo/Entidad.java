@@ -6,13 +6,13 @@ package Modelo;
  * @author Samuel
  */
 public class Entidad {
-    int entidadId;
-    String entidadNit;
-    String entidadNombre;
-    String entidadTipo;
-    String entidadCorreo;
-    String entidadDireccion;
-    String entidadTelefono;
+    public int entidadId;
+    public String entidadNit;
+    public String entidadNombre;
+    public String entidadTipo;
+    public String entidadCorreo;
+    public String entidadDireccion;
+    public String entidadTelefono;
     
     public Entidad(){}
 

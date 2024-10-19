@@ -247,7 +247,6 @@ public boolean add(Users user) {
     }
 }
 
-
     //MODIFICADO
     @Override
     public boolean edit(Users user) {

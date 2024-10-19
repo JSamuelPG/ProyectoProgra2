@@ -14,85 +14,83 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link href="css/bootstrap.css" rel="stylesheet" type="text/css"/>
         <title>JSP Page</title>
-<style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-        }
-.navbar {
-    padding: 10px;
-    position: relative;
-    z-index: 10;
-}
+            <style>
+                    body {
+                        font-family: Arial, sans-serif;
+                        margin: 0;
+                        padding: 0;
+                        background-color: #f4f4f4;
+                    }
+            .navbar {
+                padding: 10px;
+                position: relative;
+                z-index: 10;
+            }
 
-.navbar a, .dropbtn {
-    color: white;
-    text-align: center;
-    padding: 14px 20px;
-    text-decoration: none;
-    font-size: 18px;
-    background-color: #e38d13;
-    border: none;
-    cursor: pointer;
-    display: inline-block;
-    transition: background-color 0.3s;
-}
+            .navbar a, .dropbtn {
+                color: white;
+                text-align: center;
+                padding: 14px 20px;
+                text-decoration: none;
+                font-size: 18px;
+                background-color: #e38d13;
+                border: none;
+                cursor: pointer;
+                display: inline-block;
+                transition: background-color 0.3s;
+            }
 
-.navbar a:hover, .dropbtn:hover {
-    background-color: #ffb74d;
-}
+            .navbar a:hover, .dropbtn:hover {
+                background-color: #ffb74d;
+            }
 
-.dropdown {
-    display: inline-block;
-    position: relative;
-}
+            .dropdown {
+                display: inline-block;
+                position: relative;
+            }
 
-.dropdown-content {
-    display: none;
-    position: absolute;
-    background-color: #e38d13;
-    min-width: 160px;
-    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
-    z-index: 999;
-}
+            .dropdown-content {
+                display: none;
+                position: absolute;
+                background-color: #e38d13;
+                min-width: 160px;
+                box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+                z-index: 999;
+            }
 
-.dropdown-content a {
-    color: white;
-    padding: 12px 16px;
-    text-decoration: none;
-    display: block;
-    text-align: left;
-}
+            .dropdown-content a {
+                color: white;
+                padding: 12px 16px;
+                text-decoration: none;
+                display: block;
+                text-align: left;
+            }
 
-.dropdown-content a:hover {
-    background-color: #ffb74d;
-}
+            .dropdown-content a:hover {
+                background-color: #ffb74d;
+            }
 
-/* Mostrar dropdown solo al pasar el mouse sobre el elemento correspondiente */
-.dropdown:hover > .dropdown-content {
-    display: block;
-}
+            /* Mostrar dropdown solo al pasar el mouse sobre el elemento correspondiente */
+            .dropdown:hover > .dropdown-content {
+                display: block;
+            }
 
-/* Estilo para el submenú dentro de "Servicios" */
-.dropdown-content .dropdown {
-    position: relative;
-}
+            /* Estilo para el submenú dentro de "Servicios" */
+            .dropdown-content .dropdown {
+                position: relative;
+            }
 
-.dropdown-content .dropdown-content {
-    display: none; /* Ocultar el submenú inicialmente */
-    top: 0;
-    left: 100%; /* Muestra el submenú a la derecha */
-    margin-left: 1px;
-}
+            .dropdown-content .dropdown-content {
+                display: none; /* Ocultar el submenú inicialmente */
+                top: 0;
+                left: 100%; /* Muestra el submenú a la derecha */
+                margin-left: 1px;
+            }
 
-.dropdown-content .dropdown:hover .dropdown-content {
-    display: block; /* Mostrar el submenú al pasar el mouse */
-}
-
+            .dropdown-content .dropdown:hover .dropdown-content {
+                display: block; /* Mostrar el submenú al pasar el mouse */
+            }
     </style>
-
     </head>
     <body>
 <div class="navbar">
@@ -136,7 +134,7 @@
                         </select>
                         <br>
 
-                        Nit Proveedor: <br>
+                     Nit Proveedor: <br>
                         <input class="form-control" type="text" name="nitEntidad" id="nitEntidad" 
                                value="<%= request.getParameter("nitEntidad") != null ? request.getParameter("nitEntidad") : ""%>"><br>
                         <input type="hidden" name="menu" value="solicit">
@@ -145,44 +143,67 @@
                         <%
                             Entidad entidadPorNit = (Entidad) request.getAttribute("entidadPorNit");
                             String mensajeProv = (String) request.getAttribute("mensajeProveedor");
-                            if (entidadPorNit != null) {
-                        %>
 
-                        <%
-                        } else if (mensajeProv != null) {
+                            // Inicializar los valores a vacíos si no se encuentra la entidad o si hay un mensaje
+                            String nombreProveedor = "";
+                            String tipoEntidad = "";
+                            String correoProveedor = "";
+                            String direccionProveedor = "";
+                            String telefonoProveedor = "";
+
+                            if (entidadPorNit != null) {
+                                // Si se encuentra la entidad, asignar los valores
+                                nombreProveedor = entidadPorNit.entidadNombre;
+                                tipoEntidad = entidadPorNit.entidadTipo;
+                                correoProveedor = entidadPorNit.entidadCorreo;
+                                direccionProveedor = entidadPorNit.entidadDireccion;
+                                telefonoProveedor = entidadPorNit.entidadTelefono;
+                            } else if (mensajeProv != null) {
+                                // Si hay un mensaje, dejar los campos vacíos
+                                nombreProveedor = "";
+                                tipoEntidad = "";
+                                correoProveedor = "";
+                                direccionProveedor = "";
+                                telefonoProveedor = "";
+                            }
                         %>
-                        <p style="color: red;"> <%= mensajeProv %></p>
+                        <%
+                            // Mostrar mensaje de error si corresponde
+                            if (mensajeProv != null) {
+                        %>
+                            <p style="color: red;"> <%= mensajeProv %></p>
                         <%
                             }
                         %>
+
                         Nombre Proveedor: <br>
                         <input class="form-control" type="text" name="txtNomProv" id="txtNomProv" 
-                               value="${not empty entidadPorNit ? entidadPorNit.entidadNombre : param.txtNomProv != null ? param.txtNomProv : ''}"readonly /><br>
+                               value="<%= nombreProveedor != null ? nombreProveedor : (request.getParameter("txtNomProv") != null ? request.getParameter("txtNomProv") : "") %>" readonly /><br>
 
                         <!-- Tipo de Entidad -->
                         Tipo de Entidad: <br>
                         <input class="form-control" type="text" name="txtEnti" id="txtEnti" 
-                               value="${not empty entidadPorNit ? entidadPorNit.entidadTipo : param.txtEnti != null ? param.txtEnti : ''}"  readonly/><br>
+                               value="<%= tipoEntidad != null ? tipoEntidad : (request.getParameter("txtEnti") != null ? request.getParameter("txtEnti") : "") %>" readonly/><br>
 
                         <!-- Correo Proveedor -->
                         Correo Proveedor: <br>
                         <input class="form-control" type="text" name="txtCorProv" id="txtCorProv" 
-                               value="${not empty entidadPorNit ? entidadPorNit.entidadCorreo : param.txtCorProv != null ? param.txtCorProv : ''}" readonly/><br>
+                               value="<%= correoProveedor != null ? correoProveedor : (request.getParameter("txtCorProv") != null ? request.getParameter("txtCorProv") : "") %>" readonly/><br>
 
                         <!-- Dirección Proveedor -->
                         Dirección Proveedor: <br>
                         <input class="form-control" type="text" name="txtDiProv" id="txtDiProv" 
-                               value="${not empty entidadPorNit ? entidadPorNit.entidadDireccion : param.txtDiProv != null ? param.txtDiProv : ''}" readonly/><br>
+                               value="<%= direccionProveedor != null ? direccionProveedor : (request.getParameter("txtDiProv") != null ? request.getParameter("txtDiProv") : "") %>" readonly/><br>
 
                         <!-- Teléfono Proveedor -->
                         Teléfono Proveedor: <br>
                         <input class="form-control" type="text" name="txtTelProv" id="txtTelProv" 
-                               value="${not empty entidadPorNit ? entidadPorNit.entidadTelefono : param.txtTelProv != null ? param.txtTelProv : ''}" readonly/><br>
+                               value="<%= telefonoProveedor != null ? telefonoProveedor : (request.getParameter("txtTelProv") != null ? request.getParameter("txtTelProv") : "") %>" readonly/><br>
 
                         Tipo de Solicitud: <br>
                         <select class="form-control" name="txtSoli" id="txtSoli" onchange="toggleFields()" >
-                            <option value="MuestraParaAnalisis" <%= "MuestraparaAnalisis".equals(request.getParameter("txtSoli")) ? "selected" : ""%>>Muestra para análisis</option>
-                            <option value="SolicitudSinMuestra" <%= "SolicitudsinMuestra".equals(request.getParameter("txtSoli")) ? "selected" : ""%>>Solicitud sin muestra</option>
+                            <option value="MuestraParaAnalisis" <%= "MuestraParaAnalisis".equals(request.getParameter("txtSoli")) ? "selected" : ""%>>Muestra para análisis</option>
+                            <option value="SolicitudSinMuestra" <%= "SolicitudSinMuestra".equals(request.getParameter("txtSoli")) ? "selected" : ""%>>Solicitud sin muestra</option>
                             <option value="ConNumerodeMuestra" <%= "ConNumerodeMuestra".equals(request.getParameter("txtSoli")) ? "selected" : ""%>>Con número de muestra</option>
                         </select>
                     </div>
@@ -206,33 +227,47 @@
 
                         Nit Solicitante: <br>
                         <input class="form-control" type="text" name="nitSolicitante" id="nitSolicitante" 
-                               value="<%= request.getParameter("nitSolicitante") != null ? request.getParameter("nitSolicitante") : ""%>"><br>
+                               value="<%= request.getParameter("nitSolicitante") != null ? request.getParameter("nitSolicitante") : "" %>"><br>
                         <input type="hidden" name="menu" value="solicit">
                         <button type="submit" name="accion" value="obtenSolici" class="btn btn-info">Buscar</button>
 
                         <%
                             Solicitantes obtenSol = (Solicitantes) request.getAttribute("obtenSol");
                             String mensajeSolicitante = (String) request.getAttribute("mensajeSolicitante");
+
+                            // Inicializar los valores a vacíos si no se encuentra el solicitante o si hay un mensaje
+                            String nombreSolicitante = "";
+                            String correoSolicitante = "";
+
                             if (obtenSol != null) {
+                                // Si se encuentra el solicitante, asignar los valores
+                                nombreSolicitante = obtenSol.solNombre;
+                                correoSolicitante = obtenSol.solCorreo;
+                            } else if (mensajeSolicitante != null) {
+                                // Si hay un mensaje, dejar los campos vacíos
+                                nombreSolicitante = "";
+                                correoSolicitante = "";
+                            }
                         %>
 
                         <%
-                        } else if (mensajeSolicitante != null) {
+                            // Mostrar mensaje de error si corresponde
+                            if (mensajeSolicitante != null) {
                         %>
-                         <p style="color: red;"><%= mensajeSolicitante %></p>
+                            <p style="color: red;"><%= mensajeSolicitante %></p>
                         <%
                             }
                         %>
 
-                        <!-- Nombre Solicitante -->
+                       <!-- Nombre Solicitante -->
                         Nombre Solicitante: <br>
                         <input class="form-control" type="text" name="txtNomSol" id="txtNomSol" 
-                               value="${not empty obtenSol ? obtenSol.solNombre : param.txtNomSol != null ? param.txtNomSol : ''}" readonly/><br>
+                               value="<%= (nombreSolicitante != null ? nombreSolicitante : (request.getAttribute("txtNomSol") != null ? request.getAttribute("txtNomSol") : "")) %>" readonly/><br>
 
                         <!-- Correo Solicitante -->
                         Correo Solicitante: <br>
                         <input class="form-control" type="text" name="txtCorSol" id="txtCorSol" 
-                               value="${not empty obtenSol ? obtenSol.solCorreo : param.txtCorSol != null ? param.txtCorSol : ''}" /><br>
+                               value="<%= (correoSolicitante != null ? correoSolicitante : (request.getAttribute("txtCorSol") != null ? request.getAttribute("txtCorSol") : "")) %>" /><br>
 
                         <!-- No de Muestra -->
                         No de Muestra: <br>
@@ -256,7 +291,7 @@
 
                         <!-- Campo para seleccionar al analista (usuario con rol 2) -->
                         <label for="analista">Seleccionar Analista:</label><br>
-                        <select class="form-control" name="analista" id="analista">
+                        <select class="form-control" name="analista" id="analista" onchange="this.form.nombreAnalista.value=this.options[this.selectedIndex].text.split(' - ')[0];">
                             <% if (listaUsuarios != null) {
                                     for (Users usuario : listaUsuarios) {
                             %>
@@ -269,6 +304,7 @@
                             %>
   
                         </select>
+                            <input type="hidden" name="nombreAnalista" id="nombreAnalista" value="">
                         <br>
                         <input type="hidden" name="menu" value="solicit">
                         <input type="submit" name="accion" value="Agregar" class="btn btn-primary">
@@ -276,80 +312,32 @@
                     </div>
                 </div>
             </form>             
-        </div>
-                                      
-<!-- <script>
-    function toggleFields() {
-        const tipoSolicitud = document.getElementById('txtSoli').value;
+        </div>                               
+    <script>
+        function toggleFields() {
+            const tipoSolicitud = document.getElementById('txtSoli').value;
 
-        // Los campos que deseas controlar
-        const noMuestraField = document.getElementById('txtNoMuestra');
-        const descripcionField = document.getElementById('txtDescProd');
+            // Los campos que deseas controlar
+            const noMuestraField = document.getElementById('txtNoMuestra');
+            const descripcionField = document.getElementById('txtDescProd');
 
-        // Habilita o inhabilita la escritura en los campos según el tipo de solicitud
-        if (tipoSolicitud === "MuestraParaAnalisis") {
-            noMuestraField.readOnly = true; 
-            noMuestraField.value = "";
-            descripcionField.readOnly = false; 
-        } else if (tipoSolicitud === "SolicitudSinMuestra") {
-            noMuestraField.readOnly = true; 
-            descripcionField.readOnly = false; 
-            noMuestraField.value = ""; 
-            descripcionField.value = ""; 
-        } else if (tipoSolicitud === "ConNumerodeMuestra") {
-            noMuestraField.readOnly = false; 
-            descripcionField.readOnly = false; 
+            // habilita o inhabilita la escritura en los campos según el tipo de solicitud
+            if (tipoSolicitud === "MuestraParaAnalisis") {
+                noMuestraField.readOnly = true; 
+                noMuestraField.value = "";
+                descripcionField.readOnly = false; 
+            } else if (tipoSolicitud === "SolicitudSinMuestra") {
+                noMuestraField.readOnly = true; 
+                descripcionField.readOnly = false; 
+                noMuestraField.value = ""; 
+                descripcionField.value = ""; 
+            } else if (tipoSolicitud === "ConNumerodeMuestra") {
+                noMuestraField.readOnly = false; 
+                descripcionField.readOnly = false; 
+            }
         }
-    }
-
-    // Ejecutar la función para configurar los campos al cargar la página
-    window.onload = toggleFields;
-</script> -->     
-
-
-<script>
-    // Función para alternar campos según el tipo de solicitud
-    function toggleFields() {
-        const tipoSolicitud = document.getElementById('txtSoli').value;
-        const noMuestraField = document.getElementById('txtNoMuestra');
-        const descripcionField = document.getElementById('txtDescProd');
-
-        // Lógica para habilitar/deshabilitar campos según el tipo de solicitud
-        const isAnalysis = tipoSolicitud === "MuestraParaAnalisis";
-        const isWithoutSample = tipoSolicitud === "SolicitudSinMuestra";
-        const isWithSampleNumber = tipoSolicitud === "ConNumerodeMuestra";
-
-        noMuestraField.readOnly = isAnalysis || isWithoutSample;
-        noMuestraField.value = isAnalysis || isWithoutSample ? "" : noMuestraField.value;
-    }
-
-    // Función para habilitar/deshabilitar el selector de analista
-    function validarCampos() {
-        const fields = ['nitEntidad', 'nitSolicitante', 'txtNodoc', 'txtDescProd'];
-        const allFilled = fields.every(id => document.getElementById(id).value.trim() !== '');
-        const analistaSelect = document.getElementById('analista');
-
-        analistaSelect.disabled = !allFilled;
-        if (!allFilled) analistaSelect.selectedIndex = 0;
-    }
-
-    // Función para validar el formulario antes de enviarlo
-    function validarFormulario() {
-        if (document.getElementById('analista').disabled) {
-            alert('Debes llenar todos los campos obligatorios antes de seleccionar un analista.');
-            return false;
-        }
-        return true;
-    }
-
-    // Ejecutar las funciones de inicialización al cargar la página
-    window.onload = function() {
-        toggleFields();
-        validarCampos();
-    };
-</script>
-
-
-    
-    </body>
+        // Ejecutar la función para configurar los campos al cargar la página
+        window.onload = toggleFields;
+    </script>    
+ </body>
 </html>

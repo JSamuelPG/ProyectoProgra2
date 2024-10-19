@@ -159,7 +159,7 @@
                         <td class="text-center"><%= user.getCorreo()%></td>
                     <td class="text-center"><%= user.getEstado() %></td>
                     <td class="text-center">
-                        <a class="btn btn-warning" href="Controlador?accion=editar&idusua=<%= user.getIdusuario() %>">Editar</a>
+                        <a class="btn btn-warning" href="Controlador?menu=usuarios&accion=editar&idusuario=<%= user.getIdusuario() %>">Editar</a>
                         <a class="btn btn-danger" href="Controlador?menu=usuarios&accion=eliminar&id=<%= user.getIdusuario() %>">Eliminar</a>
                     </td>
                 </tr>

@@ -1,11 +1,13 @@
 package Controlador;
 
 
+
+import com.itextpdf.text.*;
+import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfWriter;
 import java.util.Calendar;
-
 import Config.Conexion;
 import Modelo.*;
 import ModeloDAO.*;
@@ -212,17 +214,15 @@ public class Controlador extends HttpServlet {
                 case "obtenSolici":
                     List<Users> listaUsuarios = sdao.obtenAnalista();
                     request.setAttribute("listaUsuarios", listaUsuarios);
-                    
+
                     String nitSoli = request.getParameter("nitSolicitante").trim();
                     Solicitantes soli = sdao.obtenerSolicitante(nitSoli);
-
                     request.setAttribute("obtenSol", soli);
 
                     // Mantener los valores de los campos
                     request.setAttribute("nitSolicitante", nitSoli);
                     request.setAttribute("txtNomSol", request.getParameter("txtNomSol"));
                     request.setAttribute("txtCorSol", request.getParameter("txtCorSol"));
-                    /*request.setAttribute("txtNoMuestra", request.getParameter("txtNoMuestra"));*/
                     request.setAttribute("txtDescProd", request.getParameter("txtDescProd"));
                     request.setAttribute("txtFecha", request.getParameter("txtFecha"));
 
@@ -230,16 +230,8 @@ public class Controlador extends HttpServlet {
                         request.setAttribute("mensajeSolicitante", "No se encontró este NIT " + nitSoli);
                     }
 
-                    RequestDispatcher dispatcher = request.getRequestDispatcher(addr);
-                    dispatcher.forward(request, response);
-                    break;
-
-                case "obtenprov":
-                    List<Users> listaUsuarios2 = sdao.obtenAnalista();
-                    request.setAttribute("listaUsuarios", listaUsuarios2);
                     String nitEntidad = request.getParameter("nitEntidad").trim();
-                    Entidad entidad = edao.obtenerPorNit(nitEntidad);
-
+                    Entidad entidad = sdao.obtenerPorNit(nitEntidad);
                     request.setAttribute("entidadPorNit", entidad);
 
                     // Mantener los valores de los campos
@@ -249,17 +241,54 @@ public class Controlador extends HttpServlet {
                     request.setAttribute("txtCorProv", request.getParameter("txtCorProv"));
                     request.setAttribute("txtDiProv", request.getParameter("txtDiProv"));
                     request.setAttribute("txtTelProv", request.getParameter("txtTelProv"));
-                    request.setAttribute("txtFecha", request.getParameter("txtFecha"));
-                    /*request.setAttribute("txtNoMuestra", request.getParameter("txtNoMuestra"));*/
-                    request.setAttribute("txtDescProd", request.getParameter("txtDescProd"));
 
                     if (entidad == null) {
-                        request.setAttribute("mensajeProveedor", "No se encontró este NIT " + nitEntidad);
+                        request.setAttribute("mensajeEntidad", "No se encontró este NIT " + nitEntidad);
+                    }
+
+                    RequestDispatcher dispatcher = request.getRequestDispatcher(addr);
+                    dispatcher.forward(request, response);
+                    break;
+
+                case "obtenprov":
+                    List<Users> listaUsuarios2 = sdao.obtenAnalista();
+                    request.setAttribute("listaUsuarios", listaUsuarios2);
+
+                    String nitEntidad6 = request.getParameter("nitEntidad").trim();
+                    Entidad entidad6 = sdao.obtenerPorNit(nitEntidad6);
+                    request.setAttribute("entidadPorNit", entidad6);
+
+                    // Mantener los valores de los campos
+                    request.setAttribute("nitEntidad", nitEntidad6);
+                    request.setAttribute("txtNomProv", request.getParameter("txtNomProv"));
+                    request.setAttribute("txtEnti", request.getParameter("txtEnti"));
+                    request.setAttribute("txtCorProv", request.getParameter("txtCorProv"));
+                    request.setAttribute("txtDiProv", request.getParameter("txtDiProv"));
+                    request.setAttribute("txtTelProv", request.getParameter("txtTelProv"));
+
+                    if (entidad6 == null) {
+                        request.setAttribute("mensajeProveedor", "No se encontró este NIT " + nitEntidad6);
+                    }
+
+                    String nitSoli6 = request.getParameter("nitSolicitante").trim();
+                    Solicitantes soli6 = sdao.obtenerSolicitante(nitSoli6);
+                    request.setAttribute("obtenSol", soli6);
+
+                    // Mantener los valores de los campos
+                    request.setAttribute("nitSolicitante", nitSoli6);
+                    request.setAttribute("txtNomSol", request.getParameter("txtNomSol"));
+                    request.setAttribute("txtCorSol", request.getParameter("txtCorSol"));
+                    request.setAttribute("txtDescProd", request.getParameter("txtDescProd"));
+                    request.setAttribute("txtFecha", request.getParameter("txtFecha"));
+
+                    if (soli6 == null) {
+                        request.setAttribute("mensajeSolicitante", "No se encontró este NIT " + nitSoli6);
                     }
 
                     RequestDispatcher dispatcher2 = request.getRequestDispatcher(addr);
                     dispatcher2.forward(request, response);
                     break;
+
 
                 case "listarr":
                     acceso = listarr;
@@ -285,6 +314,9 @@ public class Controlador extends HttpServlet {
                     String nitSolicitante = request.getParameter("nitSolicitante");
                     String nombreSolicitante = request.getParameter("txtNomSol");
                     String noMuestra = request.getParameter("txtNoMuestra");
+                    if (noMuestra == null || noMuestra.trim().isEmpty()) {
+                        noMuestra = null;
+                    }
                     String descripProducto = request.getParameter("txtDescProd");
                     int idUsuario = Integer.parseInt(request.getParameter("analista"));
 
@@ -292,17 +324,21 @@ public class Controlador extends HttpServlet {
                     HttpSession session = request.getSession();
                     String regUsuario = (String) session.getAttribute("usuarioLogueadoNombre"); // Obtener el nombre del usuario logueado
                     String estado = request.getParameter("estado");
-
+                  
                     // Validación de campos requeridos
                     if (nitProveedor == null || nitProveedor.trim().isEmpty() ||
                         nitSolicitante == null || nitSolicitante.trim().isEmpty() ||
                         noDocumento == null || noDocumento.trim().isEmpty() ||
-                        noMuestra == null || noMuestra.trim().isEmpty() ||
+                        //noMuestra == null || noMuestra.trim().isEmpty() ||
                         correoSolicitante == null || correoSolicitante.trim().isEmpty() ||
-                        descripProducto == null || descripProducto.trim().isEmpty()) {
-
+                        descripProducto == null || descripProducto.trim().isEmpty() ||
+                        nombreSolicitante == null || nombreSolicitante.trim().isEmpty() ||
+                        nombreProveedor == null || nombreProveedor.trim().isEmpty()){
+                        
                         request.setAttribute("error", "Por favor complete todos los campos requeridos.");
                         acceso = addr; 
+                        List<Users> listaUsuarios3 = sdao.obtenAnalista();
+                        request.setAttribute("listaUsuarios", listaUsuarios3);
                     } else {
 
                         // Crear una instancia de Conexion para la validación
@@ -340,31 +376,37 @@ public class Controlador extends HttpServlet {
                             // agregar la solicitud a la base de datos
                             sdao.addR(sm);
 
-                            try {
-                                int anio = LocalDate.now().getYear();
-                                // enviar el correos
-                                correo.enviarCorreo(
-                                    correoSolicitante, 
-                                    fechaSolicitud.toString(), 
-                                    tipoSolicitud2, 
-                                    "AR-" + noMuestra+ "-"+ anio,
-                                    noDocumento, 
-                                    tipoDocumento
-                                );
-                                correo.enviarCorreo(
-                                    correoAnalista,
-                                    fechaSolicitud.toString(),
-                                    tipoSolicitud2,
-                                    "AR-" + noMuestra + "-" + anio,
-                                    noDocumento,
-                                    tipoDocumento
-                                );
+                        try {
+                            int anio = LocalDate.now().getYear();
+
+                            // obtener el número correlativo para el tipo de solicitud
+                            String numeroGenerado = sdao.obtenerNumeroCorrelativoCorreo(tipoSolicitud2);
+
+                            // enviar el correo al solicitante con el número generado
+                            correo.enviarCorreo(
+                                correoSolicitante, 
+                                fechaSolicitud.toString(), 
+                                tipoSolicitud2, 
+                                numeroGenerado,  // utiliza el número generado por obtenerNumeroCorrelativo()
+                                noDocumento, 
+                                tipoDocumento
+                            );
+
+                            // enviar el correo al analista con el mismo número generado
+                            correo.enviarCorreo(
+                                correoAnalista,
+                                fechaSolicitud.toString(),
+                                tipoSolicitud2,
+                                numeroGenerado,  
+                                noDocumento,
+                                tipoDocumento
+                            );
                                 request.setAttribute("mensaje", "Solicitud creada y correo enviado exitosamente.");
                             } catch (Exception e) {
                                 request.setAttribute("errorCorreo", "Error al enviar el correo: " + e.getMessage());
                             }
 
-                            acceso = listarr; // Redirigir a la lista de solicitudes
+                            acceso = listarr; 
                         }
                     }
                     break;
@@ -430,12 +472,11 @@ public class Controlador extends HttpServlet {
                     acceso = listarr;
                     break;
             }
-
         }
         
 
-        if ("generarpdf".equals(accion)) {  // Asegúrate de que la acción en el formulario sea "generarpdf"
-            // Configurar el tipo de respuesta
+        if ("generarpdf".equals(accion)) {  
+            // Configurar el tipo de respuesta como PDF
             response.setContentType("application/pdf");
             response.setHeader("Content-Disposition", "attachment; filename=etiqueta.pdf");
 
@@ -445,40 +486,59 @@ public class Controlador extends HttpServlet {
                 // Obtener el output stream de la respuesta
                 PdfWriter.getInstance(document, response.getOutputStream());
 
+                // Abrir el documento para escribir
                 document.open();
 
-                // Nombre del laboratorio
-                document.add(new Paragraph("LABORATORIO DE INSPECCIÓN DE CALIDAD ALIMENTOS 'ESTA RIQUITO'."));
-                document.add(new Paragraph("Título: Número de Muestra"));
-                
-                // Obtener datos
-                String numeroMuestra5 = request.getParameter("txtNoMuestra"); // Obteniendo el número de muestra
-                String year = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
-                String nombreContribuyente = request.getParameter("txtNomSol"); // Nombre del contribuyente
-                String nombreProveedor = request.getParameter("txtNomProv"); // Nombre del proveedor
-                String nitProveedor = request.getParameter("nitEntidad"); // NIT del proveedor
-                String numeroExpediente = request.getParameter("txtNodoc"); // Número de expediente
-                String nombreAnalista = request.getParameter("analista"); // Nombre del analista
-                
-                // Añadir Número de Muestra
-                document.add(new Paragraph("Número de Muestra: AR-" + numeroMuestra5 + "-" + year));
-                
-                // Nombre del Contribuyente
-                document.add(new Paragraph("Nombre del Contribuyente: " + nombreContribuyente));
-                document.add(new Paragraph(" ", FontFactory.getFont(FontFactory.HELVETICA, 10))); // Espacio de 10 unidades
-                // Tabla para los detalles a la derecha
-                PdfPTable table = new PdfPTable(2); // 2 columnas
+                // Crear una tabla con 2 columnas
+                PdfPTable table = new PdfPTable(2);
+                table.setWidthPercentage(100); // Ancho de la tabla
+                table.setWidths(new float[]{1, 1}); // Proporción igual para ambas columnas
 
-                // Columna izquierda
-                table.addCell("LABORATORIO DE INSPECCIÓN DE CALIDAD ALIMENTOS 'ESTA RIQUITO'.");
-                table.addCell("Número de Muestra: AR-" + numeroMuestra5 + "-" + year);
+                // Columna izquierda: Información del laboratorio (centrado)
+                PdfPCell cellLeft = new PdfPCell();
+                cellLeft.setBorder(Rectangle.BOX); // Borde alrededor de la celda
+                cellLeft.setPadding(10); // Margen interno
+                cellLeft.setHorizontalAlignment(Element.ALIGN_CENTER); 
+                cellLeft.setVerticalAlignment(Element.ALIGN_MIDDLE); 
+                cellLeft.addElement(new Paragraph("LABORATORIO DE\nINSPECCIÓN DE CALIDAD ALIMENTOS\n'QUE RIQUITO ESTÁ'", FontFactory.getFont(FontFactory.HELVETICA_BOLD, 10)));
+                table.addCell(cellLeft);
 
-                // Columna derecha
-                table.addCell("Nombre del Proveedor: " + nombreProveedor);
-                table.addCell("NIT del Proveedor: " + nitProveedor);
-                table.addCell("Número de Expediente: " + numeroExpediente);
-                table.addCell("Nombre del Analista: " + nombreAnalista);
+                // Columna derecha: Información de la muestra y del proveedor
+                PdfPCell cellRight = new PdfPCell();
+                cellRight.setBorder(Rectangle.BOX); // Borde alrededor de la celda
+                cellRight.setPadding(10); // Margen interno
+                cellRight.setHorizontalAlignment(Element.ALIGN_LEFT); // Alinear texto a la izquierda
+                cellRight.setVerticalAlignment(Element.ALIGN_TOP); // Alinear texto en la parte superior
 
+                // Obtener datos de la solicitud
+                String tipoSolicitud = request.getParameter("txtSoli"); 
+                String numeroMuestra5 = request.getParameter("txtNoMuestra");
+                String nombreProveedor = request.getParameter("txtNomProv"); 
+                String nitProveedor = request.getParameter("nitEntidad"); 
+                String numeroExpediente = request.getParameter("txtNodoc"); 
+                String nombreAnalista = request.getParameter("nombreAnalista"); 
+
+                // Obtener el número correlativo
+                String numeroCorrelativo = sdao.obtenerNumeroCorrelativo(tipoSolicitud);
+
+                // Generar el número de muestra o solicitud
+                String numeroGenerado;
+                if ("ConNumerodeMuestra".equals(tipoSolicitud)) {
+                    numeroGenerado = numeroMuestra5 + "-" + Calendar.getInstance().get(Calendar.YEAR);
+                } else {
+                    numeroGenerado = numeroCorrelativo; // Usar el número correlativo
+                }
+
+                // Añadir información de la muestra y proveedor en la celda derecha
+                cellRight.addElement(new Paragraph("Número de Muestra o Porción de Muestra: " + numeroGenerado, FontFactory.getFont(FontFactory.HELVETICA, 10)));
+                cellRight.addElement(new Paragraph("Nombre del Proveedor: " + nombreProveedor, FontFactory.getFont(FontFactory.HELVETICA, 10)));
+                cellRight.addElement(new Paragraph("NIT del Proveedor: " + nitProveedor, FontFactory.getFont(FontFactory.HELVETICA, 10)));
+                cellRight.addElement(new Paragraph("Número de Expediente: " + numeroExpediente, FontFactory.getFont(FontFactory.HELVETICA, 10)));
+                cellRight.addElement(new Paragraph("Nombre del Analista: " + nombreAnalista, FontFactory.getFont(FontFactory.HELVETICA, 10)));
+
+                table.addCell(cellRight);
+
+                // Añadir la tabla al documento
                 document.add(table);
 
                 // Cerrar el documento
@@ -487,9 +547,7 @@ public class Controlador extends HttpServlet {
                 e.printStackTrace();
                 response.getWriter().println("Error al generar el PDF: " + e.getMessage());
             }
-        } else {
         }
-    
 
         
         if(menu != null && menu.equals("reasignar")){
@@ -518,8 +576,8 @@ public class Controlador extends HttpServlet {
                     List<Roles> listaRoles1 = dao.listaRoles();
                     request.setAttribute("listaRoles", listaRoles1);
                     
-                   String nitPersona = request.getParameter("nitPersona").trim(); // Obtener el NIT del request
-                   Users usuario = dao.obtenUsuarioPorNit(nitPersona); // Llama al método para obtener el usuario
+                   String nitPersona = request.getParameter("nitPersona").trim(); // obtener el nit del request
+                   Users usuario = dao.obtenUsuarioPorNit(nitPersona); //ejecutar metodo
 
                    // Establecer el usuario en el request
                    request.setAttribute("usuarioPorNit", usuario);
@@ -576,12 +634,13 @@ public class Controlador extends HttpServlet {
                     }
                     break;
                 case "editar":
+                    List<Users> listaUsuarios = dao.listar();
                     //idusuario va en el JSP
                     request.setAttribute("idusuario", request.getParameter("idusua"));
                     acceso = edit;
                     break;
                 case "actualizar":
-                    id = Integer.parseInt(request.getParameter("txtidusu"));
+                    id = Integer.parseInt(request.getParameter("idusua"));
                     nomb = request.getParameter("txtNom1");
                     nomb2 = request.getParameter("txtNom2");
                     ap1 = request.getParameter("txtAp1");
@@ -592,6 +651,8 @@ public class Controlador extends HttpServlet {
                     puesto = request.getParameter("txtPuesto");
                     idrol = Integer.parseInt(request.getParameter("txtRol"));
                     estado = request.getParameter("txtEstado");
+                    correo2 = request.getParameter("txtCorreo");
+                    String motivo = request.getParameter("txtMotivo");
 
                     u.setIdusuario(id);
                     u.setPrimerNombre(nomb);
@@ -604,6 +665,8 @@ public class Controlador extends HttpServlet {
                     u.setPuesto(puesto);
                     u.setIdRol(idrol);
                     u.setEstado(estado);
+                    u.setMotivo(motivo);
+                    
                     dao.edit(u);
                     acceso = listar;
                     break;
