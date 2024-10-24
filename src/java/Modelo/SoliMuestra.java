@@ -21,13 +21,13 @@ public class SoliMuestra {
     String nombreSolicitante; 
     String noMuestra;
     String descripcionProducto;
-    int idUsuario;
+    String idUsuario;
     String regUsuario;
     String estado;
 
     public SoliMuestra(){}
 
-    public SoliMuestra(int idSolicitud, String tipoSolicitud, String tipoEntidad, Date fechaSolicitud, String tipodeDocumento, String noDedocumento, String nitProveedor, String nombreProveedor, String correoProveedor, String correoSolicitante, String direccionProveedor, String telefonoProveedor, String nitSolicitante, String nombreSolicitante, String noMuestra, String descripcionProducto, int idUsuario, String regUsuario, String estado) {
+    public SoliMuestra(int idSolicitud, String tipoSolicitud, String tipoEntidad, Date fechaSolicitud, String tipodeDocumento, String noDedocumento, String nitProveedor, String nombreProveedor, String correoProveedor, String correoSolicitante, String direccionProveedor, String telefonoProveedor, String nitSolicitante, String nombreSolicitante, String noMuestra, String descripcionProducto, String idUsuario, String regUsuario, String estado) {
         this.idSolicitud = idSolicitud;
         this.tipoSolicitud = tipoSolicitud;
         this.tipoEntidad = tipoEntidad;
@@ -177,11 +177,11 @@ public class SoliMuestra {
         this.descripcionProducto = descripcionProducto;
     }
 
-    public int getIdUsuario() {
+    public String getIdUsuario() {
         return idUsuario;
     }
 
-    public void setIdUsuario(int idUsuario) {
+    public void setIdUsuario(String idUsuario) {
         this.idUsuario = idUsuario;
     }
 
@@ -200,6 +200,8 @@ public class SoliMuestra {
     public void setEstado(String estado) {
         this.estado = estado;
     }
+
+   
 
     
 }

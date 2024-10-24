@@ -15,18 +15,19 @@ import java.sql.*;
 import java.util.Calendar;
 
 public class SoliMuestraDAO implements CRUDSM {
-    Conexion cn=new Conexion();
+
+    Conexion cn = new Conexion();
     Connection con;
     PreparedStatement ps;
     ResultSet rs;
     SoliMuestra s = new SoliMuestra();
-    
+
     private Conexion conexion;
-    
-    public SoliMuestraDAO(){
+
+    public SoliMuestraDAO() {
         conexion = new Conexion();
     }
-    
+
     public Solicitantes obtenerSolicitante(String nitSolicitante) {
         Solicitantes soli = null;
         String sql = "SELECT * FROM solicitantes WHERE s_Nit = ?";
@@ -50,49 +51,61 @@ public class SoliMuestraDAO implements CRUDSM {
                 soli.setSolCorreo(rs.getString("s_Correo"));
             }
         } catch (SQLException e) {
-            e.printStackTrace(); 
-        }  finally {
+            e.printStackTrace();
+        } finally {
             try {
-                if (rs != null) rs.close();
-                if (ps != null) ps.close();
-                if (con != null) con.close();
+                if (rs != null) {
+                    rs.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (con != null) {
+                    con.close();
+                }
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
         return soli;
-    }  
-    
-    public String obtenCorreoAnalista(int idUsuario){
-        String correo ="";
-        String sql ="select correo from usuarios where id_usuario = ?";
+    }
+
+    public String obtenCorreoAnalista(String idUsuario) {
+        String correo = "";
+        String sql = "select correo from usuarios where id_usuario = ?";
         Connection con = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        try{
+        try {
             Conexion cn = new Conexion();
             con = cn.getConnection();
             ps = con.prepareStatement(sql);
-            ps.setInt(1, idUsuario);
+            ps.setString(1, idUsuario);
             rs = ps.executeQuery();
-            if(rs.next()){
+            if (rs.next()) {
                 correo = rs.getString("correo");
             }
-            
-        }catch(SQLException e){
+
+        } catch (SQLException e) {
             e.printStackTrace();
         } finally {
             try {
-                if (rs != null) rs.close();
-                if (ps != null) ps.close();
-                if (con != null) con.close();
+                if (rs != null) {
+                    rs.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (con != null) {
+                    con.close();
+                }
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
-        return correo;  
+        return correo;
     }
-   
+
     public List<Users> obtenAnalista() {
         List<Users> listaUsuarios = new ArrayList<>();
         String sql = "SELECT * FROM usuarios WHERE id_rol = 2 AND estado = 'Activo'"; // id_rol 2 para Analista
@@ -115,9 +128,15 @@ public class SoliMuestraDAO implements CRUDSM {
             e.printStackTrace();
         } finally {
             try {
-                if (rs != null) rs.close();
-                if (ps != null) ps.close();
-                if (con != null) con.close();
+                if (rs != null) {
+                    rs.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (con != null) {
+                    con.close();
+                }
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -125,55 +144,59 @@ public class SoliMuestraDAO implements CRUDSM {
         return listaUsuarios;
     }
 
-
     public boolean existeNoMuestra(String noMuestra) {
-    boolean existe = false;
-    String query = "SELECT COUNT(*) FROM reg_solmuestra WHERE no_Muestra = ?";
-    Connection con = null;
-    PreparedStatement ps = null; 
-    ResultSet rs = null; 
-    
-    try {
-        Conexion cn = new Conexion();
-        con = cn.getConnection(); 
-        ps = con.prepareStatement(query);
-        ps.setString(1, noMuestra); // Establece el parámetro en la consulta
-        rs = ps.executeQuery(); 
-        
-        if (rs.next() && rs.getInt(1) > 0) {
-            existe = true; // El número de muestra ya está registrado
-        }
-    } catch (SQLException e) {
-        e.printStackTrace(); 
-    } finally {
+        boolean existe = false;
+        String query = "SELECT COUNT(*) FROM reg_solmuestra WHERE no_Muestra = ?";
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
         try {
-            if (rs != null) rs.close();
-            if (ps != null) ps.close();
-            if (con != null) con.close();
+            Conexion cn = new Conexion();
+            con = cn.getConnection();
+            ps = con.prepareStatement(query);
+            ps.setString(1, noMuestra); // Establece el parámetro en la consulta
+            rs = ps.executeQuery();
+
+            if (rs.next() && rs.getInt(1) > 0) {
+                existe = true; // El número de muestra ya está registrado
+            }
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
+
+        return existe; // retorna el resultado de la verificación
     }
 
-    return existe; // Retorna el resultado de la verificación
-}
-
-
     @Override
-    public List listarR(){
-        ArrayList<SoliMuestra>listR2 = new ArrayList<>();
+    public List listarR() {
+        ArrayList<SoliMuestra> listR2 = new ArrayList<>();
         String sql = "select * from reg_solmuestra";
         Connection con = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        
-        try{
+
+        try {
             Conexion cn = new Conexion();
-            con=cn.getConnection();
+            con = cn.getConnection();
             ps = con.prepareStatement(sql);
-            rs=ps.executeQuery();
-        
-            while(rs.next()){
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
                 SoliMuestra sm = new SoliMuestra();
                 sm.setIdSolicitud(rs.getInt("id_Solicitud"));
                 sm.setTipoSolicitud(rs.getString("tipo_Solicitud"));
@@ -191,35 +214,51 @@ public class SoliMuestraDAO implements CRUDSM {
                 sm.setNombreSolicitante(rs.getString("nombre_Solicitante"));
                 sm.setNoMuestra(rs.getString("no_Muestra"));
                 sm.setDescripcionProducto(rs.getString("descrip_Producto"));
-                sm.setIdUsuario(rs.getInt("id_Usuario"));
+                sm.setIdUsuario(rs.getString("id_Usuario"));
                 sm.setRegUsuario(rs.getString("Reg_Usuario"));
-                
+
                 listR2.add(sm);
             }
-        }catch(Exception e){
-    }   finally {
-        try {
-            if (rs != null) rs.close();
-            if (ps != null) ps.close();
-            if (con != null) con.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
-    }
         return listR2;
     }
+
     @Override
-    public SoliMuestra listR(int idSolicitud){
-        String sql =" select * from reg_solmuestra where id_Solicitud="+idSolicitud;
+    public SoliMuestra listR(int idSolicitud) {
+        String sql = "SELECT r.*, u.primer_nombre, u.primer_apellido "
+                + "FROM reg_solmuestra r "
+                + "JOIN usuarios u ON r.id_Usuario = u.id_usuario "
+                + "WHERE r.id_Solicitud = ?";
+
         Connection con = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        try{
+        SoliMuestra s = null; // Asegúrate de inicializar el objeto
+
+        try {
             Conexion cn = new Conexion();
-            con=cn.getConnection();
-            ps=con.prepareStatement(sql);
-            rs=ps.executeQuery();
-            while(rs.next()){
+            con = cn.getConnection();
+            ps = con.prepareStatement(sql);
+            ps.setInt(1, idSolicitud); // Establece el valor de idSolicitud
+            rs = ps.executeQuery();
+
+            if (rs.next()) { // Cambia a if para obtener solo un resultado
+                s = new SoliMuestra(); // Instancia el objeto aquí
                 s.setIdSolicitud(rs.getInt("id_Solicitud"));
                 s.setTipoSolicitud(rs.getString("tipo_Solicitud"));
                 s.setTipoEntidad(rs.getString("tipo_Entidad"));
@@ -236,123 +275,147 @@ public class SoliMuestraDAO implements CRUDSM {
                 s.setNombreSolicitante(rs.getString("nombre_Solicitante"));
                 s.setNoMuestra(rs.getString("no_Muestra"));
                 s.setDescripcionProducto(rs.getString("descrip_Producto"));
-                s.setIdUsuario(rs.getInt("id_Usuario"));
-                s.setRegUsuario(rs.getString("Reg_Usuario"));
+                String analistaAsignado = rs.getString("primer_nombre") + " " + rs.getString("primer_apellido");
+                s.setIdUsuario(analistaAsignado);
             }
-        }catch(Exception e){
-            
-        }finally {
-        try {
-            if (rs != null) rs.close();
-            if (ps != null) ps.close();
-            if (con != null) con.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace(); // Manejo básico de excepciones
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
-    }return s;
+        return s; // Puede ser null si no se encuentra el registro
     }
-    
-@Override
-public boolean addR(SoliMuestra smu) {
-    String sql = "INSERT INTO reg_SolMuestra(tipo_Solicitud, tipo_Entidad, fecha_Solicitud, tipode_Documento, no_Dedocumento, nit_Proveedor, nombre_Proveedor, correo_Proveedor, correo_Solicitante, direccion_Proveedor, telefono_Proveedor, nit_Solicitante, nombre_Solicitante, no_Muestra, descrip_Producto, id_Usuario, Reg_Usuario, estado) "
-            + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
-    try {
-        Conexion cn = new Conexion();
-        con = cn.getConnection();
-        ps = con.prepareStatement(sql);
-        
-        ps.setString(1, smu.getTipoSolicitud());
-        ps.setString(2, smu.getTipoEntidad());
-        ps.setDate(3, smu.getFechaSolicitud());
-        ps.setString(4, smu.getTipodeDocumento());
-        ps.setString(5, smu.getNoDedocumento());
-        ps.setString(6, smu.getNitProveedor());
-        ps.setString(7, smu.getNombreProveedor());
-        ps.setString(8, smu.getCorreoProveedor());
-        ps.setString(9, smu.getCorreoSolicitante());
-        ps.setString(10, smu.getDireccionProveedor());
-        ps.setString(11, smu.getTelefonoProveedor());
-        ps.setString(12, smu.getNitSolicitante());
-        ps.setString(13, smu.getNombreSolicitante());
-        ps.setString(14, smu.getNoMuestra());
-        ps.setString(15, smu.getDescripcionProducto());
-        ps.setInt(16, smu.getIdUsuario());
-        ps.setString(17, smu.getRegUsuario());
-        ps.setString(18, smu.getEstado());
-
-        // Ejecutamos la consulta
-        ps.executeUpdate();
-        return true;
-    } catch (SQLException e) {
-        System.out.println("Error al insertar la solicitud: " + e.getMessage());
-        e.printStackTrace();
-        return false;
-    } finally {
-        try {
-            if (ps != null) ps.close();
-            if (con != null) con.close();
-        } catch (SQLException e) {
-            System.out.println("Error al cerrar recursos: " + e.getMessage());
-        }
-    }
-}
 
     @Override
-        public boolean editR(SoliMuestra smu){
-        String sql = "update reg_solmuestra set tipo_Solicitud = '"+smu.getTipoSolicitud()+"', tipo_Entidad = '"+smu.getTipoEntidad()+"', fecha_Solicitud = '"+smu.getFechaSolicitud()+"', tipode_Documento = '"+smu.getTipodeDocumento()+"',no_Dedocumento = '"+smu.getNoDedocumento()+"',nit_Proveedor = '"+smu.getNitProveedor()+"', nombre_Proveedor = '"+smu.getNombreProveedor()+"', correo_Proveedor = '"+smu.getCorreoProveedor()+"',correo_Solicitante = '"+smu.getCorreoSolicitante()+"',direccion_Proveedor = '"+smu.getDireccionProveedor()+"',telefono_Proveedor = '"+smu.getTelefonoProveedor()+"',nit_Solicitante = '"+smu.getNitSolicitante()+"',nombre_Solicitante = '"+smu.getNombreSolicitante()+"', no_Muestra = '"+smu.getNoMuestra()+"', descrip_Producto = '"+smu.getDescripcionProducto()+"',id_Usuario = '"+smu.getIdUsuario()+"',Reg_Usuario = '"+smu.getRegUsuario()+"' where id_Solicitud="+smu.getIdSolicitud();
+    public boolean addR(SoliMuestra smu) {
+        String sql = "INSERT INTO reg_SolMuestra(id_Solicitud, tipo_Solicitud, tipo_Entidad, fecha_Solicitud, tipode_Documento, no_Dedocumento, nit_Proveedor, nombre_Proveedor, correo_Proveedor, correo_Solicitante, direccion_Proveedor, telefono_Proveedor, nit_Solicitante, nombre_Solicitante, no_Muestra, descrip_Producto, id_Usuario, Reg_Usuario, estado) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+        try {
+            Conexion cn = new Conexion();
+            con = cn.getConnection();
+            ps = con.prepareStatement(sql);
+
+            ps.setInt(1, smu.getIdSolicitud());
+            ps.setString(2, smu.getTipoSolicitud());
+            ps.setString(3, smu.getTipoEntidad());
+            ps.setDate(4, smu.getFechaSolicitud());
+            ps.setString(5, smu.getTipodeDocumento());
+            ps.setString(6, smu.getNoDedocumento());
+            ps.setString(7, smu.getNitProveedor());
+            ps.setString(8, smu.getNombreProveedor());
+            ps.setString(9, smu.getCorreoProveedor());
+            ps.setString(10, smu.getCorreoSolicitante());
+            ps.setString(11, smu.getDireccionProveedor());
+            ps.setString(12, smu.getTelefonoProveedor());
+            ps.setString(13, smu.getNitSolicitante());
+            ps.setString(14, smu.getNombreSolicitante());
+            ps.setString(15, smu.getNoMuestra());
+            ps.setString(16, smu.getDescripcionProducto());
+            ps.setString(17, smu.getIdUsuario());
+            ps.setString(18, smu.getRegUsuario());
+            ps.setString(19, smu.getEstado());
+
+            // Ejecutamos la consulta
+            ps.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            System.out.println("Error al insertar la solicitud: " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        } finally {
+            try {
+                if (ps != null) {
+                    ps.close();
+                }
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+                System.out.println("Error al cerrar recursos: " + e.getMessage());
+            }
+        }
+    }
+
+    @Override
+    public boolean editR(SoliMuestra smu) {
+        String sql = "update reg_solmuestra set tipo_Solicitud = '" + smu.getTipoSolicitud() + "', tipo_Entidad = '" + smu.getTipoEntidad() + "', fecha_Solicitud = '" + smu.getFechaSolicitud() + "', tipode_Documento = '" + smu.getTipodeDocumento() + "',no_Dedocumento = '" + smu.getNoDedocumento() + "',nit_Proveedor = '" + smu.getNitProveedor() + "', nombre_Proveedor = '" + smu.getNombreProveedor() + "', correo_Proveedor = '" + smu.getCorreoProveedor() + "',correo_Solicitante = '" + smu.getCorreoSolicitante() + "',direccion_Proveedor = '" + smu.getDireccionProveedor() + "',telefono_Proveedor = '" + smu.getTelefonoProveedor() + "',nit_Solicitante = '" + smu.getNitSolicitante() + "',nombre_Solicitante = '" + smu.getNombreSolicitante() + "', no_Muestra = '" + smu.getNoMuestra() + "', descrip_Producto = '" + smu.getDescripcionProducto() + "',id_Usuario = '" + smu.getIdUsuario() + "',Reg_Usuario = '" + smu.getRegUsuario() + "' where id_Solicitud=" + smu.getIdSolicitud();
         Connection con = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        try{
-            Conexion cn = new Conexion();
-            con=cn.getConnection();
-            ps=con.prepareStatement(sql);
-            ps.executeUpdate();
-        }catch(Exception e){ 
-        }finally {
         try {
-            if (rs != null) rs.close();
-            if (ps != null) ps.close();
-            if (con != null) con.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
+            Conexion cn = new Conexion();
+            con = cn.getConnection();
+            ps = con.prepareStatement(sql);
+            ps.executeUpdate();
+        } catch (Exception e) {
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
-    }
         return false;
     }
+
     //MODIFICADO
     @Override
-    public boolean eliminarR(int idSolicitud){
-        String sql = "delete from reg_solmuestra where id_Solicitud="+idSolicitud;
+    public boolean eliminarR(int idSolicitud) {
+        String sql = "delete from reg_solmuestra where id_Solicitud=" + idSolicitud;
         Connection con = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        try{
-            Conexion cn = new Conexion();
-            con=cn.getConnection();
-            ps=con.prepareStatement(sql);
-            ps.executeUpdate();
-        }catch(Exception e){
-        }finally {
         try {
-            if (rs != null) rs.close();
-            if (ps != null) ps.close();
-            if (con != null) con.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
+            Conexion cn = new Conexion();
+            con = cn.getConnection();
+            ps = con.prepareStatement(sql);
+            ps.executeUpdate();
+        } catch (Exception e) {
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
-    }
         return false;
     }
-    
 
     private String numeroCorrelativoCache = null; // Almacena el último número correlativo obtenido
 
-    // Método para obtener el número correlativo de la base de datos
+// Método para obtener el número correlativo de la base de datos
     private String obtenerNumeroCorrelativoGeneral(String tipoSolicitud) {
         String numeroCorrelativo = "";
-        Connection con = null; 
+        Connection con = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
@@ -361,8 +424,8 @@ public boolean addR(SoliMuestra smu) {
             // Obtener el año actual
             String year = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
             // Consultar el último número correlativo para el tipo de solicitud y el año actual
-            String sqlSelect = "SELECT MAX(no_Muestra) AS ultimoNumero FROM reg_solmuestra " +
-                               "WHERE tipo_solicitud = ? AND no_Muestra LIKE ?";
+            String sqlSelect = "SELECT MAX(no_Muestra) AS ultimoNumero FROM reg_solmuestra "
+                    + "WHERE tipo_solicitud = ? AND no_Muestra LIKE ?";
             ps = con.prepareStatement(sqlSelect);
             ps.setString(1, tipoSolicitud);
             // Establecer el patrón para la búsqueda
@@ -372,15 +435,20 @@ public boolean addR(SoliMuestra smu) {
             if (rs.next()) {
                 String ultimoNumero = rs.getString("ultimoNumero");
                 // Verificar si hay un último número
-                if (ultimoNumero != null) {
+                if (ultimoNumero != null && !ultimoNumero.isEmpty()) {
                     // Extraer el número del último registro
                     String[] partes = ultimoNumero.split("-");
-                    int correlativo = Integer.parseInt(partes[1]); // Obtener el número correlativo
-                    // Formatear el nuevo número como string
-                    numeroCorrelativo = String.format("%05d", correlativo + 1); // Formatear como un número de 5 dígitos
+                    try {
+                        int correlativo = Integer.parseInt(partes[1]); // Obtener el número correlativo
+                        // Formatear el nuevo número como string de 5 dígitos
+                        numeroCorrelativo = String.format("%05d", correlativo + 1);
+                    } catch (NumberFormatException e) {
+                        // Si hay algún problema al convertir el correlativo
+                        numeroCorrelativo = "00001"; // Empezar de nuevo si hay algún problema
+                    }
                 } else {
                     // Si no hay número, comenzar en 1
-                    numeroCorrelativo = "001"; // Formatear como un número de 5 dígitos
+                    numeroCorrelativo = "00001"; // Formato como un número de 5 dígitos
                 }
             }
             // Crear el nuevo número de muestra en función del tipo de solicitud
@@ -393,17 +461,35 @@ public boolean addR(SoliMuestra smu) {
             e.printStackTrace();
         } finally {
             // Cerrar conexiones
-            try { if (rs != null) rs.close(); } catch (SQLException e) { e.printStackTrace(); }
-            try { if (ps != null) ps.close(); } catch (SQLException e) { e.printStackTrace(); }
-            try { if (con != null) con.close(); } catch (SQLException e) { e.printStackTrace(); }
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            try {
+                if (ps != null) {
+                    ps.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            try {
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
-        
+
         // Almacena en caché el número correlativo
         numeroCorrelativoCache = numeroCorrelativo;
         return numeroCorrelativo;
     }
 
-    // Método específico para obtener el número correlativo de solicitud
+// Método específico para obtener el número correlativo de solicitud
     public String obtenerNumeroCorrelativo(String tipoSolicitud) {
         // Retorna el número correlativo almacenado en caché si ya fue generado
         if (numeroCorrelativoCache != null) {
@@ -412,8 +498,8 @@ public boolean addR(SoliMuestra smu) {
         // Si no fue generado, llama al método general
         return obtenerNumeroCorrelativoGeneral(tipoSolicitud);
     }
-    
-    // Método específico para obtener el número correlativo de correo
+
+// Método específico para obtener el número correlativo de correo
     public String obtenerNumeroCorrelativoCorreo(String tipoSolicitud2) {
         // Retorna el número correlativo almacenado en caché si ya fue generado
         if (numeroCorrelativoCache != null) {
@@ -423,8 +509,82 @@ public boolean addR(SoliMuestra smu) {
         return obtenerNumeroCorrelativoGeneral(tipoSolicitud2);
     }
 
-    
-        public Entidad obtenerPorNit(String nitEntidad) {
+    // Método para obtener el número correlativo de la base de datos sin caché
+    public String obtenerNoCorrelativo(String tipoSolicitud) {
+        String numeroCorrelativo = "";
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            Conexion cn = new Conexion();
+            con = cn.getConnection();
+            // Obtener el año actual
+            String year = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
+            // Consultar el último número correlativo para el tipo de solicitud y el año actual
+            String sqlSelect = "SELECT MAX(no_Muestra) AS ultimoNumero FROM reg_SolMuestra "
+                    + "WHERE tipo_Solicitud = ? AND no_Muestra LIKE ?";
+            ps = con.prepareStatement(sqlSelect);
+            ps.setString(1, tipoSolicitud);
+            // Establecer el patrón para la búsqueda
+            String patron = tipoSolicitud.equals("MuestraParaAnalisis") ? "AR-%-" + year : "OTM-%-" + year;
+            ps.setString(2, patron);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                String ultimoNumero = rs.getString("ultimoNumero");
+                // Verificar si hay un último número
+                if (ultimoNumero != null && !ultimoNumero.isEmpty()) {
+                    // Extraer el número del último registro
+                    String[] partes = ultimoNumero.split("-");
+                    try {
+                        int correlativo = Integer.parseInt(partes[1]); // Obtener el número correlativo
+                        // Formatear el nuevo número como string de 5 dígitos
+                        numeroCorrelativo = String.format("%05d", correlativo + 1);
+                    } catch (NumberFormatException e) {
+                        // Si hay algún problema al convertir el correlativo
+                        numeroCorrelativo = "00001"; // Empezar de nuevo si hay algún problema
+                    }
+                } else {
+                    // Si no hay número, comenzar en 1
+                    numeroCorrelativo = "00001"; // Formato como un número de 5 dígitos
+                }
+            }
+            // Crear el nuevo número de muestra en función del tipo de solicitud
+            if ("MuestraParaAnalisis".equals(tipoSolicitud)) {
+                numeroCorrelativo = "AR-" + numeroCorrelativo + "-" + year; // Formato para "AR"
+            } else if ("SolicitudSinMuestra".equals(tipoSolicitud)) {
+                numeroCorrelativo = "OTM-" + numeroCorrelativo + "-" + year; // Formato para "OTM"
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            // Cerrar conexiones
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            try {
+                if (ps != null) {
+                    ps.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            try {
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return numeroCorrelativo; // Devuelve el número correlativo generado
+    }
+
+    public Entidad obtenerPorNit(String nitEntidad) {
         Entidad entidad = null;
         String sql = "SELECT * FROM entidades_registrado WHERE er_Nit = ?";
         Connection con = null;
@@ -437,9 +597,9 @@ public boolean addR(SoliMuestra smu) {
             ps = con.prepareStatement(sql);
             ps.setString(1, nitEntidad);
             System.out.println("NIT buscado: " + nitEntidad);
-            
+
             rs = ps.executeQuery(); // Ejecutar la consulta
-            
+
             if (rs.next()) {
                 entidad = new Entidad();
                 entidad.setEntidadId(rs.getInt("er_Id"));
@@ -451,32 +611,70 @@ public boolean addR(SoliMuestra smu) {
                 entidad.setEntidadTelefono(rs.getString("er_Telefono"));
             }
         } catch (SQLException e) {
-            e.printStackTrace(); 
+            e.printStackTrace();
         } finally {
             // Cerrar ResultSet, PreparedStatement y Connection
             try {
-                if (rs != null) rs.close();
-                if (ps != null) ps.close();
-                if (con != null) con.close();
+                if (rs != null) {
+                    rs.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (con != null) {
+                    con.close();
+                }
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-        }  
+        }
         return entidad;
     }
-    
-            public String generarNumeroMuestra(String tipoSolicitud, String numeroMuestra) {
-            // Obtener el número correlativo basado en el tipo de solicitud
-            String numeroCorrelativo = obtenerNumeroCorrelativo(tipoSolicitud);
 
-            // Generar el número de muestra o solicitud
-            String numeroGenerado;
-            if ("ConNumerodeMuestra".equals(tipoSolicitud)) {
-                numeroGenerado = numeroMuestra + "-" + Calendar.getInstance().get(Calendar.YEAR);
-            } else {
-                numeroGenerado = numeroCorrelativo; // Usar el número correlativo si no tiene número de muestra
+    public String generarNumeroMuestra(String tipoSolicitud, String numeroMuestra) {
+        // Obtener el número correlativo basado en el tipo de solicitud
+        String numeroCorrelativo = obtenerNumeroCorrelativo(tipoSolicitud);
+
+        // Generar el número de muestra o solicitud
+        String numeroGenerado;
+        if ("ConNumerodeMuestra".equals(tipoSolicitud)) {
+            numeroGenerado = numeroMuestra + "-" + Calendar.getInstance().get(Calendar.YEAR);
+        } else {
+            numeroGenerado = numeroCorrelativo; // Usar el número correlativo si no tiene número de muestra
+        }
+
+        return numeroGenerado;
+    }
+
+    public int obtenerCorrelativo() {
+        int siguienteId = 1;
+        String sql = "SELECT MAX(id_Solicitud) FROM reg_solmuestra";
+        try {
+            Conexion cn = new Conexion();
+            con = cn.getConnection();
+            ps = con.prepareStatement(sql);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                siguienteId = rs.getInt(1) + 1;
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return siguienteId;
+    }
 
-            return numeroGenerado;
-        }      
 }

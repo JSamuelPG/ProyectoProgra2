@@ -14,13 +14,13 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link href="css/bootstrap.css" rel="stylesheet" type="text/css"/>
         <title>JSP Page</title>
-            <style>
-                    body {
-                        font-family: Arial, sans-serif;
-                        margin: 0;
-                        padding: 0;
-                        background-color: #f4f4f4;
-                    }
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                margin: 0;
+                padding: 0;
+                background-color: #f4f4f4;
+            }
             .navbar {
                 padding: 10px;
                 position: relative;
@@ -90,33 +90,33 @@
             .dropdown-content .dropdown:hover .dropdown-content {
                 display: block; /* Mostrar el submenú al pasar el mouse */
             }
-    </style>
+        </style>
     </head>
     <body>
-<div class="navbar">
-    <div class="dropdown">
-        <button class="dropbtn">Menú</button>
-        <div class="dropdown-content">
-            <a href="Controlador?menu=inicio&accion=init">Inicio</a>
+        <div class="navbar">
             <div class="dropdown">
-                <a href="#" class="dropbtn">Servicios</a>
+                <button class="dropbtn">Menú</button>
                 <div class="dropdown-content">
+                    <a href="Controlador?menu=inicio&accion=init">Inicio</a>
                     <div class="dropdown">
-                        <a href="#" class="dropbtn">SCM</a>
+                        <a href="#" class="dropbtn">Servicios</a>
                         <div class="dropdown-content">
-                            <a href="Controlador?menu=usuarios&accion=listar">Mantenimiento de Usuarios</a>
-                            <a href="Controlador?menu=listaent&accion=entidades">Mantenimiento de Catálogo</a>
-                            <a href="Controlador?menu=solicit&accion=listarr">Bandeja de Laboratorio</a>
-                            <a href="Controlador?menu=reasignar&accion=listReasignar">Reasignacion de Solicitudes</a>
+                            <div class="dropdown">
+                                <a href="#" class="dropbtn">SCM</a>
+                                <div class="dropdown-content">
+                                    <a href="Controlador?menu=usuarios&accion=listar">Mantenimiento de Usuarios</a>
+                                    <a href="Controlador?menu=listaent&accion=entidades">Mantenimiento de Catálogo</a>
+                                    <a href="Controlador?menu=solicit&accion=listarr">Bandeja de Laboratorio</a>
+                                    <a href="Controlador?menu=reasignar&accion=listReasignar">Reasignacion de Solicitudes</a>
+                                </div>
+                            </div>
                         </div>
                     </div>
+                    <a href="Controlador?accion=reportes">Reportes</a>
                 </div>
             </div>
-            <a href="Controlador?accion=reportes">Reportes</a>
+            <a href="Controlador?accion=index">Cerrar Sesión</a>
         </div>
-    </div>
-    <a href="Controlador?accion=index">Cerrar Sesión</a>
-</div>
 
         <div class="container">
             <h2>Agregar Solicitud</h2>
@@ -134,7 +134,7 @@
                         </select>
                         <br>
 
-                     Nit Proveedor: <br>
+                        Nit Proveedor: <br>
                         <input class="form-control" type="text" name="nitEntidad" id="nitEntidad" 
                                value="<%= request.getParameter("nitEntidad") != null ? request.getParameter("nitEntidad") : ""%>"><br>
                         <input type="hidden" name="menu" value="solicit">
@@ -171,40 +171,46 @@
                             // Mostrar mensaje de error si corresponde
                             if (mensajeProv != null) {
                         %>
-                            <p style="color: red;"> <%= mensajeProv %></p>
+                        <p style="color: red;"> <%= mensajeProv%></p>
                         <%
                             }
                         %>
 
                         Nombre Proveedor: <br>
                         <input class="form-control" type="text" name="txtNomProv" id="txtNomProv" 
-                               value="<%= nombreProveedor != null ? nombreProveedor : (request.getParameter("txtNomProv") != null ? request.getParameter("txtNomProv") : "") %>" readonly /><br>
+                               value="${entidadPorNit != null ? entidadPorNit.getEntidadNombre() : param.txtNomProv}" readonly /><br>
+
+                        correlativo: <br>
+                        <input class="form-control" type="text" name="txtcorre" id="txtcorre" 
+                               value="${siguienteco != null ? siguienteco : param.txtcorre}" readonly /><br>
 
                         <!-- Tipo de Entidad -->
                         Tipo de Entidad: <br>
                         <input class="form-control" type="text" name="txtEnti" id="txtEnti" 
-                               value="<%= tipoEntidad != null ? tipoEntidad : (request.getParameter("txtEnti") != null ? request.getParameter("txtEnti") : "") %>" readonly/><br>
+                               value="${entidadPorNit != null ? entidadPorNit.getEntidadTipo() : param.txtEnti}" readonly/><br>
 
                         <!-- Correo Proveedor -->
                         Correo Proveedor: <br>
                         <input class="form-control" type="text" name="txtCorProv" id="txtCorProv" 
-                               value="<%= correoProveedor != null ? correoProveedor : (request.getParameter("txtCorProv") != null ? request.getParameter("txtCorProv") : "") %>" readonly/><br>
+                               value="${entidadPorNit != null ? entidadPorNit.getEntidadCorreo() : param.txtCorProv}" readonly/><br>
 
                         <!-- Dirección Proveedor -->
                         Dirección Proveedor: <br>
                         <input class="form-control" type="text" name="txtDiProv" id="txtDiProv" 
-                               value="<%= direccionProveedor != null ? direccionProveedor : (request.getParameter("txtDiProv") != null ? request.getParameter("txtDiProv") : "") %>" readonly/><br>
+                               value="${entidadPorNit != null ? entidadPorNit.getEntidadDireccion() : param.txtDiProv}" readonly/><br>
 
                         <!-- Teléfono Proveedor -->
                         Teléfono Proveedor: <br>
                         <input class="form-control" type="text" name="txtTelProv" id="txtTelProv" 
-                               value="<%= telefonoProveedor != null ? telefonoProveedor : (request.getParameter("txtTelProv") != null ? request.getParameter("txtTelProv") : "") %>" readonly/><br>
+                               value="${entidadPorNit != null ? entidadPorNit.getEntidadTelefono() : param.txtTelProv}" readonly/><br>
 
                         Tipo de Solicitud: <br>
-                        <select class="form-control" name="txtSoli" id="txtSoli" onchange="toggleFields()" >
-                            <option value="MuestraParaAnalisis" <%= "MuestraParaAnalisis".equals(request.getParameter("txtSoli")) ? "selected" : ""%>>Muestra para análisis</option>
-                            <option value="SolicitudSinMuestra" <%= "SolicitudSinMuestra".equals(request.getParameter("txtSoli")) ? "selected" : ""%>>Solicitud sin muestra</option>
-                            <option value="ConNumerodeMuestra" <%= "ConNumerodeMuestra".equals(request.getParameter("txtSoli")) ? "selected" : ""%>>Con número de muestra</option>
+                        <select class="form-control" name="txtSoli" id="txtSoli" onchange="habilitarMuestra()" >
+                            <option value="" disabled ${empty param.txtSoli ? 'selected' : ''}>Seleccione un tipo de Solicitud</option>
+                            <option value="ConNumerodeMuestra" ${param.txttiposoli == 'ConNumerodeMuestra' ? 'selected' : ''}>Con número de muestra</option>
+                            <option value="MuestraParaAnalisis" ${param.txttiposoli == 'MuestraParaAnalisis' ? 'selected' : ''}>Muestra para análisis</option>
+                            <option value="SolicitudSinMuestra" ${param.txttiposoli == 'SolicitudSinMuestra' ? 'selected' : ''}>Solicitud sin muestra</option>
+
                         </select>
                     </div>
 
@@ -223,11 +229,11 @@
 
                         No de Documento:<br>
                         <input class="form-control" type="text" name="txtNodoc" id="txtNodoc" 
-                               value="<%= request.getParameter("txtNodoc") != null ? request.getParameter("txtNodoc") : ""%>"><br>
+                               value="${param.txtNodoc}"><br>
 
                         Nit Solicitante: <br>
                         <input class="form-control" type="text" name="nitSolicitante" id="nitSolicitante" 
-                               value="<%= request.getParameter("nitSolicitante") != null ? request.getParameter("nitSolicitante") : "" %>"><br>
+                               value="<%= request.getParameter("nitSolicitante") != null ? request.getParameter("nitSolicitante") : ""%>"><br>
                         <input type="hidden" name="menu" value="solicit">
                         <button type="submit" name="accion" value="obtenSolici" class="btn btn-info">Buscar</button>
 
@@ -254,35 +260,36 @@
                             // Mostrar mensaje de error si corresponde
                             if (mensajeSolicitante != null) {
                         %>
-                            <p style="color: red;"><%= mensajeSolicitante %></p>
+                        <p style="color: red;"><%= mensajeSolicitante%></p>
                         <%
                             }
                         %>
 
-                       <!-- Nombre Solicitante -->
+                        <!-- Nombre Solicitante -->
                         Nombre Solicitante: <br>
                         <input class="form-control" type="text" name="txtNomSol" id="txtNomSol" 
-                               value="<%= (nombreSolicitante != null ? nombreSolicitante : (request.getAttribute("txtNomSol") != null ? request.getAttribute("txtNomSol") : "")) %>" readonly/><br>
+                               value="${obtenSol != null ? obtenSol.getSolNombre() : param.txtNomSol}" readonly/><br>
 
                         <!-- Correo Solicitante -->
                         Correo Solicitante: <br>
                         <input class="form-control" type="text" name="txtCorSol" id="txtCorSol" 
-                               value="<%= (correoSolicitante != null ? correoSolicitante : (request.getAttribute("txtCorSol") != null ? request.getAttribute("txtCorSol") : "")) %>" /><br>
+                               value="${obtenSol != null ? obtenSol.getSolCorreo() : param.txtCorSol}" /><br>
 
                         <!-- No de Muestra -->
                         No de Muestra: <br>
-                        <input class="form-control" type="text" name="txtNoMuestra" id="txtNoMuestra"  /><br>
+                        <input class="form-control" type="text" name="txtNoMuestra" id="txtNoMuestra" 
+                               value="${param.txtNoMuestra}"/><br>
                         <c:if test="${not empty error}">
                             <div style="color: red;">${error}</div> <!-- Mostrar el mensaje de error en rojo -->
                         </c:if>
-                        
+
                         <!--Asignar el estado de la solicitud-->
                         <input class="form-control" type="hidden" name="estado" id="estado" value="AsignadaAnalistaLaboratorio" readonly />
 
                         <!-- Descripción de Producto -->
                         Descripción de Producto: <br>
                         <input class="form-control" type="text" name="txtDescProd" id="txtDescProd" 
-                               value="${param.txtDescProd != null ? param.txtDescProd : ''}" /><br>
+                               value="${param.txtDescProd}" /><br>
 
                         <%
                             // Obtener la lista de usuarios con rol 2 (Analista de Laboratorio)
@@ -291,20 +298,23 @@
 
                         <!-- Campo para seleccionar al analista (usuario con rol 2) -->
                         <label for="analista">Seleccionar Analista:</label><br>
-                        <select class="form-control" name="analista" id="analista" onchange="this.form.nombreAnalista.value=this.options[this.selectedIndex].text.split(' - ')[0];">
+                        <select class="form-control" name="analista" id="analista" onchange="this.form.nombreAnalista.value = this.options[this.selectedIndex].text.split(' - ')[0];">
+                            <option value="" disabled ${empty param.analista ? 'selected' : ''}>Seleccione un usuario</option>
                             <% if (listaUsuarios != null) {
                                     for (Users usuario : listaUsuarios) {
                             %>
                             <option value="<%= usuario.getIdusuario()%>">
-                                <%= usuario.getPrimerNombre() %> - <%= usuario.getCorreo() %> 
+                                <%= usuario.getPrimerNombre()%> - <%= usuario.getCorreo()%> 
                             </option>
                             <%
                                     }
                                 }
                             %>
-  
                         </select>
-                            <input type="hidden" name="nombreAnalista" id="nombreAnalista" value="">
+                        <c:if test="${not empty exito}">
+                            <div style="color: green;">${exito}</div> <!-- Mostrar el mensaje de error en rojo -->
+                        </c:if>
+                        <input type="hidden" name="nombreAnalista" id="nombreAnalista" value="">
                         <br>
                         <input type="hidden" name="menu" value="solicit">
                         <input type="submit" name="accion" value="Agregar" class="btn btn-primary">
@@ -313,31 +323,18 @@
                 </div>
             </form>             
         </div>                               
-    <script>
-        function toggleFields() {
-            const tipoSolicitud = document.getElementById('txtSoli').value;
-
-            // Los campos que deseas controlar
-            const noMuestraField = document.getElementById('txtNoMuestra');
-            const descripcionField = document.getElementById('txtDescProd');
-
-            // habilita o inhabilita la escritura en los campos según el tipo de solicitud
-            if (tipoSolicitud === "MuestraParaAnalisis") {
-                noMuestraField.readOnly = true; 
-                noMuestraField.value = "";
-                descripcionField.readOnly = false; 
-            } else if (tipoSolicitud === "SolicitudSinMuestra") {
-                noMuestraField.readOnly = true; 
-                descripcionField.readOnly = false; 
-                noMuestraField.value = ""; 
-                descripcionField.value = ""; 
-            } else if (tipoSolicitud === "ConNumerodeMuestra") {
-                noMuestraField.readOnly = false; 
-                descripcionField.readOnly = false; 
+        <script>
+            function habilitarMuestra() {
+                var seleccion = document.getElementById("txtSoli").value;
+                var inputmuestra = document.getElementById("txtNoMuestra");
+                if (seleccion === "ConNumerodeMuestra") {
+                    inputmuestra.readOnly = false;
+                } else {
+                    inputmuestra.readOnly = true;
+                }
             }
-        }
-        // Ejecutar la función para configurar los campos al cargar la página
-        window.onload = toggleFields;
-    </script>    
- </body>
+            // Ejecutar la función para configurar los campos al cargar la página
+            window.onload = toggleFields;
+        </script>    
+    </body>
 </html>
