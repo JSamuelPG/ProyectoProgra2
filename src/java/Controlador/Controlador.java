@@ -36,6 +36,8 @@ public class Controlador extends HttpServlet {
     String entid = "vistas/entidades.jsp";
     String addenti = "vistas/addEntidad.jsp";
     String listReasignar = "vistas/reasignarSol.jsp";
+    String listaSolicitudes = "vistas/solicitudesUsuario.jsp";
+    String visualizarSolicitudes = "vistas/visualizarSolicitudes.jsp";
 
     SoliMuestra sm = new SoliMuestra();
     Users u = new Users();
@@ -383,46 +385,31 @@ public class Controlador extends HttpServlet {
                     request.setAttribute("idsolicitud", request.getParameter("idsoli"));
                     acceso = editr;
                     break;
-                case "actualizarr":
-                    idsolicitud = Integer.parseInt(request.getParameter("txtIdSol"));
-                    tipoSolicitud2 = request.getParameter("txtSoli");
-                    tipoEntidad = request.getParameter("txtEnti");
-                    fechaSolicitud = Date.valueOf(request.getParameter("txtFecha"));
-                    tipoDocumento = request.getParameter("txtDodc");
-                    noDocumento = request.getParameter("txtNoDoc");
-                    nitProveedor = request.getParameter("nitEntidad");
-                    nombreProveedor = request.getParameter("txtNomProv");
-                    correoProveedor = request.getParameter("txtCorProv");
-                    correoSolicitante = request.getParameter("txtCorSol");
-                    direccionProveedor = request.getParameter("txtDiProv");
-                    telefonoProveedor = request.getParameter("txtTelProv");
-                    nitSolicitante = request.getParameter("nitSolicitante");
-                    nombreSolicitante = request.getParameter("txtNomSol");
-                    noMuestra = request.getParameter("txtNoMuestra");
-                    descripProducto = request.getParameter("txtDescProd");
-                    idUsuario = request.getParameter("analista");
+                case "actualizarR":
+                    int totalSolicitudes = Integer.parseInt(request.getParameter("totalSolicitudes"));
+                    boolean actualizacionExitosa = true;
 
-                    // Setear los valores en el objeto de solicitud
-                    sm.setIdSolicitud(idsolicitud);
-                    sm.setTipoSolicitud(tipoSolicitud2);
-                    sm.setTipoEntidad(tipoEntidad);
-                    sm.setFechaSolicitud(fechaSolicitud);
-                    sm.setTipodeDocumento(tipoDocumento);
-                    sm.setNoDedocumento(noDocumento);
-                    sm.setNitProveedor(nitProveedor);
-                    sm.setNombreProveedor(nombreProveedor);
-                    sm.setCorreoProveedor(correoProveedor);
-                    sm.setCorreoSolicitante(correoSolicitante);
-                    sm.setDireccionProveedor(direccionProveedor);
-                    sm.setTelefonoProveedor(telefonoProveedor);
-                    sm.setNitSolicitante(nitSolicitante);
-                    sm.setNombreSolicitante(nombreSolicitante);
-                    sm.setNoMuestra(noMuestra);
-                    sm.setDescripcionProducto(descripProducto);
-                    sm.setIdUsuario(idUsuario);
+                    // comienza a actualizar cada solicitud y al analista,correspondiente
+                    for (int i = 0; i < totalSolicitudes; i++) {
+                        String idSolicitudParam = request.getParameter("idSolicitud_" + i); // id,de la solicitud
+                        String idAnalistaParam = request.getParameter("analista_" + i); // id del analista
 
-                    sdao.editR(sm);
-                    acceso = listarr;
+                        if (idSolicitudParam != null && idAnalistaParam != null && !idAnalistaParam.isEmpty()) {
+                            int idSolicitud6 = Integer.parseInt(idSolicitudParam);
+
+                            SoliMuestra sm = new SoliMuestra();
+                            sm.setIdSolicitud(idSolicitud6);
+                            sm.setIdUsuario(idAnalistaParam); 
+                            
+                            boolean actualizado = sdao.editR(sm);
+                            if (!actualizado) {
+                                actualizacionExitosa = false;
+                            }
+                        }
+                    }
+
+
+                    acceso = listaSolicitudes;
                     break;
 
                 case "eliminarr":
@@ -492,7 +479,34 @@ public class Controlador extends HttpServlet {
             }
         }
 
-        if (menu != null && menu.equals("reasignar")) {
+        if (menu != null && menu.equals("visualizarSolicitud")) {
+            switch (accion) {
+                case "visualizarSolicitudes":
+                    // Llama a `buscarSolicitudes` sin filtros para obtener todos los registros
+                    List<SoliMuestra> todasSolicitudes = sdao.buscarSolicitudes("", ""); 
+                    request.setAttribute("solicitudes", todasSolicitudes);
+                    acceso = visualizarSolicitudes; // Tu JSP que muestra todos los registros
+                    break;
+
+                case "buscarSolicitudes":
+                    String noMuestra = request.getParameter("noMuestra");
+                    String nitProveedor = request.getParameter("nitProveedor");
+
+                    // Imprime los parámetros para depuración
+                    System.out.println("noMuestra: " + noMuestra);
+                    System.out.println("nitProveedor: " + nitProveedor);
+
+                    List<SoliMuestra> solicitudes = sdao.buscarSolicitudes(noMuestra, nitProveedor);
+                    request.setAttribute("solicitudes", solicitudes);
+                    acceso = visualizarSolicitudes; // JSP para mostrar resultados específicos
+                    break;
+
+            }
+        }
+
+
+        
+        if (menu != null && menu.equals("Reasignar")) {
             switch (accion) {
                 case "listReasignar":
                     acceso = listReasignar;
@@ -503,11 +517,14 @@ public class Controlador extends HttpServlet {
                     break;
 
             }
-
         }
+        
 
         if (menu != null && menu.equals("usuarios")) {
             switch (accion) {
+                case "listaSolicitudes":
+                    acceso = listaSolicitudes; // Asegúrate de que esta variable apunte a la vista correcta
+                    break;
                 case "listar":
                     acceso = listar;
                     break;
@@ -564,15 +581,15 @@ public class Controlador extends HttpServlet {
                     u.setEstado(estado);
                     u.setCorreo(correo2);
 
-                    // Verificar si el NIT ya existe
-                    if (dao.existeNitu(nit)) { // Verifica si existe el NIT
+                    // verificar si el nit ya existe
+                    if (dao.existeNitu(nit)) { // verifica si existe el nit
                         request.setAttribute("mensaje", "El NIT ya está registrado.");
-                        acceso = add; // Redirige a una página de error o muestra un mensaje
+                        acceso = add; // redirige a una pagina de error o muestra un mensaje
                     } else {
-                        // Agregar el usuario ya que el NIT no existe
+                        // agregar el usuario ya que el nit no existe
                         dao.add(u);
                         request.setAttribute("mensaje", "Usuario agregado exitosamente");
-                        acceso = add; // Redirigir a la lista de usuarios
+                        acceso = add; // redirigir a la lista de usuarios
                     }
                     break;
                 case "editar":
@@ -583,38 +600,36 @@ public class Controlador extends HttpServlet {
                     break;
                 case "actualizar":
                     id = Integer.parseInt(request.getParameter("idusua"));
-                    nomb = request.getParameter("txtNom1");
-                    nomb2 = request.getParameter("txtNom2");
-                    ap1 = request.getParameter("txtAp1");
-                    ap2 = request.getParameter("txtAp2");
-                    /*log = request.getParameter("txtLog");*/
-                    cont = request.getParameter("txtCont");
-                    nit = request.getParameter("txtNit");
-                    puesto = request.getParameter("txtPuesto");
-                    idrol = Integer.parseInt(request.getParameter("txtRol"));
                     estado = request.getParameter("txtEstado");
-                    correo2 = request.getParameter("txtCorreo");
                     String motivo = request.getParameter("txtMotivo");
 
-                    u.setIdusuario(id);
-                    u.setPrimerNombre(nomb);
-                    u.setSegundoNombre(nomb2);
-                    u.setPrimerApellido(ap1);
-                    u.setSegundoApellido(ap2);
-                    /*u.setLogin(log);*/
-                    u.setContrasenia(cont);
-                    u.setNitpersona(nit);
-                    u.setPuesto(puesto);
-                    u.setIdRol(idrol);
-                    u.setEstado(estado);
-                    u.setMotivo(motivo);
+                    // obtener las solicitudes de usuario
+                    List<SoliMuestra> solicitudes = sdao.obtenSolicitudesUsuario(id);
 
-                    dao.edit(u);
-                    acceso = listar;
+                    // si el usuario tiene solicitudes asignadas
+                    if (solicitudes != null && !solicitudes.isEmpty()) {
+                        // Si tiene solicitudes mandar al jsp con la lista
+                        request.setAttribute("solicitudes", solicitudes);
+                        request.setAttribute("idusuario", id);
+                        acceso = listaSolicitudes; // Cambia a la página JSP que muestra las solicitudes
+                        List<Users> listaUsuarios1 = sdao.obtenAnalista();
+                        request.setAttribute("listaUsuarios", listaUsuarios1);
+                    } else {
+                        // si no tiene solicitudes, proceder a actualizar el estado
+                        u.setIdusuario(id);
+                        u.setEstado(estado);
+                        u.setMotivo(motivo);
+
+                        // actualizar el usuario
+                        dao.edit(u);
+                        request.setAttribute("mensaje", "Estado actualizado exitosamente.");
+                        acceso = listar; 
+                    }
                     break;
 
                 case "eliminar":
                     id = Integer.parseInt(request.getParameter("id"));//el "id" viene del jsp de listar boton
+                    
                     u.setIdusuario(id);
                     dao.eliminar(id);
                     acceso = listar;

@@ -104,6 +104,7 @@
                             <a href="Controlador?menu=usuarios&accion=listar">Mantenimiento de Usuarios</a>
                             <a href="Controlador?menu=listaent&accion=entidades">Mantenimiento de Catálogo</a>
                             <a href="Controlador?menu=solicit&accion=listarr">Bandeja de Laboratorio</a>
+                            <a href="Controlador?menu=visualizarSolicitud&accion=visualizarSolicitudes">Visualización de Solicitudes</a>
                             <a href="Controlador?menu=reasignar&accion=listReasignar">Reasignacion de Solicitudes</a>
                         </div>
                     </div>
@@ -136,7 +137,7 @@
 
             <h1>Modificar Usuario</h1>
 
-            <form action="Controlador" method="post">
+            <form action="Controlador" method="get">
                 <input type="hidden" name="accion" value="actualizar"> <!-- Acción para actualizar -->
                 <input type="hidden" name="idusua" value="<%= user.getIdusuario() %>"> <!-- ID del usuario -->
 
@@ -144,46 +145,39 @@
                     <div class="col-md-6">
                         Primer Nombre:<br>
                         <input class="form-control" type="text" name="txtNom1" value="<%= user.getPrimerNombre() %>" readonly><br>
-
                         Segundo Nombre:<br>
                         <input class="form-control" type="text" name="txtNom2" value="<%= user.getSegundoNombre() %>" readonly><br>
-
                         Primer Apellido:<br>
                         <input class="form-control" type="text" name="txtAp1" value="<%= user.getPrimerApellido() %>" readonly><br>
-
                         Segundo Apellido:<br>
                         <input class="form-control" type="text" name="txtAp2" value="<%= user.getSegundoApellido() %>" readonly><br>
-
                         Contraseña:<br>
                         <input class="form-control" type="text" name="txtCont" value="<%= user.getContrasenia() %>" readonly><br>
-
                     </div>
 
                     <div class="col-md-6">
-                        <!-- Mostrar nombre del rol actual -->
                         NIT Persona:<br>
                         <input class="form-control" type="text" name="txtNit" value="<%= user.getNitpersona() %>" readonly><br>
-
                         Puesto:<br>
                         <input class="form-control" type="text" name="txtPuesto" value="<%= user.getPuesto() %>" readonly><br>
-                        
                         Rol Actual:<br>
                         <input class="form-control" type="text" name="Rol" value="<%= rolUsuario != null ? rolUsuario.getNombreRol() : "Sin rol asignado" %>" readonly><br>
-
                         Estado:<br>
                         <select class="form-control" name="txtEstado" required>
                             <option value="Activo" <%= user.getEstado().equals("Activo") ? "selected" : "" %>>Activo</option>
                             <option value="Inactivo" <%= user.getEstado().equals("Inactivo") ? "selected" : "" %>>Inactivo</option>
                         </select>
-
+                        <br>
                         Motivo del cambio de estado:<br>
                         <input class="form-control" name="txtMotivo" required><br>
                     </div>
                 </div>
 
                 <br>
-                <button type="submit" class="btn btn-success">Guardar Cambios</button>
+                <input type="hidden" name="menu" value="usuarios">
+                <button type="submit" name="accion" value="actualizar" class="btn btn-info">Actualizar</button>
                 <a class="btn btn-danger" href="Controlador?menu=usuarios&accion=listar">Cancelar</a>
+                
             </form>
 
 

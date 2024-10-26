@@ -107,6 +107,7 @@
                                     <a href="Controlador?menu=usuarios&accion=listar">Mantenimiento de Usuarios</a>
                                     <a href="Controlador?menu=listaent&accion=entidades">Mantenimiento de Catálogo</a>
                                     <a href="Controlador?menu=solicit&accion=listarr">Bandeja de Laboratorio</a>
+                                    <a href="Controlador?menu=visualizarSolicitud&accion=visualizarSolicitudes">Visualización de Solicitudes</a>
                                     <a href="Controlador?menu=reasignar&accion=listReasignar">Reasignacion de Solicitudes</a>
                                 </div>
                             </div>
@@ -298,19 +299,18 @@
 
                         <!-- Campo para seleccionar al analista (usuario con rol 2) -->
                         <label for="analista">Seleccionar Analista:</label><br>
-                        <select class="form-control" name="analista" id="analista" onchange="this.form.nombreAnalista.value = this.options[this.selectedIndex].text.split(' - ')[0];">
-                            <option value="" disabled ${empty param.analista ? 'selected' : ''}>Seleccione un usuario</option>
-                            <% if (listaUsuarios != null) {
-                                    for (Users usuario : listaUsuarios) {
-                            %>
-                            <option value="<%= usuario.getIdusuario()%>">
-                                <%= usuario.getPrimerNombre()%> - <%= usuario.getCorreo()%> 
-                            </option>
-                            <%
-                                    }
-                                }
-                            %>
-                        </select>
+                            <select class="form-control" name="analista" id="analista" onchange="this.form.nombreAnalista.value = this.options[this.selectedIndex].text.split(' - ')[0];">
+                                <% if (listaUsuarios != null && !listaUsuarios.isEmpty()) { %>
+                                    <% for (Users usuario : listaUsuarios) { %>
+                                        <option value="<%= usuario.getIdusuario() %>">
+                                            <%= usuario.getPrimerNombre() %> - <%= usuario.getCorreo() %>
+                                        </option>
+                                    <% } %>
+                                <% } else { %>
+                                    <option value="" disabled>No hay analistas disponibles</option>
+                                <% } %>
+                            </select>
+
                         <c:if test="${not empty exito}">
                             <div style="color: green;">${exito}</div> <!-- Mostrar el mensaje de error en rojo -->
                         </c:if>

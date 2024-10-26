@@ -351,21 +351,26 @@ public class SoliMuestraDAO implements CRUDSM {
 
     @Override
     public boolean editR(SoliMuestra smu) {
-        String sql = "update reg_solmuestra set tipo_Solicitud = '" + smu.getTipoSolicitud() + "', tipo_Entidad = '" + smu.getTipoEntidad() + "', fecha_Solicitud = '" + smu.getFechaSolicitud() + "', tipode_Documento = '" + smu.getTipodeDocumento() + "',no_Dedocumento = '" + smu.getNoDedocumento() + "',nit_Proveedor = '" + smu.getNitProveedor() + "', nombre_Proveedor = '" + smu.getNombreProveedor() + "', correo_Proveedor = '" + smu.getCorreoProveedor() + "',correo_Solicitante = '" + smu.getCorreoSolicitante() + "',direccion_Proveedor = '" + smu.getDireccionProveedor() + "',telefono_Proveedor = '" + smu.getTelefonoProveedor() + "',nit_Solicitante = '" + smu.getNitSolicitante() + "',nombre_Solicitante = '" + smu.getNombreSolicitante() + "', no_Muestra = '" + smu.getNoMuestra() + "', descrip_Producto = '" + smu.getDescripcionProducto() + "',id_Usuario = '" + smu.getIdUsuario() + "',Reg_Usuario = '" + smu.getRegUsuario() + "' where id_Solicitud=" + smu.getIdSolicitud();
+        String sql = "UPDATE reg_solmuestra SET id_Usuario = ? WHERE id_Solicitud = ?"; 
         Connection con = null;
         PreparedStatement ps = null;
-        ResultSet rs = null;
+
         try {
             Conexion cn = new Conexion();
             con = cn.getConnection();
+
+            // Preparar la consulta
             ps = con.prepareStatement(sql);
-            ps.executeUpdate();
-        } catch (Exception e) {
+            ps.setString(1, smu.getIdUsuario());
+            ps.setInt(2, smu.getIdSolicitud());
+
+            // Ejecutar la actualización
+            int filasActualizadas = ps.executeUpdate();
+            return filasActualizadas > 0; // Retornar true si se actualizó al menos una fila
+        } catch (SQLException e) {
+            e.printStackTrace(); 
         } finally {
             try {
-                if (rs != null) {
-                    rs.close();
-                }
                 if (ps != null) {
                     ps.close();
                 }
@@ -376,9 +381,10 @@ public class SoliMuestraDAO implements CRUDSM {
                 e.printStackTrace();
             }
         }
-        return false;
+        return false; // Retornar false si no se actualizó ninguna fila
     }
 
+     
     //MODIFICADO
     @Override
     public boolean eliminarR(int idSolicitud) {
@@ -676,5 +682,102 @@ public class SoliMuestraDAO implements CRUDSM {
         }
         return siguienteId;
     }
+
+    public List<SoliMuestra> obtenSolicitudesUsuario(int idUsuario) {
+        List<SoliMuestra> listaSolicitudes = new ArrayList<>();
+        String sql = "SELECT * FROM reg_SolMuestra WHERE id_Usuario = ?";
+
+        try {
+            Conexion cn = new Conexion();
+            con = cn.getConnection();
+            ps = con.prepareStatement(sql);
+            ps.setInt(1, idUsuario);
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                SoliMuestra solicitud = new SoliMuestra();
+                solicitud.setIdSolicitud(rs.getInt("id_Solicitud"));
+                solicitud.setNoDedocumento(rs.getString("no_Dedocumento"));
+                solicitud.setFechaSolicitud(rs.getDate("fecha_Solicitud"));
+                solicitud.setEstado(rs.getString("estado"));
+                listaSolicitudes.add(solicitud);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (ps != null) ps.close();
+                if (con != null) con.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return listaSolicitudes;
+    } 
+
+    
+    
+    
+    
+    
+        public List<SoliMuestra> buscarSolicitudes(String noMuestra, String nitProveedor) {
+            List<SoliMuestra> solicitudes = new ArrayList<>();
+            String sql = "SELECT * FROM reg_SolMuestra WHERE (no_Muestra = ? OR ? = '') AND (nit_Proveedor = ? OR ? = '')";
+
+            try {
+                Conexion cn = new Conexion();
+                con = cn.getConnection(); // Obtiene la conexión
+                try (PreparedStatement ps = con.prepareStatement(sql)) {
+                    ps.setString(1, noMuestra != null ? noMuestra : "");
+                    ps.setString(2, noMuestra != null ? noMuestra : "");
+                    ps.setString(3, nitProveedor != null ? nitProveedor : "");
+                    ps.setString(4, nitProveedor != null ? nitProveedor : "");
+
+                    try (ResultSet rs = ps.executeQuery()) {
+                        while (rs.next()) {
+                            SoliMuestra solicitud = new SoliMuestra();
+                            solicitud.setIdSolicitud(rs.getInt("id_Solicitud"));
+                            solicitud.setTipoSolicitud(rs.getString("tipo_Solicitud"));
+                            solicitud.setTipoEntidad(rs.getString("tipo_Entidad"));
+                            solicitud.setFechaSolicitud(rs.getDate("fecha_Solicitud"));
+                            solicitud.setTipodeDocumento(rs.getString("tipode_Documento"));
+                            solicitud.setNoDedocumento(rs.getString("no_Dedocumento"));
+                            solicitud.setNitProveedor(rs.getString("nit_Proveedor"));
+                            solicitud.setNombreProveedor(rs.getString("nombre_Proveedor"));
+                            solicitud.setCorreoProveedor(rs.getString("correo_Proveedor"));
+                            solicitud.setCorreoSolicitante(rs.getString("correo_Solicitante"));
+                            solicitud.setDireccionProveedor(rs.getString("direccion_Proveedor"));
+                            solicitud.setTelefonoProveedor(rs.getString("telefono_Proveedor"));
+                            solicitud.setNitSolicitante(rs.getString("nit_Solicitante"));
+                            solicitud.setNombreSolicitante(rs.getString("nombre_Solicitante"));
+                            solicitud.setNoMuestra(rs.getString("no_Muestra"));
+                            solicitud.setDescripcionProducto(rs.getString("descrip_Producto"));
+                            solicitud.setIdUsuario(rs.getString("id_Usuario")); // Cambia a int
+                            solicitud.setRegUsuario(rs.getString("Reg_Usuario"));
+                            solicitud.setEstado(rs.getString("estado"));
+
+                            solicitudes.add(solicitud);
+                        }
+                    }
+                }
+            } catch (SQLException e) {
+                e.printStackTrace(); // Manejo de excepciones según lo necesites
+            } finally {
+                // Cierra la conexión en el bloque finally
+                try {
+                    if (con != null) con.close();
+                } catch (SQLException e) {
+                    e.printStackTrace(); // Manejo de excepciones al cerrar la conexión
+                }
+            }
+            return solicitudes;
+        }
+
+
+
+
+
+
 
 }

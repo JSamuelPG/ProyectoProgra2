@@ -4,6 +4,7 @@ import Modelo.Roles;
 import Modelo.Users;
 import Config.Conexion;
 import Intefaces.CRUD;
+import Modelo.SoliMuestra;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -248,36 +249,34 @@ public boolean add(Users user) {
 }
 
     //MODIFICADO
-    @Override
+    @Override 
     public boolean edit(Users user) {
-        String sql = "update usuarios set primer_nombre = '" + user.getPrimerNombre() + "', segundo_nombre = '" + user.getSegundoNombre() + "', primer_apellido = '" + user.getPrimerApellido() + "', segundo_apellido = '" + user.getSegundoApellido() + "', contrasenia = '" + user.getContrasenia() + "', nit_persona = '" + user.getNitpersona() + "', puesto = '" + user.getPuesto() + "', id_rol = '" + user.getIdRol() + "', estado = '" + user.getEstado() + "' where id_usuario=" + user.getIdusuario();
-        Connection con = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        try {Conexion cn = new Conexion();
-            con = cn.getConnection();
-            ps = con.prepareStatement(sql);
-            ps.executeUpdate();
-        } catch (Exception e) {
+    String sql = "UPDATE usuarios SET estado = ?, motivo = ? WHERE id_usuario = ?";
+    Connection con = null;
+    PreparedStatement ps = null;
+
+    try {
+        Conexion cn = new Conexion();
+        con = cn.getConnection();
+        ps = con.prepareStatement(sql);
+        ps.setString(1, user.getEstado());
+        ps.setString(2, user.getMotivo());
+        ps.setInt(3, user.getIdusuario());
+        ps.executeUpdate();
+        return true;
+    } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            // Cerrar el ResultSet, PreparedStatement y Connection
             try {
-                if (rs != null) {
-                    rs.close();
-                }
-                if (ps != null) {
-                    ps.close();
-                }
-                if (con != null) {
-                    con.close();
-                }
+                if (ps != null) ps.close();
+                if (con != null) con.close();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
         return false;
     }
+
 
     //MODIFICADO
     @Override

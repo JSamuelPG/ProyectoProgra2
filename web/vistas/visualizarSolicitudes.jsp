@@ -116,63 +116,68 @@
 </div>
 
 
-    <div class="container">
-        <h1>Registro de Solicitudes y Muestras</h1>
-        <br>
-        <a class="btn btn-primary" href="Controlador?menu=solicit&accion=addr">Nueva Solicitud de Muestra</a>
-        <br>
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th class="text-center">Fecha Solicitado</th>
-                    <th class="text-center">Tipo de Documento</th>
-                    <th class="text-center">No de documento</th>
-                    <th class="text-center">Nit Proveedor</th>
-                    <th class="text-center">Nombre del Proveedor</th>
-                    <th class="text-center">Correo Proveedor</th>
-                    <th class="text-center">Correo Solicitante</th>
-                    <th class="text-center">Direccion</th>
-                    <th class="text-center">Telefono</th>
-                    <th class="text-center">Nit Solicitante</th>
-                    <th class="text-center">Nombre Solicitante</th>
-                    <th class="text-center">No de Muestra</th>
-                    <th class="text-center">Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                <%
-                    SoliMuestraDAO dao = new SoliMuestraDAO();
-                    List<SoliMuestra> list = dao.listarR();
-                    Iterator<SoliMuestra> iter = list.iterator();
-                    SoliMuestra sm = null;
-                    while (iter.hasNext()) {
-                        sm = iter.next();
-                %>
-                <tr>
-                    <td class="text-center"><%= sm.getFechaSolicitud()%></td>
-                    <td class="text-center"><%= sm.getTipodeDocumento()%></td>
-                    <td class="text-center"><%= sm.getNoDedocumento()%></td>
-                    <td class="text-center"><%= sm.getNitProveedor()%></td>
-                    <td class="text-center"><%= sm.getNombreProveedor()%></td>
-                    <td class="text-center"><%= sm.getCorreoProveedor() %></td>
-                    <td class="text-center"><%= sm.getCorreoSolicitante() %></td>
-                    <td class="text-center"><%= sm.getDireccionProveedor() %></td>
-                    <td class="text-center"><%= sm.getTelefonoProveedor() %></td>
-                    <td class="text-center"><%= sm.getNitSolicitante() %></td>
-                    <td class="text-center"><%= sm.getNombreSolicitante() %></td>
-                    <td class="text-center"><%= sm.getNoMuestra() %></td>
-                    <td class="text-center">
-                        <input type="hidden" name="menu" value="solicit">
-                        <a class="btn btn-warning" href="Controlador?menu=solicit&accion=visualizar&idSolicitud=<%= sm.getIdSolicitud() %>">Visualizar</a>
-                        <a class="btn btn-danger" href="Controlador?menu=solicit&accion=eliminarr&idsolicitud=<%= sm.getIdSolicitud() %>">Eliminar</a>
+<div class="container">
+    <h1>Registro de Solicitudes y Muestras</h1>
+    <br>
 
-                        
-                    </td>
-                </tr>
-                <% } %>
-            </tbody>
-        </table>
-    </div>
+    <!-- Formulario de Búsqueda -->
+    <form action="Controlador" method="get" class="mb-3">
+        <div class="row">
+            <div class="col-md-4">
+                <input type="text" name="nitProveedor" class="form-control" placeholder="Buscar por Nit">
+            </div>
+            <div class="col-md-4">
+                <input type="text" name="noMuestra" class="form-control" placeholder="Buscar por No de Muestra">
+            </div>
+            <div class="col-md-4">
+                <input type="hidden" name="menu" value="visualizarSolicitud">
+                <button type="submit" name="accion" value="buscarSolicitudes" class="btn btn-info">Buscar</button>
+            </div>
+        </div>
+    </form>
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th class="text-center">Fecha Solicitado</th>
+                <th class="text-center">Nit Proveedor</th>
+                <th class="text-center">Nombre del Proveedor</th>
+                <th class="text-center">No de Muestra</th>
+                <th class="text-center">Estado de Solicitud</th>
+                <th class="text-center">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% 
+                // Obteniendo la lista de solicitudes desde el atributo establecido en el controlador
+                List<SoliMuestra> list = (List<SoliMuestra>) request.getAttribute("solicitudes"); 
+                if (list != null && !list.isEmpty()) {
+                    for (SoliMuestra sm : list) {
+            %>
+            <tr>
+                <td class="text-center"><%= sm.getFechaSolicitud() %></td>
+                <td class="text-center"><%= sm.getNitProveedor() %></td>
+                <td class="text-center"><%= sm.getNombreProveedor() %></td>
+                <td class="text-center"><%= sm.getNoMuestra() %></td>
+                <td class="text-center"><%= sm.getEstado()%></td>
+                <td class="text-center">
+                    <input type="hidden" name="menu" value="solicit">
+                    <a class="btn btn-warning" href="Controlador?menu=solicit&accion=visualizar&idSolicitud=<%= sm.getIdSolicitud() %>">Visualizar</a>
+                </td>
+            </tr>
+            <% 
+                    } 
+                } else { 
+            %>
+            <tr>
+                <td colspan="13" class="text-center">No se encontraron solicitudes.</td>
+            </tr>
+            <% } %>
+        </tbody>
+    </table>
+</div>
+
+
 
 </body>
 </html>

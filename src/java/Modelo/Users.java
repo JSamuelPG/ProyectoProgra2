@@ -21,10 +21,11 @@ public class Users {
     String estado;
     String correo;
     String motivo;
+    int cargaTrabajo;
     
     public Users(){};
 
-    public Users(int idusuario, String primerNombre, String segundoNombre, String primerApellido, String segundoApellido, String login, String contrasenia, String nitpersona, String puesto, String nombreRol, int idRol, String estado, String correo, String motivo) {
+    public Users(int idusuario, String primerNombre, String segundoNombre, String primerApellido, String segundoApellido, String login, String contrasenia, String nitpersona, String puesto, String nombreRol, int idRol, String estado, String correo, String motivo, int cargaTrabajo) {
         this.idusuario = idusuario;
         this.primerNombre = primerNombre;
         this.segundoNombre = segundoNombre;
