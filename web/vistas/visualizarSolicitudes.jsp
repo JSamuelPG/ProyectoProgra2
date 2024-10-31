@@ -21,7 +21,6 @@
     position: relative;
     z-index: 10;
 }
-
 .navbar a, .dropbtn {
     color: white;
     text-align: center;
@@ -34,16 +33,13 @@
     display: inline-block;
     transition: background-color 0.3s;
 }
-
 .navbar a:hover, .dropbtn:hover {
     background-color: #ffb74d;
 }
-
 .dropdown {
     display: inline-block;
     position: relative;
 }
-
 .dropdown-content {
     display: none;
     position: absolute;
@@ -52,7 +48,6 @@
     box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
     z-index: 999;
 }
-
 .dropdown-content a {
     color: white;
     padding: 12px 16px;
@@ -60,32 +55,26 @@
     display: block;
     text-align: left;
 }
-
 .dropdown-content a:hover {
     background-color: #ffb74d;
 }
-
 /* Mostrar dropdown solo al pasar el mouse sobre el elemento correspondiente */
 .dropdown:hover > .dropdown-content {
     display: block;
 }
-
 /* Estilo para el submenú dentro de "Servicios" */
 .dropdown-content .dropdown {
     position: relative;
 }
-
 .dropdown-content .dropdown-content {
     display: none; /* Ocultar el submenú inicialmente */
     top: 0;
     left: 100%; /* Muestra el submenú a la derecha */
     margin-left: 1px;
 }
-
 .dropdown-content .dropdown:hover .dropdown-content {
     display: block; /* Mostrar el submenú al pasar el mouse */
 }
-
     </style>
 </head>
 <body>

@@ -1,5 +1,6 @@
 <%@page import="java.util.Iterator"%>
 <%@page import="Modelo.SoliMuestra"%>
+<%@page import="Modelo.Users"%>
 <%@page import="java.util.List"%>
 <%@page import="ModeloDAO.SoliMuestraDAO"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
@@ -110,7 +111,7 @@
                             <a href="Controlador?menu=listaent&accion=entidades">Mantenimiento de Catálogo</a>
                             <a href="Controlador?menu=solicit&accion=listarr">Bandeja de Laboratorio</a>
                             <a href="Controlador?menu=visualizarSolicitud&accion=visualizarSolicitudes">Visualización de Solicitudes</a>
-                            <a href="Controlador?menu=reasignar&accion=listReasignar">Reasignacion de Solicitudes</a>
+                            <a href="Controlador?menu=Reasignar&accion=listReasignar">Reasignacion de Solicitudes</a>
                         </div>
                     </div>
                 </div>
@@ -122,62 +123,71 @@
 </div>
 
 
-    <div class="container">
-        <h1>Reasignación de Solicitudes</h1>
-        <br>
-        <a class="btn btn-primary" href="Controlador?menu=solicit&accion=addr">Nueva Solicitud de Muestra</a>
-        <br>
-        <table class="table table-bordered">
-            <thead>
+          <form action="Controlador" method="post">
+            <table border="1" class="table table-bordered">
                 <tr>
-                    <th class="text-center">Fecha Solicitado</th>
-                    <th class="text-center">Tipo de Documento</th>
-                    <th class="text-center">No de documento</th>
-                    <th class="text-center">Nit Proveedor</th>
-                    <th class="text-center">Nombre del Proveedor</th>
-                    <th class="text-center">Correo Proveedor</th>
-                    <th class="text-center">Correo Solicitante</th>
-                    <th class="text-center">Direccion</th>
-                    <th class="text-center">Telefono</th>
-                    <th class="text-center">Nit Solicitante</th>
-                    <th class="text-center">Nombre Solicitante</th>
-                    <th class="text-center">No de Muestra</th>
-                    <th class="text-center">Acciones</th>
+                    <th>ID Solicitud</th>
+                    <th>No Documento</th>
+                    <th>Fecha Solicitud</th>
+                    <th>Estado</th>
+                    <th>Seleccionar Analista</th>
                 </tr>
-            </thead>
-            <tbody>
                 <%
-                    SoliMuestraDAO dao = new SoliMuestraDAO();
-                    List<SoliMuestra> list = dao.listarR();
-                    Iterator<SoliMuestra> iter = list.iterator();
-                    SoliMuestra sm = null;
-                    while (iter.hasNext()) {
-                        sm = iter.next();
+                    List<SoliMuestra> solicitudes = (List<SoliMuestra>) request.getAttribute("solicitudes");
+                    if (solicitudes != null && !solicitudes.isEmpty()) {
+                        for (int i = 0; i < solicitudes.size(); i++) {
+                            SoliMuestra solicitud = solicitudes.get(i);
                 %>
                 <tr>
-                    <td class="text-center"><%= sm.getFechaSolicitud()%></td>
-                    <td class="text-center"><%= sm.getTipodeDocumento()%></td>
-                    <td class="text-center"><%= sm.getNoDedocumento()%></td>
-                    <td class="text-center"><%= sm.getNitProveedor()%></td>
-                    <td class="text-center"><%= sm.getNombreProveedor()%></td>
-                    <td class="text-center"><%= sm.getCorreoProveedor() %></td>
-                    <td class="text-center"><%= sm.getCorreoSolicitante() %></td>
-                    <td class="text-center"><%= sm.getDireccionProveedor() %></td>
-                    <td class="text-center"><%= sm.getTelefonoProveedor() %></td>
-                    <td class="text-center"><%= sm.getNitSolicitante() %></td>
-                    <td class="text-center"><%= sm.getNombreSolicitante() %></td>
-                    <td class="text-center"><%= sm.getNoMuestra() %></td>
-                    <td class="text-center">
-                        <input type="hidden" name="menu" value="solicit">
-                        <a class="btn btn-warning" href="Controlador?menu=solicit&accion=visualizar&idSolicitud=<%= sm.getIdSolicitud() %>">Visualizar</a>
-                        <a class="btn btn-danger" href="Controlador?menu=solicit&accion=eliminarr&idsolicitud=<%= sm.getIdSolicitud() %>">Eliminar</a>
-  
+                    <td><%= solicitud.getIdSolicitud() %></td>
+                    <td><%= solicitud.getNoDedocumento() %></td>
+                    <td><%= solicitud.getFechaSolicitud() != null ? solicitud.getFechaSolicitud().toString() : "N/A" %></td>
+                    <td><%= solicitud.getEstado() %></td>
+                    <td>
+                        <select class="form-control" name="analista_<%= i %>">
+                            <%
+                                List<Users> listaUsuarios = (List<Users>) request.getAttribute("listaUsuarios");
+                                if (listaUsuarios != null) {
+                                    for (Users usuario : listaUsuarios) {
+                            %>
+                                <option value="<%= usuario.getIdusuario() %>">
+                                    <%= usuario.getPrimerNombre() %> - <%= usuario.getCorreo() %>
+                                </option>
+                            <%
+                                    }
+                                } else {
+                            %>
+                                <option value="" disabled>No hay analistas disponibles</option>
+                            <%
+                                }
+                            %>
+                        </select>
+
+                        <input type="hidden" name="idSolicitud_<%= i %>" value="<%= solicitud.getIdSolicitud() %>"/>
                     </td>
                 </tr>
-                <% } %>
-            </tbody>
-        </table>
-    </div>
+                <%
+                        }
+                %>
+                <input type="hidden" name="menu" value="solicit"/>
+                <input type="hidden" name="totalSolicitudes" value="<%= solicitudes.size() %>"/>
+                <tr>
+                    <td colspan="5">
+                        <button type="submit" name="accion" value="actualizarR" class="btn btn-primary">Actualizar</button>
+                    </td>
+                </tr>
+                <%
+                    } else {
+                %>
+                <tr>
+                    <td colspan="5">No hay solicitudes para mostrar.</td>
+                </tr>
+                <%
+                    }
+                %>
+            </table>
+        </form>
+
 
 </body>
 </html>

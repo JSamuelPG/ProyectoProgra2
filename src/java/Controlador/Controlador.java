@@ -35,7 +35,7 @@ public class Controlador extends HttpServlet {
     String editr = "vistas/editR.jsp";
     String entid = "vistas/entidades.jsp";
     String addenti = "vistas/addEntidad.jsp";
-    String listReasignar = "vistas/reasignarSol.jsp";
+    String ReasignarLista = "vistas/reasignarSol.jsp";
     String listaSolicitudes = "vistas/solicitudesUsuario.jsp";
     String visualizarSolicitudes = "vistas/visualizarSolicitudes.jsp";
 
@@ -509,7 +509,7 @@ public class Controlador extends HttpServlet {
         if (menu != null && menu.equals("Reasignar")) {
             switch (accion) {
                 case "listReasignar":
-                    acceso = listReasignar;
+                    acceso = ReasignarLista;
                     break;
                 case "1":
                     break;

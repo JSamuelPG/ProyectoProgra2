@@ -110,7 +110,7 @@ body {
                             <a href="Controlador?menu=listaent&accion=entidades">Mantenimiento de Catálogo</a>
                             <a href="Controlador?menu=solicit&accion=listarr">Bandeja de Laboratorio</a>
                             <a href="Controlador?menu=visualizarSolicitud&accion=visualizarSolicitudes">Visualización de Solicitudes</a>
-                            <a href="Controlador?menu=reasignar&accion=listReasignar">Reasignacion de Solicitudes</a>
+                            <a href="Controlador?menu=Reasignar&accion=listReasignar">Reasignacion de Solicitudes</a>
                         </div>
                     </div>
                 </div>
