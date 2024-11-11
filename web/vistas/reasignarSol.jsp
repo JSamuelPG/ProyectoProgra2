@@ -17,82 +17,65 @@
             padding: 0;
             background-color: #f4f4f4;
         }
-        .navbar {
-            padding: 10px;
-            position: relative;
-            z-index: 10;
-        }
-        .navbar a, .dropbtn {
-            color: white;
-            text-align: center;
-            padding: 14px 20px;
-            text-decoration: none;
-            font-size: 18px;
-            background-color: #e38d13;
-            border: none;
-            transition: background-color 0.3s;
-            cursor: pointer;
-            display: inline-block;
-        }
-        .navbar a:hover, .dropbtn:hover {
-            background-color: #ffb74d;
-        }
-        .dropdown {
-            display: inline-block;
-            position: relative;
-        }
-        .dropdown-content {
-            display: none;
-            position: absolute;
-            background-color: #e38d13;
-            min-width: 160px;
-            box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
-            z-index: 999;
-            top: 50px; /* Ajuste para la posición */
-            left: 0;
-        }
-        .dropdown-content a {
-            color: white;
-            padding: 12px 16px;
-            text-decoration: none;
-            display: block;
-            text-align: left;
-        }
-        .dropdown-content a:hover {
-            background-color: #ffb74d;
-        }
-        /* Mostrar el contenido del menú al pasar el mouse por el dropdown */
-        .dropdown:hover > .dropdown-content {
-            display: block;
-        }
-        /* Estilo para el submenú dentro de "Servicios" */
-        .dropdown-content .dropdown {
-            position: relative;
-        }
-        .dropdown-content .dropdown-content {
-            display: none; /* Ocultar el submenú inicialmente */
-            top: 0;
-            left: 100%; /* Muestra el submenú a la derecha */
-            margin-left: 1px;
-        }
-        .dropdown-content .dropdown:hover .dropdown-content {
-            display: block; /* Mostrar el submenú al pasar el mouse sobre "SCM" */
-        }
-        /* Estilos para la tabla */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-            background-color: white;
-        }
-        th, td {
-            padding: 10px;
-            text-align: left;
-            border: 1px solid #ddd;
-        }
-        th {
-            background-color: #f2f2f2;
-        }
+.navbar {
+    padding: 10px;
+    position: relative;
+    z-index: 10;
+}
+.navbar a, .dropbtn {
+    color: white;
+    text-align: center;
+    padding: 14px 20px;
+    text-decoration: none;
+    font-size: 18px;
+    background-color: #e38d13;
+    border: none;
+    cursor: pointer;
+    display: inline-block;
+    transition: background-color 0.3s;
+}
+.navbar a:hover, .dropbtn:hover {
+    background-color: #ffb74d;
+}
+.dropdown {
+    display: inline-block;
+    position: relative;
+}
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #e38d13;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+    z-index: 999;
+}
+.dropdown-content a {
+    color: white;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    text-align: left;
+}
+.dropdown-content a:hover {
+    background-color: #ffb74d;
+}
+/* Mostrar dropdown solo al pasar el mouse sobre el elemento correspondiente */
+.dropdown:hover > .dropdown-content {
+    display: block;
+}
+/* Estilo para el submenú dentro de "Servicios" */
+.dropdown-content .dropdown {
+    position: relative;
+}
+.dropdown-content .dropdown-content {
+    display: none; /* Ocultar el submenú inicialmente */
+    top: 0;
+    left: 100%; /* Muestra el submenú a la derecha */
+    margin-left: 1px;
+}
+.dropdown-content .dropdown:hover .dropdown-content {
+    display: block; /* Mostrar el submenú al pasar el mouse */
+}
     </style>
 </head>
 <body>
@@ -123,70 +106,109 @@
 </div>
 
 
-          <form action="Controlador" method="post">
-            <table border="1" class="table table-bordered">
-                <tr>
-                    <th>ID Solicitud</th>
-                    <th>No Documento</th>
-                    <th>Fecha Solicitud</th>
-                    <th>Estado</th>
-                    <th>Seleccionar Analista</th>
-                </tr>
-                <%
-                    List<SoliMuestra> solicitudes = (List<SoliMuestra>) request.getAttribute("solicitudes");
-                    if (solicitudes != null && !solicitudes.isEmpty()) {
-                        for (int i = 0; i < solicitudes.size(); i++) {
-                            SoliMuestra solicitud = solicitudes.get(i);
-                %>
-                <tr>
-                    <td><%= solicitud.getIdSolicitud() %></td>
-                    <td><%= solicitud.getNoDedocumento() %></td>
-                    <td><%= solicitud.getFechaSolicitud() != null ? solicitud.getFechaSolicitud().toString() : "N/A" %></td>
-                    <td><%= solicitud.getEstado() %></td>
-                    <td>
-                        <select class="form-control" name="analista_<%= i %>">
-                            <%
-                                List<Users> listaUsuarios = (List<Users>) request.getAttribute("listaUsuarios");
+<div class="container">
+    <h1>Reasignar Solicitudes</h1>
+    <br>
+
+<!-- Mensaje de Reasignación -->
+<%
+    String mensaje = (String) request.getSession().getAttribute("mensaje");
+    if (mensaje != null) { 
+%>
+    <div class="alert alert-success" role="alert">
+        <%= mensaje %>
+    </div>
+<%
+        request.getSession().removeAttribute("mensaje");
+    }
+%>
+
+
+    <!-- Formulario de Búsqueda -->
+    <form action="Controlador" method="get" class="mb-3">
+        <div class="row">
+            <div class="col-md-4">
+                <input type="text" name="nitProveedor" class="form-control" placeholder="Buscar por Nit">
+            </div>
+            <div class="col-md-4">
+                <input type="text" name="noMuestra" class="form-control" placeholder="Buscar por No de Muestra">
+            </div>
+            <div class="col-md-4">
+                <input type="hidden" name="menu" value="Reasignar">
+                <button type="submit" name="accion" value="BuscarSolicitudes" class="btn btn-info">Buscar</button>
+            </div>
+        </div>
+    </form>
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th class="text-center">Fecha Solicitado</th>
+                <th class="text-center">Nit Proveedor</th>
+                <th class="text-center">Nombre del Proveedor</th>
+                <th class="text-center">No de Muestra</th>
+                <th class="text-center">Estado de Solicitud</th>
+                <th class="text-center">ID Analista Asignado</th>
+                <th class="text-center">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% 
+                List<SoliMuestra> solicitudes = (List<SoliMuestra>) request.getAttribute("solicitudes"); 
+                List<Users> listaUsuarios = (List<Users>) request.getAttribute("listaUsuarios");
+                
+                if (solicitudes != null && !solicitudes.isEmpty()) {
+                    for (int i = 0; i < solicitudes.size(); i++) {
+                        SoliMuestra solicitud = solicitudes.get(i);
+            %>
+            <!-- Formulario de actualización de cada solicitud -->
+            <form action="Controlador" method="post">
+                <tr>    
+                    <td class="text-center"><%= solicitud.getFechaSolicitud() %></td>
+                    <td class="text-center"><%= solicitud.getNitProveedor() %></td>
+                    <td class="text-center"><%= solicitud.getNombreProveedor() %></td>
+                    <td class="text-center"><%= solicitud.getNoMuestra() %></td>
+                    <td class="text-center"><%= solicitud.getEstado() %></td>
+                    <td class="text-center"><%= solicitud.getIdUsuario()%></td>
+                    <td class="text-center">
+                        <select class="form-control" name="analista">
+                            <% 
                                 if (listaUsuarios != null) {
                                     for (Users usuario : listaUsuarios) {
                             %>
-                                <option value="<%= usuario.getIdusuario() %>">
-                                    <%= usuario.getPrimerNombre() %> - <%= usuario.getCorreo() %>
-                                </option>
-                            <%
+                            <option value="<%= usuario.getIdusuario() %>" <%= solicitud.getIdUsuario().equals(usuario.getIdusuario()) ? "selected" : "" %>>
+                                <%= usuario.getPrimerNombre() %> - <%= usuario.getCorreo() %>
+                            </option>
+                            <% 
                                     }
-                                } else {
+                                } else { 
                             %>
-                                <option value="" disabled>No hay analistas disponibles</option>
-                            <%
-                                }
-                            %>
+                            <option value="" disabled>No hay analistas disponibles</option>
+                            <% } %>
                         </select>
 
-                        <input type="hidden" name="idSolicitud_<%= i %>" value="<%= solicitud.getIdSolicitud() %>"/>
+                        <input type="hidden" name="idSolicitud" value="<%= solicitud.getIdSolicitud() %>"/>
+                        <input type="hidden" name="menu" value="Reasignar">
+                        <button type="submit" name="accion" value="ActualizarReasignacion" class="btn btn-primary">Actualizar</button>
+                        <input type="hidden" name="menu" value="solicit">
+                        <a class="btn btn-warning" href="Controlador?menu=solicit&accion=visualizar&idSolicitud=<%= solicitud.getIdSolicitud() %>">Visualizar</a>
                     </td>
                 </tr>
-                <%
-                        }
-                %>
-                <input type="hidden" name="menu" value="solicit"/>
-                <input type="hidden" name="totalSolicitudes" value="<%= solicitudes.size() %>"/>
-                <tr>
-                    <td colspan="5">
-                        <button type="submit" name="accion" value="actualizarR" class="btn btn-primary">Actualizar</button>
-                    </td>
-                </tr>
-                <%
-                    } else {
-                %>
-                <tr>
-                    <td colspan="5">No hay solicitudes para mostrar.</td>
-                </tr>
-                <%
-                    }
-                %>
-            </table>
-        </form>
+            </form>
+            <% 
+                    } 
+                } else { 
+            %>
+            <tr>
+                <td colspan="6" class="text-center">No se encontraron solicitudes.</td>
+            </tr>
+            <% } %>
+        </tbody>
+    </table>
+</div>
+
+
+
 
 
 </body>

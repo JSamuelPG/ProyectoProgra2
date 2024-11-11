@@ -511,10 +511,65 @@ public class Controlador extends HttpServlet {
                 case "listReasignar":
                     acceso = ReasignarLista;
                     break;
-                case "1":
+                case "visualizar":
+                    // Llama a `buscarSolicitudes` sin filtros para obtener todos los registros
+                    List<SoliMuestra> todasSolicitudes = sdao.buscarSolicitudes("", ""); 
+                    request.setAttribute("solicitudes", todasSolicitudes);
+                    acceso = ReasignarLista; // Tu JSP que muestra todos los registros
+                    List<Users> listaUsuarios1 = sdao.obtenAnalista();
+                    request.setAttribute("listaUsuarios", listaUsuarios1);
                     break;
-                case "2":
+
+                case "BuscarSolicitudes":
+                    List<Users> listaUsuarios2 = sdao.obtenAnalista();
+                    request.setAttribute("listaUsuarios", listaUsuarios2);
+                    
+                    String noMuestra = request.getParameter("noMuestra");
+                    String nitProveedor = request.getParameter("nitProveedor");
+
+                    // Imprime los parámetros para depuración
+                    System.out.println("noMuestra: " + noMuestra);
+                    System.out.println("nitProveedor: " + nitProveedor);
+
+                    List<SoliMuestra> solicitudes = sdao.buscarSolicitudes(noMuestra, nitProveedor);
+                    request.setAttribute("solicitudes", solicitudes);
+                    acceso = ReasignarLista; // JSP para mostrar resultados específicos
                     break;
+
+case "ActualizarReasignacion":
+    String idSolicitudParam = request.getParameter("idSolicitud"); 
+    String idAnalistaParam = request.getParameter("analista"); 
+    
+    String correoAnalista = sdao.obtenCorreoAnalista(idAnalistaParam);
+
+    if (idSolicitudParam != null && idAnalistaParam != null && !idAnalistaParam.isEmpty()) {
+        int idSolicitud = Integer.parseInt(idSolicitudParam);
+
+        SoliMuestra sm = new SoliMuestra();
+        sm.setIdSolicitud(idSolicitud);
+        sm.setIdUsuario(idAnalistaParam);
+
+        // Intentar actualizar la reasignación de solicitud
+        boolean actualizacionExitosa = sdao.editR(sm);
+        if (actualizacionExitosa) {
+            try {
+                SoliMuestra mu = sdao.listR(idSolicitud);
+                if (mu != null) {
+                    correo.enviarCorreo(mu, correoAnalista);
+                        acceso = ReasignarLista;
+                    request.getSession().setAttribute("mensaje", "Reasignación exitosa y correo enviado al solicitante.");
+                }
+            } catch (Exception e) {
+                request.getSession().setAttribute("errorCorreo", "Reasignación exitosa, pero error al enviar el correo: " + e.getMessage());
+            }
+        } else {
+            request.getSession().setAttribute("mensaje", "Reasignación fallida.");
+        }
+    }
+
+
+    break;
+
 
             }
         }

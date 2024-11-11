@@ -22,7 +22,6 @@
             position: relative;
             z-index: 10;
         }
-
         .navbar a, .dropbtn {
             color: white;
             text-align: center;
@@ -35,16 +34,13 @@
             display: inline-block;
             transition: background-color 0.3s;
         }
-
         .navbar a:hover, .dropbtn:hover {
             background-color: #ffb74d;
         }
-
         .dropdown {
             display: inline-block;
             position: relative;
         }
-
         .dropdown-content {
             display: none;
             position: absolute;
@@ -53,7 +49,6 @@
             box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
             z-index: 999;
         }
-
         .dropdown-content a {
             color: white;
             padding: 12px 16px;
@@ -61,26 +56,21 @@
             display: block;
             text-align: left;
         }
-
         .dropdown-content a:hover {
             background-color: #ffb74d;
         }
-
         .dropdown:hover > .dropdown-content {
             display: block;
         }
-
         .dropdown-content .dropdown {
             position: relative;
         }
-
         .dropdown-content .dropdown-content {
             display: none;
             top: 0;
             left: 100%;
             margin-left: 1px;
         }
-
         .dropdown-content .dropdown:hover .dropdown-content {
             display: block;
         }
@@ -116,7 +106,7 @@
 <h1>Solicitudes del Usuario</h1>
 <a class="btn btn-info" href="Controlador?menu=usuarios&accion=listar">Regresar</a>
 
-         
+
          <form action="Controlador" method="post">
             <table border="1" class="table table-bordered">
                 <tr>
